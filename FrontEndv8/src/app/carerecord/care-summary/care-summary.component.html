@@ -1,0 +1,83 @@
+<mat-card>
+  <app-precis>
+  </app-precis>
+  <mat-card-header class="header2">
+    <div mat-card-avatar>
+      <mat-icon>list_alt</mat-icon>
+    </div>
+    <mat-card-title>Care Record Summary</mat-card-title>
+    <mat-card-subtitle>A summary of the key care record events</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 mat-table-compact" *ngIf="events2" fxFlex="100" fxFill>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Condition (Problem)</th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date Diagnosed</th>
+          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns2;" [routerLink]="'/events/' + row.dose"></tr>
+      </table>
+      <div>
+      </div>
+      <mat-paginator [length]="events2?.count"
+                     [pageSize]="size2"
+                     [pageIndex]="page2"
+                     [pageSizeOptions]="[10, 50, 100]"
+                     [showFirstLastButtons]="true"
+                     (page)="onPage2($event)"
+                     fxFlex="100"
+                     fxFill>
+      </mat-paginator>
+    </div>
+
+  </mat-card-content>
+
+  <mat-card-content>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8 mat-table-compact" *ngIf="events1" fxFlex="100" fxFill>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Current Medication</th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="dose">
+          <th mat-header-cell *matHeaderCellDef>Dose</th>
+          <td mat-cell *matCellDef="let element"> {{element.dose}} </td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef>Quantity</th>
+          <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date Prescribed</th>
+          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns1;" [routerLink]="'/events/' + row.dose"></tr>
+      </table>
+      <div>
+      </div>
+      <mat-paginator [length]="events1?.count"
+                     [pageSize]="size1"
+                     [pageIndex]="page1"
+                     [pageSizeOptions]="[10, 50, 100]"
+                     [showFirstLastButtons]="true"
+                     (page)="onPage1($event)"
+                     fxFlex="100"
+                     fxFill>
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+
+
+</mat-card>

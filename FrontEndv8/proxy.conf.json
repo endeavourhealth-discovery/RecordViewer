@@ -1,0 +1,18 @@
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false
+  },
+  "/public": {
+    "target": "http://localhost:8080",
+    "secure": false
+  },
+  "/im_slave1": {
+    "target": "http://localhost:8080",
+    "secure": false
+  },
+  "/information-model": {
+    "target": "https://devgateway.discoverydataservice.net",
+    "secure": false
+  }
+}

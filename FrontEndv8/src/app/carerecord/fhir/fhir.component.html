@@ -1,0 +1,68 @@
+<mat-card>
+  <app-precis>
+  </app-precis>
+  <mat-card-header class="header2">
+    <div mat-card-avatar>
+      <mat-icon>http</mat-icon>
+    </div>
+    <mat-card-title>FHIR Care Connect API</mat-card-title>
+    <mat-card-subtitle>A portal for testing the Discovery FHIR API service, which delivers Care Connect STU3 resources</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-card-header class="header3">
+      <div mat-card-avatar>
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <mat-card-title>/getrecord</mat-card-title>
+      <mat-card-subtitle>REST API. Returns FHIR bundle of patient resources.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field style="width:700px" appearance="outline">
+        <mat-label>Request URL</mat-label>
+        <textarea matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="4" [(ngModel)]="url">
+            </textarea>
+        <mat-icon matSuffix>language</mat-icon>
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field style="width: 500px !important;" appearance="outline">
+        <mat-label>Request Parameters (application/json)</mat-label>
+        <textarea
+                  matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="4" [(ngModel)]="params">
+            </textarea>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <textarea matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="4" [(ngModel)]="status">
+            </textarea>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <mat-form-field style="width:100%" appearance="outline">
+        <mat-label>Response Content (FHIR Resource Bundle)</mat-label>
+        <textarea
+                  matInput
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="30" [(ngModel)]="fhir">
+
+        </textarea>
+      </mat-form-field>
+    </mat-card-content>
+
+   </mat-card-content>
+
+</mat-card>

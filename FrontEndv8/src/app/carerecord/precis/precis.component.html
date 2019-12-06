@@ -1,0 +1,21 @@
+<mat-card>
+  <mat-card-header class="header1">
+    <div mat-card-avatar>
+      <mat-icon>account_circle</mat-icon>
+    </div>
+    <mat-card-title>{{name}}</mat-card-title>
+    <mat-card-subtitle>
+      <div class="patient-row">
+        <div class="patient-column">Born: <b>{{dob}}</b></div>
+        <div class="patient-column">Age: <b>{{age}}</b></div>
+        <div class="patient-column">Gender: <b>{{gender}}</b></div>
+        <div class="patient-column">NHS: <b>{{nhsNumber}}</b></div>
+        <div class="patient-column" style="width:400px">Address: <b>{{address}}</b></div>
+      </div>
+    </mat-card-subtitle>
+    <mat-card-actions>
+      <button mat-raised-button (click)="swapPatient()">Swap patient</button>
+    </mat-card-actions>
+  </mat-card-header>
+</mat-card>
+

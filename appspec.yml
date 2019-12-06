@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+files:
+  - source: /FrontEndv8/dist/FrontEndv8
+    destination: //opt/tomcat/webapps/record-viewer
+  - source: /API/target/api
+    destination: //opt/tomcat/webapps/record-viewer
+hooks:
+  BeforeInstall:
+    - location: aws_scripts/cleanup
+      timeout: 300
+      runas: root

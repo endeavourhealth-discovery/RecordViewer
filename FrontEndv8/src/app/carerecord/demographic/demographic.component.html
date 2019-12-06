@@ -1,0 +1,125 @@
+<mat-card>
+  <app-precis>
+  </app-precis>
+  <mat-card-header class="header2">
+    <div mat-card-avatar>
+      <mat-icon>list_alt</mat-icon>
+    </div>
+    <mat-card-title>Patient Demographics</mat-card-title>
+    <mat-card-subtitle>Full demographic information for the patient.</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Patient ID</mat-label>
+          <input matInput placeholder="Patient ID" [(ngModel)]="id">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>NHS Number</mat-label>
+          <input matInput placeholder="NHS Number" [(ngModel)]="nhsNumber">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Title</mat-label>
+          <input matInput placeholder="Title" [(ngModel)]="title">
+          <mat-icon matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Last Name" [(ngModel)]="name">
+          <mat-icon matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Gender</mat-label>
+          <input matInput placeholder="Gender" [(ngModel)]="gender">
+          <mat-icon matSuffix>supervised_user_circle</mat-icon>
+        </mat-form-field>
+      </div>
+      <br/>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Date of Birth</mat-label>
+          <input matInput placeholder="Date of Birth" [(ngModel)]="dob">
+          <mat-icon matSuffix>today</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Date of Death</mat-label>
+          <input matInput placeholder="Date of Death" [(ngModel)]="dod">
+          <mat-icon matSuffix>today</mat-icon>
+        </mat-form-field>
+      </div>
+      <br/>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Address ({{adduse}})</mat-label>
+          <textarea matInput
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1"
+                    cdkAutosizeMaxRows="4" [(ngModel)]="address">
+          </textarea>
+          <mat-icon matSuffix>house</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput placeholder="City" [(ngModel)]="city">
+          <mat-icon matSuffix>apartment</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Post Code</mat-label>
+          <input matInput placeholder="Post Code" [(ngModel)]="postcode">
+          <mat-icon matSuffix>mail_outline</mat-icon>
+        </mat-form-field>
+      </div>
+      <br/>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Telephone</mat-label>
+          <input matInput placeholder="Telephone" [(ngModel)]="telecom">
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Registered Organisation</mat-label>
+          <input matInput placeholder="Registered Organisation" [(ngModel)]="orglocation">
+          <mat-icon matSuffix>business</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Registration Date</mat-label>
+          <input matInput placeholder="Registration Date" [(ngModel)]="startdate">
+          <mat-icon matSuffix>today</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Other Addresses</mat-label>
+          <input matInput placeholder="Other Addresses" [(ngModel)]="otheraddresses">
+          <mat-icon matSuffix>house</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+
+
