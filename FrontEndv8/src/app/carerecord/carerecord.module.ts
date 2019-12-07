@@ -34,6 +34,7 @@ import {PrecisComponent} from "./precis/precis.component";
 import {Globals} from "./globals";
 import {ObservationComponent} from "./observation/observation.component";
 import {ValuesComponent} from "./values/values.component";
+import {AllergyComponent} from "./allergy/allergy.component";
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import {ValuesComponent} from "./values/values.component";
     MedicationComponent,
     ValuesComponent,
     ObservationComponent,
+    AllergyComponent,
     FhirComponent],
   imports: [
     BrowserModule,

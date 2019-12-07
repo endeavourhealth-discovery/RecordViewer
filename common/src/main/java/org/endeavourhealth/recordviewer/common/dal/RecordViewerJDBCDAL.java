@@ -16,7 +16,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity \n" +
             "FROM medication_statement m \n" +
             "join concept c on c.dbid = m.non_core_concept_id \n"+
-            "where patient_id = ? LIMIT ?,?";
+            "where patient_id = ? order by m.clinical_effective_date DESC LIMIT ?,?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
@@ -36,7 +36,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
              statement.setInt(1, patientId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
-                result.setCount(resultSet.getInt(1));
+                result.setLength(resultSet.getInt(1));
             }
         }
 
@@ -75,7 +75,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and o.is_problem = 1 order by o.problem_end_date LIMIT ?,?";
+                        "where patient_id = ? and o.is_problem = 1 order by o.problem_end_date, o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -88,7 +88,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? order by o.problem_end_date LIMIT ?,?";
+                        "where patient_id = ? order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -101,7 +101,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%(procedure)' order by o.problem_end_date LIMIT ?,?";
+                        "where patient_id = ? and c.name like '%(procedure)' order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -125,7 +125,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, patientId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
-                result.setCount(resultSet.getInt(1));
+                result.setLength(resultSet.getInt(1));
             }
         }
 
@@ -158,7 +158,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "FROM patient p " +
                 "join patient_address a on a.id = p.current_address_id "+
                 "join concept c on c.dbid = p.gender_concept_id "+
-                "where p.last_name = ? or p.nhs_number = ? LIMIT ?,?";
+                "where p.last_name = ? or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, name);
@@ -180,7 +180,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
-                result.setCount(resultSet.getInt(1));
+                result.setLength(resultSet.getInt(1));
             }
         }
 
@@ -296,4 +296,60 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         return patient;
     }
+
+    public AllergyResult getAllergy(Integer page, Integer size, Integer patientId) throws Exception {
+        AllergyResult result = new AllergyResult();
+
+        String sql = "";
+        String sqlCount = "";
+
+        sql = "SELECT a.clinical_effective_date as date," +
+                "'Active' as status,c.name " +
+                "FROM allergy_intolerance a " +
+                "join concept c on c.dbid = a.non_core_concept_id \n"+
+                "where patient_id = ? order by a.clinical_effective_date DESC LIMIT ?,?";
+
+        sqlCount = "SELECT count(1) \n" +
+                "FROM allergy_intolerance a \n" +
+                "join concept c on c.dbid = a.non_core_concept_id \n"+
+                "where patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            statement.setInt(2, page*15);
+            statement.setInt(3, size);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result.setResults(getAllergyFromResultSet(resultSet));
+            }
+        }
+
+        try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                result.setLength(resultSet.getInt(1));
+            }
+        }
+
+        return result;
+    }
+
+    private List<AllergySummary> getAllergyFromResultSet(ResultSet resultSet) throws SQLException {
+        List<AllergySummary> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(getAllergy(resultSet));
+        }
+
+        return result;
+    }
+
+    public static AllergySummary getAllergy(ResultSet resultSet) throws SQLException {
+        AllergySummary allergySummary = new AllergySummary();
+        allergySummary
+                .setDate(resultSet.getDate("date"))
+                .setStatus(resultSet.getString("status"))
+                .setName(resultSet.getString("name"));
+        return allergySummary;
+    }
+
 }

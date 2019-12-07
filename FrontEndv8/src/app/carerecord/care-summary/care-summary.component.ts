@@ -17,15 +17,23 @@ export class CareSummaryComponent implements OnInit {
   events1: any;
   dataSource1: MatTableDataSource<any>;
   page1: number = 0;
-  size1: number = 5;
+  size1: number = 15;
+
   events2: any;
   dataSource2: MatTableDataSource<any>;
   page2: number = 0;
-  size2: number = 5;
+  size2: number = 15;
+
+  events3: any;
+  dataSource3: MatTableDataSource<any>;
+  page3: number = 0;
+  size3: number = 15;
+
   patientId: number;
 
-  displayedColumns1: string[] = ['name','dose','quantity','date'];
-  displayedColumns2: string[] = ['name','status', 'date'];
+  displayedColumns1: string[] = ['name'];
+  displayedColumns2: string[] = ['name'];
+  displayedColumns3: string[] = ['name'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -42,6 +50,7 @@ export class CareSummaryComponent implements OnInit {
       this.patientId = patientId;
 
       this.loadConditions();
+      this.loadAllergies();
       this.loadMedication();
     });
   }
@@ -51,6 +60,15 @@ export class CareSummaryComponent implements OnInit {
     this.carerecordService.getMedication(this.page1, this.size1, this.patientId)
       .subscribe(
         (result) => this.displayMedication(result),
+        (error) => this.log.error(error)
+      );
+  }
+
+  loadAllergies() {
+    this.events3 = null;
+    this.carerecordService.getAllergy(this.page3, this.size3, this.patientId)
+      .subscribe(
+        (result) => this.displayAllergies(result),
         (error) => this.log.error(error)
       );
   }
@@ -74,6 +92,11 @@ export class CareSummaryComponent implements OnInit {
     this.dataSource2 = new MatTableDataSource(events.results);
   }
 
+  displayAllergies(events: any) {
+    this.events3 = events;
+    this.dataSource3 = new MatTableDataSource(events.results);
+  }
+
   onPage1(event: PageEvent) {
     this.page1 = event.pageIndex;
     this.size1 = event.pageSize;
@@ -86,4 +109,9 @@ export class CareSummaryComponent implements OnInit {
     this.loadConditions();
   }
 
+  onPage3(event: PageEvent) {
+    this.page3 = event.pageIndex;
+    this.size3 = event.pageSize;
+    this.loadAllergies();
+  }
 }

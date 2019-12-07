@@ -58,6 +58,26 @@ public class CareRecordEndpoint {
     }
 
     @GET
+    @Path("/allergy")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllergy(@Context SecurityContext sc,
+                                   @QueryParam("page") Integer page,
+                                   @QueryParam("size") Integer size,
+                                   @QueryParam("patientId") Integer patientId) throws Exception {
+        LOG.debug("getAllergy");
+
+        try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
+            AllergyResult result = viewerDAL.getAllergy(page, size, patientId);
+
+            return Response
+                    .ok()
+                    .entity(result)
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/patients")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MedicationResult {
     private int page = 1;
-    private int count = 0;
+    private int length = 0;
     private List<MedicationSummary> results = new ArrayList<>();
 
     public int getPage() {
@@ -17,12 +17,12 @@ public class MedicationResult {
         return this;
     }
 
-    public int getCount() {
-        return count;
+    public int getLength() {
+        return length;
     }
 
-    public MedicationResult setCount(int count) {
-        this.count = count;
+    public MedicationResult setLength(int length) {
+        this.length = length;
         return this;
     }
 
