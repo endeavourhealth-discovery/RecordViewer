@@ -231,7 +231,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return patientSummary;
     }
 
-    public PatientFull getFhirPatient(Integer patientId) throws Exception {
+    public PatientFull getFhirPatient(Integer id, String nhsNumber) throws Exception {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
@@ -257,10 +257,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join patient_address a on a.id = p.current_address_id "+
                 "join concept c on c.dbid = p.gender_concept_id "+
                 "join episode_of_care e on e.patient_id = p.id "+
-                "where p.id = ?";
+                "where p.id = ? or p.nhs_number = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setInt(1, id);
+            statement.setString(2, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
                     result = getFullPatient(resultSet);

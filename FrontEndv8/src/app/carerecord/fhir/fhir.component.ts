@@ -48,8 +48,10 @@ export class FhirComponent implements OnInit {
   displayFhir(fhir: any) {
     this.fhir = JSON.stringify(fhir, null, 2);
 
-    this.params = '{"id":'+this.patientId+', "resources" : [{"type" : "patient"}, {"type" : "medication"}]}';
-    this.url = "POST: https://rqy8l5vl8l.execute-api.eu-west-2.amazonaws.com/discovery-fhir-api-dev/getrecord";
+    this.params = '{"meta": {"profile": ["https://fhir.hl7.org.uk/STU3/OperationDefinition/CareConnect-GetStructuredRecord-Operation-1"]},\r'+
+    '"resourceType": "Parameters",\r'+
+    '"parameter": [{"name": "patientNHSNumber","valueIdentifier": {"system": "https://fhir.hl7.org.uk/Id/nhs-number","value": "9999999999"}}]}';
+    this.url = "POST: https://rqy8l5vl8l.execute-api.eu-west-2.amazonaws.com/discovery-fhir-api-dev/patient/$getstructuredrecord\r\r";
 
     this.status = "200 (OK)";
   }

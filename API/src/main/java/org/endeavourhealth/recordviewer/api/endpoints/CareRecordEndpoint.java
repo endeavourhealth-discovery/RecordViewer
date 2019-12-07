@@ -125,7 +125,7 @@ public class CareRecordEndpoint {
         LOG.debug("getDemographic");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            PatientFull result = viewerDAL.getFhirPatient(patientId);
+            PatientFull result = viewerDAL.getFhirPatient(patientId, "0");
 
             return Response
                     .ok()
@@ -143,7 +143,7 @@ public class CareRecordEndpoint {
         LOG.debug("getFhir");
 
         FhirApi api = new FhirApi();
-        JSONObject json = api.getFhirBundle(patientId);
+        JSONObject json = api.getFhirBundle(patientId, "0");
 
         return Response
                 .ok()

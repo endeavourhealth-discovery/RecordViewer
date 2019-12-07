@@ -1,6 +1,7 @@
 package org.endeavourhealth.recordviewer.api.endpoints;
 
 import ca.uhn.fhir.context.FhirContext;
+import models.Parameter;
 import models.Params;
 import models.Request;
 import models.ResourceNotFoundException;
@@ -15,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import resources.Patient;
 
+import java.util.List;
+
 public class FhirApi {
     private static final Logger LOG = LoggerFactory.getLogger(FhirApi.class);
 
@@ -24,7 +27,7 @@ public class FhirApi {
         switch (request.getHttpMethod()) {
             case "GET":
                 try {
-                    json = getFhirBundle(request.getId());
+                    json = getFhirBundle(request.getId(), "0");
                 }
                 catch (Exception e) {
                     throw new ResourceNotFoundException("Resource error:" + e);
@@ -32,8 +35,20 @@ public class FhirApi {
                 return json;
             case "POST":
                 Params params = request.getParams();
+                List<Parameter> parameters = params.getParameter();
+
+                String nhsNumber = "0";
+
+                for (Parameter param : parameters) {
+                    String paramName = param.getName();
+                    if (paramName.equals("patientNHSNumber")) {
+                        nhsNumber = param.getValueIdentifier().getValue();
+                        break;
+                    }
+                }
+
                 try {
-                    json = getFhirBundle(params.getId());
+                    json = getFhirBundle(0, nhsNumber);
                 }
                 catch (Exception e) {
                     throw new ResourceNotFoundException("Resource error:" + e);
@@ -46,7 +61,7 @@ public class FhirApi {
         return null;
     }
 
-    public static JSONObject getFhirBundle(Integer patientId) throws Exception {
+    public static JSONObject getFhirBundle(Integer id, String nhsNumber) throws Exception {
         JSONObject json = null;
 
         PatientFull patient = null;
@@ -54,9 +69,9 @@ public class FhirApi {
         org.hl7.fhir.dstu3.model.Patient patientResource = null;
         String encodedBundle = "";
 
-        patient = viewerDAL.getFhirPatient(patientId);
+        patient = viewerDAL.getFhirPatient(id, nhsNumber);
         if (patient==null)
-            throw new ResourceNotFoundException("Patient resource with id = '"+ patientId +"' not found");
+            throw new ResourceNotFoundException("Patient resource with id = '"+ nhsNumber +"' not found");
         Patient fhirPatient = new Patient();
         patientResource = fhirPatient.getPatientResource(patient);
 
