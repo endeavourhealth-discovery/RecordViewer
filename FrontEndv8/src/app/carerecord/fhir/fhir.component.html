@@ -14,8 +14,8 @@
       <div mat-card-avatar>
         <mat-icon>account_circle</mat-icon>
       </div>
-      <mat-card-title>/getrecord</mat-card-title>
-      <mat-card-subtitle>REST API. Returns FHIR bundle of patient resources.</mat-card-subtitle>
+      <mat-card-title>/patient/$getstructuredrecord</mat-card-title>
+      <mat-card-subtitle>REST API operation for retrieving a patient’s record in structured format, returns a FHIR bundle</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <mat-form-field style="width:700px" appearance="outline">
@@ -42,7 +42,7 @@
       </mat-form-field>
       &nbsp;
       <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
+        <mat-label>HTTP Status</mat-label>
         <textarea matInput
                   cdkTextareaAutosize
                   #autosize="cdkTextareaAutosize"
