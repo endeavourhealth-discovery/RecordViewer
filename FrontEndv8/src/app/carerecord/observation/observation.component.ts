@@ -65,6 +65,16 @@ export class ObservationComponent implements OnInit, AfterViewInit {
       this.subTitle = "procedures";
       this.icon = 'airline_seat_flat';
     }
+    else if (this.eventType==4) {
+      this.eventTypeTitle = "Family History";
+      this.subTitle = "family history";
+      this.icon = 'people_outline';
+    }
+    else if (this.eventType==5) {
+      this.eventTypeTitle = "Immunisations";
+      this.subTitle = "immunisations";
+      this.icon = 'colorize';
+    }
 
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);

@@ -22,7 +22,9 @@ export class AppMenuService implements  AbstractMenuProvider {
       {path: 'values', component: ValuesComponent, data: {role: 'record-viewer'}},
       {path: 'condition', component: ObservationComponent, data: {role: 'record-viewer', eventType: '1'}},
       {path: 'procedure', component: ObservationComponent, data: {role: 'record-viewer', eventType: '3'}},
-      {path: 'observation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '2'}}
+      {path: 'observation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '2'}},
+      {path: 'family', component: ObservationComponent, data: {role: 'record-viewer', eventType: '4'}},
+      {path: 'immunisation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '5'}}
     ];
   }
 
@@ -50,8 +52,8 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'local_hospital', caption: 'Procedure requests', state: 'observation'},
       {icon: 'apartment', caption: 'Referrals', state: 'observation'},
       {icon: 'poll', caption: 'Diagnostic Reports', state: 'observation'},
-      {icon: 'people_outline', caption: 'Family history', state: 'observation'},
-      {icon: 'colorize', caption: 'Immunisations', state: 'observation'},
+      {icon: 'people_outline', caption: 'Family history', state: 'family'},
+      {icon: 'colorize', caption: 'Immunisations', state: 'immunisation'},
       {icon: 'today', caption: 'Appointments', state: 'observation'}
     ];
   }

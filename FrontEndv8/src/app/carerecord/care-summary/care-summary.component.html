@@ -9,7 +9,7 @@
     <mat-card-subtitle>A summary of the key care record events</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="patient-column">
+    <div class="summary-column">
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 mat-table-compact" *ngIf="events2" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
@@ -21,7 +21,7 @@
         </table>
         <div>
         </div>
-        <mat-paginator [length]="events2?.count"
+        <mat-paginator [length]="events2?.length"
                        [pageSize]="size2"
                        [pageIndex]="page2"
                        [pageSizeOptions]="[10, 50, 100]"
@@ -42,7 +42,7 @@
         </table>
         <div>
         </div>
-        <mat-paginator [length]="events3?.count"
+        <mat-paginator [length]="events3?.length"
                        [pageSize]="size3"
                        [pageIndex]="page3"
                        [pageSizeOptions]="[10, 50, 100]"
@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <div class="patient-column">
+    <div class="summary-column">
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8 mat-table-compact" *ngIf="events1" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">

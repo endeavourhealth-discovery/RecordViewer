@@ -106,7 +106,33 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%(procedure)'";
+                        "where patient_id = ? and c.name like '%(procedure)'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                break;
+            case 4: // family history
+                sql = "SELECT o.clinical_effective_date as date," +
+                        "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
+                        "ELSE 'Past' END as status,c.name " +
+                        "FROM observation o " +
+                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "where patient_id = ? and c.name like '%family history%' order by o.clinical_effective_date DESC LIMIT ?,?";
+
+                sqlCount = "SELECT count(1) \n" +
+                        "FROM observation o \n" +
+                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "where patient_id = ? and c.name like '%family history%'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                break;
+            case 5: // immunisations
+                sql = "SELECT o.clinical_effective_date as date," +
+                        "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
+                        "ELSE 'Past' END as status,c.name " +
+                        "FROM observation o " +
+                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "where patient_id = ? and c.name like '%immunisation%' order by o.clinical_effective_date DESC LIMIT ?,?";
+
+                sqlCount = "SELECT count(1) \n" +
+                        "FROM observation o \n" +
+                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "where patient_id = ? and c.name like '%immunisation%'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
                 break;
             default:
                 // code block
@@ -153,36 +179,81 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public PatientResult getPatients(Integer page, Integer size, String name, String nhsNumber) throws Exception {
         PatientResult result = new PatientResult();
 
-        String sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age,coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name,"+
-                "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address \n" +
-                "FROM patient p " +
-                "join patient_address a on a.id = p.current_address_id "+
-                "join concept c on c.dbid = p.gender_concept_id "+
-                "where p.last_name = ? or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
+        String sql = "";
 
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, name);
-            statement.setString(2, nhsNumber);
-            statement.setInt(3, page*10);
-            statement.setInt(4, size);
+        if (!nhsNumber.equals(""))
+            name = "@ @";
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-                result.setResults(getPatientFromResultSet(resultSet));
+        String[] names = name.split(" ", 2);
+ 
+        if (names.length==1) { // only 1 name specified in search
+            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age,coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name," +
+                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address \n" +
+                    "FROM patient p " +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "where p.last_name like ? or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0]+"%");
+                statement.setString(2, nhsNumber);
+                statement.setInt(3, page * 10);
+                statement.setInt(4, size);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getPatientFromResultSet(resultSet));
+                }
+            }
+
+            sql = "SELECT count(1) " +
+                    "FROM patient p \n" +
+                    "join patient_address a on a.id = p.current_address_id \n" +
+                    "where p.last_name like ? or p.nhs_number = ?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0]+"%");
+                statement.setString(2, nhsNumber);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
             }
         }
+        else { // more than one name specified in search
+            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age,coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name," +
+                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address \n" +
+                    "FROM patient p " +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0]+"%");
+                statement.setString(2, names[1]+"%");
+                statement.setString(3, nhsNumber);
+                statement.setInt(4, page * 10);
+                statement.setInt(5, size);
 
-        sql = "SELECT count(1) "+
-                "FROM patient p \n" +
-                "join patient_address a on a.id = p.current_address_id \n"+
-                "where p.last_name = ?";
-
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, name);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                resultSet.next();
-                result.setLength(resultSet.getInt(1));
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getPatientFromResultSet(resultSet));
+                }
             }
+
+            sql = "SELECT count(1) " +
+                    "FROM patient p \n" +
+                    "join patient_address a on a.id = p.current_address_id \n" +
+                    "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0]+"%");
+                statement.setString(2, names[1]+"%");
+                statement.setString(3, nhsNumber);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
+            }
+
         }
+
 
         return result;
     }
