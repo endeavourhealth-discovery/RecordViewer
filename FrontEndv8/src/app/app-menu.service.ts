@@ -52,7 +52,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'local_hospital', caption: 'Procedure requests', state: 'observation'},
       {icon: 'apartment', caption: 'Referrals', state: 'observation'},
       {icon: 'poll', caption: 'Diagnostic Reports', state: 'observation'},
-      {icon: 'people_outline', caption: 'Family history', state: 'family'},
+      {icon: 'people_alt', caption: 'Family history', state: 'family'},
       {icon: 'colorize', caption: 'Immunisations', state: 'immunisation'},
       {icon: 'today', caption: 'Appointments', state: 'observation'}
     ];
