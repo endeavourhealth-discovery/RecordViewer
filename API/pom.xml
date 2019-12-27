@@ -24,6 +24,12 @@
     <dependency>
       <groupId>org.endeavourhealth.common</groupId>
       <artifactId>api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>me.fhir</groupId> <!-- Exclude dstu2 as it conflicts with dstu3 -->
+          <artifactId>fhir-dstu2</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.ws.rs</groupId>
