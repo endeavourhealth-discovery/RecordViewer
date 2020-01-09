@@ -69,7 +69,7 @@ public class FhirApi {
         PatientFull patient = null;
         RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL();
         org.hl7.fhir.dstu3.model.Patient patientResource = null;
-        org.hl7.fhir.dstu3.model.Organization  organizationResource = null;
+        org.hl7.fhir.dstu3.model.Organization  patient_organizationResource = null;
         String encodedBundle = "";
 
         patient = viewerDAL.getFhirPatient(id, nhsNumber);
@@ -93,14 +93,15 @@ public class FhirApi {
         bundle.setMeta(meta);
 
         if(patient.getOrglocation().trim().length()>0) {
-            OrganizationSummary orgsum= viewerDAL.getOrgnizationSummary(Integer.parseInt(patient.getOrglocation()));
-            organizationResource = Organization.getOrgFhirResource(orgsum);
-            patientResource.setManagingOrganization(new Reference(organizationResource));
+            OrganizationSummary patient_organization= viewerDAL.getOrgnizationSummary(Integer.parseInt(patient.getOrglocation()));
+            patient_organizationResource = Organization.getOrgFhirResource(patient_organization);
+            patientResource.setManagingOrganization(new Reference(patient_organizationResource));
         }
 
         bundle.addEntry().setResource(patientResource);
        // bundle.addEntry().setResource(practitionerResource);
-        bundle.addEntry().setResource(organizationResource);
+        if(patient_organizationResource!=null)
+        bundle.addEntry().setResource(patient_organizationResource);
 
 
         FhirContext ctx = FhirContext.forDstu3();
