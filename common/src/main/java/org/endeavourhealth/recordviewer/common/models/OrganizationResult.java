@@ -6,7 +6,7 @@ import java.util.List;
 public class OrganizationResult {
     private int page = 1;
     private int length = 0;
-    private List<OrgnizationSummary> results = new ArrayList<>();
+    private List<OrganizationSummary> results = new ArrayList<>();
 
     public int getPage() {
         return page;
@@ -26,11 +26,11 @@ public class OrganizationResult {
         return this;
     }
 
-    public List<OrgnizationSummary> getResults() {
+    public List<OrganizationSummary> getResults() {
         return results;
     }
 
-    public OrganizationResult setResults(List<OrgnizationSummary> results) {
+    public OrganizationResult setResults(List<OrganizationSummary> results) {
         this.results = results;
         return this;
     }

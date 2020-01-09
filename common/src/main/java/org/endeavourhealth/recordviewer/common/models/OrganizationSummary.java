@@ -3,7 +3,7 @@ package org.endeavourhealth.recordviewer.common.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrgnizationSummary {
+public class OrganizationSummary {
 
     private String odscode;
     private String name;
@@ -13,7 +13,7 @@ public class OrgnizationSummary {
         return odscode;
     }
 
-    public OrgnizationSummary setOdscode(String odscode) {
+    public OrganizationSummary setOdscode(String odscode) {
         this.odscode = odscode;
         return this;
     }
@@ -22,7 +22,7 @@ public class OrgnizationSummary {
         return name;
     }
 
-    public OrgnizationSummary setName(String name) {
+    public OrganizationSummary setName(String name) {
         this.name = name;
         return this;
     }
@@ -31,7 +31,7 @@ public class OrgnizationSummary {
         return postcode;
     }
 
-    public OrgnizationSummary setPostcode(String postcode) {
+    public OrganizationSummary setPostcode(String postcode) {
         this.postcode = postcode;
         return this;
     }

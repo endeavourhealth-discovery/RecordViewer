@@ -6,20 +6,19 @@ import models.Params;
 import models.Request;
 import models.ResourceNotFoundException;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
+import org.endeavourhealth.recordviewer.common.models.OrganizationSummary;
 import org.endeavourhealth.recordviewer.common.models.PatientFull;
-import org.endeavourhealth.recordviewer.common.models.PractitionerResult;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Meta;
+import org.hl7.fhir.dstu3.model.Reference;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import resources.Organization;
 import resources.Patient;
-import resources.Practitioner;
 
 import java.util.List;
-import java.util.UUID;
 
 public class FhirApi {
     private static final Logger LOG = LoggerFactory.getLogger(FhirApi.class);
@@ -79,25 +78,30 @@ public class FhirApi {
         Patient fhirPatient = new Patient();
         patientResource = fhirPatient.getPatientResource(patient);
 
-        PractitionerResult practitionerResult = viewerDAL.getFhirPractitioner(id);
+    /*    PractitionerResult practitionerResult = viewerDAL.getFhirPractitioner(id);
         if (practitionerResult==null)
             throw new ResourceNotFoundException("Practitioner resource with patient id = '"+ id +"' not found");
         Practitioner practitioner = new Practitioner(practitionerResult);
         org.hl7.fhir.dstu3.model.Practitioner practitionerResource = practitioner.getPractitionerResource();
+        */
+
 
         Bundle bundle = new Bundle();
         bundle.setType(Bundle.BundleType.COLLECTION);
         Meta meta = new Meta();
         meta.addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-StructuredRecord-Bundle-1");
         bundle.setMeta(meta);
-        bundle.addEntry().setResource(patientResource);
-        bundle.addEntry().setResource(practitionerResource);
 
         if(patient.getOrglocation().trim().length()>0) {
-
-            organizationResource = new Organization().getOrgFhirResource(viewerDAL.getOrgnizationSummary(Integer.parseInt(patient.getOrglocation())), patientResource.getManagingOrganization().getReference().substring(13));
-            bundle.addEntry().setResource(organizationResource);
+            OrganizationSummary orgsum= viewerDAL.getOrgnizationSummary(Integer.parseInt(patient.getOrglocation()));
+            organizationResource = Organization.getOrgFhirResource(orgsum);
+            patientResource.setManagingOrganization(new Reference(organizationResource));
         }
+
+        bundle.addEntry().setResource(patientResource);
+       // bundle.addEntry().setResource(practitionerResource);
+        bundle.addEntry().setResource(organizationResource);
+
 
         FhirContext ctx = FhirContext.forDstu3();
         encodedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);

@@ -158,7 +158,8 @@ public class Patient {
 			registration.setExtension(ext);
 		}
 
-		patient.setManagingOrganization(new Reference("Organization/" + UUID.randomUUID().toString()));
+
+
 
 		return patient;
 	}
