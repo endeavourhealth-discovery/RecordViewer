@@ -454,4 +454,32 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergySummary;
     }
 
+
+    public OrgnizationSummary getOrgnizationSummary(Integer organizationId) throws Exception {
+
+        String sql = "select coalesce(ods_code,'') as ods_code," +
+                     "coalesce(name,'') as name," +
+                     "coalesce(postcode,'') as postcode  from organization where id= ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, organizationId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    return getOrgnizationSummary(resultSet);
+            }
+        }
+
+        return new OrgnizationSummary();
+    }
+
+    private static OrgnizationSummary getOrgnizationSummary(ResultSet resultSet) throws SQLException {
+         OrgnizationSummary orgnizationSummary = new OrgnizationSummary();
+        orgnizationSummary
+                .setOdscode(resultSet.getString("ods_code"))
+                .setName(resultSet.getString("name"))
+                .setPostcode(resultSet.getString("postcode"));
+
+        return orgnizationSummary;
+    }
+
 }

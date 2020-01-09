@@ -6,6 +6,7 @@ import org.hl7.fhir.dstu3.model.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Patient {
 
@@ -157,7 +158,7 @@ public class Patient {
 			registration.setExtension(ext);
 		}
 
-		patient.setManagingOrganization(new Reference("Organization/" + orglocation));
+		patient.setManagingOrganization(new Reference("Organization/" + UUID.randomUUID().toString()));
 
 		return patient;
 	}

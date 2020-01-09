@@ -14,10 +14,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import resources.Organization;
 import resources.Patient;
 import resources.Practitioner;
 
 import java.util.List;
+import java.util.UUID;
 
 public class FhirApi {
     private static final Logger LOG = LoggerFactory.getLogger(FhirApi.class);
@@ -68,6 +70,7 @@ public class FhirApi {
         PatientFull patient = null;
         RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL();
         org.hl7.fhir.dstu3.model.Patient patientResource = null;
+        org.hl7.fhir.dstu3.model.Organization  organizationResource = null;
         String encodedBundle = "";
 
         patient = viewerDAL.getFhirPatient(id, nhsNumber);
@@ -89,6 +92,12 @@ public class FhirApi {
         bundle.setMeta(meta);
         bundle.addEntry().setResource(patientResource);
         bundle.addEntry().setResource(practitionerResource);
+
+        if(patient.getOrglocation().trim().length()>0) {
+
+            organizationResource = new Organization().getOrgFhirResource(viewerDAL.getOrgnizationSummary(Integer.parseInt(patient.getOrglocation())), patientResource.getManagingOrganization().getReference().substring(13));
+            bundle.addEntry().setResource(organizationResource);
+        }
 
         FhirContext ctx = FhirContext.forDstu3();
         encodedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
