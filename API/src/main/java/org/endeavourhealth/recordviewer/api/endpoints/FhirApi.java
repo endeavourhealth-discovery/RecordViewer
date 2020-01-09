@@ -7,7 +7,7 @@ import models.Request;
 import models.ResourceNotFoundException;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
 import org.endeavourhealth.recordviewer.common.models.PatientFull;
-import org.endeavourhealth.recordviewer.common.models.PatientResult;
+import org.endeavourhealth.recordviewer.common.models.PractitionerResult;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Meta;
 import org.json.simple.parser.JSONParser;
@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import resources.Patient;
+import resources.Practitioner;
 
 import java.util.List;
 
@@ -75,12 +76,19 @@ public class FhirApi {
         Patient fhirPatient = new Patient();
         patientResource = fhirPatient.getPatientResource(patient);
 
+        PractitionerResult practitionerResult = viewerDAL.getFhirPractitioner(id);
+        if (practitionerResult==null)
+            throw new ResourceNotFoundException("Practitioner resource with patient id = '"+ id +"' not found");
+        Practitioner practitioner = new Practitioner(practitionerResult);
+        org.hl7.fhir.dstu3.model.Practitioner practitionerResource = practitioner.getPractitionerResource();
+
         Bundle bundle = new Bundle();
         bundle.setType(Bundle.BundleType.COLLECTION);
         Meta meta = new Meta();
         meta.addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-StructuredRecord-Bundle-1");
         bundle.setMeta(meta);
         bundle.addEntry().setResource(patientResource);
+        bundle.addEntry().setResource(practitionerResource);
 
         FhirContext ctx = FhirContext.forDstu3();
         encodedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);

@@ -342,6 +342,25 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    public PractitionerResult getFhirPractitioner(Integer patientId) throws Exception {
+        PractitionerResult result = null;
+
+        //TODO : Query will be changed when practitioner id is received directly.
+        String sql = "select * from practitioner pr where id in (select practitioner_id from encounter where patient_id = ?)";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    result = getPractitioner(resultSet);
+            }
+        }  catch (Exception e){
+            System.out.println("result infoo===" + e.getMessage());
+        }
+
+        return result;
+    }
+
     public static PatientFull getFullPatient(ResultSet resultSet) throws SQLException {
         PatientFull patient = new PatientFull();
 
@@ -367,6 +386,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setStartdate(resultSet.getDate("startdate"));
 
         return patient;
+    }
+
+    private static PractitionerResult getPractitioner(ResultSet resultSet) throws SQLException {
+        PractitionerResult practitionerResult = new PractitionerResult();
+
+        practitionerResult.setId(resultSet.getString("id"))
+                .setName(resultSet.getString("name"))
+                .setRole_code(resultSet.getString("role_code"))
+                .setRole_desc(resultSet.getString("role_Desc"));
+
+        return practitionerResult;
     }
 
     public AllergyResult getAllergy(Integer page, Integer size, Integer patientId) throws Exception {
