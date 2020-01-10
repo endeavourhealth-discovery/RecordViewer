@@ -454,6 +454,31 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergySummary;
     }
 
+    public List<AllergyFull> getPatientAllergies(Integer patientid) throws Exception {
+
+        ArrayList<AllergyFull> allergylist=new ArrayList<AllergyFull>();
+
+        String sql = "";
+
+        sql=" SELECT a.clinical_effective_date as date, c.name ,c.code FROM allergy_intolerance a join concept c on c.dbid = a.non_core_concept_id where patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientid);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    AllergyFull allergyDtls=  new AllergyFull();
+                    allergyDtls
+                            .setDate(resultSet.getDate("date"))
+                            .setStatus(resultSet.getString("status"))
+                            .setName(resultSet.getString("name"));
+                    allergylist.add(allergyDtls);
+                }
+
+            }
+
+        }
+        return allergylist;
+    }
 
     public OrganizationSummary getOrgnizationSummary(Integer organizationId) throws Exception {
 

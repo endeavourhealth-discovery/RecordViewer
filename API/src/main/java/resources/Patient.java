@@ -33,7 +33,7 @@ public class Patient {
 
 		org.hl7.fhir.dstu3.model.Patient patient = new org.hl7.fhir.dstu3.model.Patient();
 
-		patient.setId(id);
+		patient.setId(UUID.randomUUID().toString());
 
 		patient.addIdentifier()
 				.setSystem("https://discoverydataservice.org");
