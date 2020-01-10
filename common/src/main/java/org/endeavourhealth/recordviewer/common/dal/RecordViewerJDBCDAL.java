@@ -342,22 +342,20 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    public PractitionerResult getFhirPractitioner(Integer patientId) throws Exception {
+    public PractitionerResult getPractitioner(Integer practitionerId) throws Exception {
         PractitionerResult result = null;
 
-        //TODO : Query will be changed when practitioner id is received directly.
-        String sql = "select * from practitioner pr where id in (select practitioner_id from encounter where patient_id = ?)";
+        String sql = "select * from practitioner pr where id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setInt(1, practitionerId);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next())
-                    result = getPractitioner(resultSet);
+                while (resultSet.next())
+                    result = (getPractitioner(resultSet));
             }
-        }  catch (Exception e){
-            System.out.println("result infoo===" + e.getMessage());
+        } catch (Exception e){
+            System.out.println("exception===" + e.getMessage());
         }
-
         return result;
     }
 

@@ -5,6 +5,8 @@ import models.Parameter;
 import models.Params;
 import models.Request;
 import models.ResourceNotFoundException;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.map.HashedMap;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
 import org.endeavourhealth.recordviewer.common.models.AllergyFull;
 import org.endeavourhealth.recordviewer.common.models.OrganizationFull;
@@ -13,6 +15,7 @@ import org.endeavourhealth.recordviewer.common.models.PatientFull;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Meta;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import resources.AllergyIntolerance;
 import resources.AllergyList;
 import resources.Organization;
 import resources.Patient;
+import service.FhirService;
 
 import java.util.*;
 
@@ -85,13 +89,6 @@ public class FhirApi {
         Patient fhirPatient = new Patient();
         patientResource = fhirPatient.getPatientResource(patient);
 
-    /*    PractitionerResult practitionerResult = viewerDAL.getFhirPractitioner(id);
-        if (practitionerResult==null)
-            throw new ResourceNotFoundException("Practitioner resource with patient id = '"+ id +"' not found");
-        Practitioner practitioner = new Practitioner(practitionerResult);
-        org.hl7.fhir.dstu3.model.Practitioner practitionerResource = practitioner.getPractitionerResource();
-        */
-
         Bundle bundle = new Bundle();
         bundle.setType(Bundle.BundleType.COLLECTION);
         Meta meta = new Meta();
@@ -135,6 +132,23 @@ public class FhirApi {
         if(patient_organizationResource!=null)
         bundle.addEntry().setResource(patient_organizationResource);
 
+        //Practitioner and PractitionerRole Resource
+        Map<Integer,List<Resource>> practitionerAndRoleResource = new HashedMap<>();
+
+        /*FhirService fhirService = new FhirService(viewerDAL, practitionerAndRoleResource);
+        org.hl7.fhir.dstu3.model.PractitionerRole practitionerRoleResource = null;
+        if(practitionerAndRoleResource.containsKey(20)){
+            practitionerRoleResource = (org.hl7.fhir.dstu3.model.PractitionerRole) practitionerAndRoleResource.get(20).get(1);
+        }
+        org.hl7.fhir.dstu3.model.PractitionerRole practitionerRole = fhirService.getPractitionerRoleResource(20, patient_organizationResource);*/
+        //Check if practitioner id already exists in hashNap. If not call FhirService.getPractitionerRoleResource
+
+        if (MapUtils.isNotEmpty(practitionerAndRoleResource)) {
+            for(Map.Entry entry: practitionerAndRoleResource.entrySet()){
+                List<Resource> resourceList = (List) entry.getValue();
+                resourceList.forEach(resource -> bundle.addEntry().setResource(resource));
+            }
+        }
 
         FhirContext ctx = FhirContext.forDstu3();
         encodedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
