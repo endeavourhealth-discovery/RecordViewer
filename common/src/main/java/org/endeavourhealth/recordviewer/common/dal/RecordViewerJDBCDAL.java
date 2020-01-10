@@ -452,30 +452,20 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergySummary;
     }
 
-    public List<AllergyFull> getPatientAllergies(Integer patientid) throws Exception {
-
-        ArrayList<AllergyFull> allergylist=new ArrayList<AllergyFull>();
-
-        String sql = "";
-
-        sql=" SELECT a.clinical_effective_date as date, c.name ,c.code FROM allergy_intolerance a join concept c on c.dbid = a.non_core_concept_id where patient_id = ?";
+    public List<AllergyFull>  getFhirAllergies(Integer patientid) throws Exception {
+        ArrayList<AllergyFull> allergiesFullList =null;
+    String sql = " SELECT a.clinical_effective_date as date, c.name ,c.code,a.organization_id,a.practitioner_id " +
+            " FROM allergy_intolerance a join concept c on c.dbid = a.non_core_concept_id where patient_id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientid);
             try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    AllergyFull allergyDtls=  new AllergyFull();
-                    allergyDtls
-                            .setDate(resultSet.getDate("date"))
-                            .setName(resultSet.getString("name"))
-                            .setCode(resultSet.getString("code"));
-                    allergylist.add(allergyDtls);
-                }
 
+                allergiesFullList= getFullAllergies(resultSet);
             }
 
         }
-        return allergylist;
+        return allergiesFullList;
     }
 
     public OrganizationFull getFhirOrganization(Integer organizationId) throws Exception {
@@ -503,6 +493,23 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setPostcode(resultSet.getString("postcode"));
 
         return organizationFull;
+    }
+
+    public static ArrayList<AllergyFull> getFullAllergies(ResultSet resultSet) throws SQLException {
+        ArrayList<AllergyFull> allergylist=new ArrayList<AllergyFull>();
+        if(null !=resultSet) {
+            while (resultSet.next()) {
+                AllergyFull allergyDtls = new AllergyFull();
+                allergyDtls
+                        .setDate(resultSet.getDate("date"))
+                        .setName(resultSet.getString("name"))
+                        .setCode(resultSet.getString("code"))
+                        .setOrganizationId(resultSet.getInt("organization_id"))
+                       .setPractitionerId(resultSet.getInt("practitioner_id"));
+                allergylist.add(allergyDtls);
+            }
+        }
+        return allergylist;
     }
 
 }

@@ -75,12 +75,15 @@ public class FhirApi {
 
     public static JSONObject getFhirBundle(Integer id, String nhsNumber) throws Exception {
         HashMap<Integer,org.hl7.fhir.dstu3.model.Organization> organizationFhirMap=new HashMap<Integer,org.hl7.fhir.dstu3.model.Organization>();
+        //Practitioner and PractitionerRole Resource
+        Map<Integer,List<Resource>> practitionerAndRoleResource = new HashedMap<>();
 
         JSONObject json = null;
         PatientFull patient = null;
         RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL();
+        FhirService fhirService = new FhirService(viewerDAL, practitionerAndRoleResource);
         org.hl7.fhir.dstu3.model.Patient patientResource = null;
-        org.hl7.fhir.dstu3.model.Organization  patient_organizationResource = null;
+
         String encodedBundle = "";
 
         patient = viewerDAL.getFhirPatient(id, nhsNumber);
@@ -105,43 +108,38 @@ public class FhirApi {
         bundle.addEntry().setResource(patientResource);
 
         // adding allergies resources for patient
-        List<AllergyFull> allergies=  viewerDAL.getPatientAllergies(Integer.parseInt(patient.getId()));
+        List<AllergyFull> allergies=  viewerDAL.getFhirAllergies(Integer.parseInt(patient.getId()));
         if(allergies.size()>0)
         {
             //create AllergiesList Resource
-            org.hl7.fhir.dstu3.model.ListResource allergiesListFhirObj= AllergyList.getAllergyListResource();
+            org.hl7.fhir.dstu3.model.ListResource fihrAllergyListObj= AllergyList.getAllergyListResource();
             //referencing patient resource reference here
-            allergiesListFhirObj.setSubject(new Reference(patientResource));
-
-            ArrayList<org.hl7.fhir.dstu3.model.AllergyIntolerance> allergyFhirObjList=new ArrayList<org.hl7.fhir.dstu3.model.AllergyIntolerance>();
-
+            fihrAllergyListObj.setSubject(new Reference(patientResource));
             for(AllergyFull allegyFull:allergies)
             {
                 org.hl7.fhir.dstu3.model.AllergyIntolerance allergyFhirObj  = AllergyIntolerance.getAllergyIntlResource(allegyFull);
-                allergyFhirObjList.add(allergyFhirObj);
-                allergiesListFhirObj.addEntry().setItem(new Reference(allergyFhirObj));
-            }
-            bundle.addEntry().setResource(allergiesListFhirObj);
-            for(org.hl7.fhir.dstu3.model.AllergyIntolerance allergyFhirObj : allergyFhirObjList)
-            {
+                if(practitionerAndRoleResource.containsKey(new Integer(allegyFull.getPractitionerId()))){
+                    allergyFhirObj.setAsserter(new Reference((org.hl7.fhir.dstu3.model.PractitionerRole) practitionerAndRoleResource.get(new Integer(allegyFull.getPractitionerId())).get(1)));
+                }
+                else {
+                    Integer organizationID= new Integer(allegyFull.getOrganizationId());
+                    if(!organizationFhirMap.containsKey(organizationID)) {
+                        organizationFhirMap.put(organizationID,getOrganizationFhirObj(organizationID));
+                    }
+                  allergyFhirObj.setAsserter(new Reference( fhirService.getPractitionerRoleResource(new Integer(allegyFull.getPractitionerId()), organizationFhirMap.get(organizationID))));
+                  }
                 bundle.addEntry().setResource(allergyFhirObj);
+                fihrAllergyListObj.addEntry().setItem(new Reference(allergyFhirObj));
             }
+            bundle.addEntry().setResource(fihrAllergyListObj);
+
         }
        addToBundle(organizationFhirMap,bundle);
        // bundle.addEntry().setResource(practitionerResource);
-        if(patient_organizationResource!=null)
-        bundle.addEntry().setResource(patient_organizationResource);
 
-        //Practitioner and PractitionerRole Resource
-        Map<Integer,List<Resource>> practitionerAndRoleResource = new HashedMap<>();
 
-        /*FhirService fhirService = new FhirService(viewerDAL, practitionerAndRoleResource);
-        org.hl7.fhir.dstu3.model.PractitionerRole practitionerRoleResource = null;
-        if(practitionerAndRoleResource.containsKey(20)){
-            practitionerRoleResource = (org.hl7.fhir.dstu3.model.PractitionerRole) practitionerAndRoleResource.get(20).get(1);
-        }
-        org.hl7.fhir.dstu3.model.PractitionerRole practitionerRole = fhirService.getPractitionerRoleResource(20, patient_organizationResource);*/
-        //Check if practitioner id already exists in hashNap. If not call FhirService.getPractitionerRoleResource
+
+
 
         if (MapUtils.isNotEmpty(practitionerAndRoleResource)) {
             for(Map.Entry entry: practitionerAndRoleResource.entrySet()){
@@ -182,4 +180,6 @@ public class FhirApi {
         }
 
     }
+
+
 }
