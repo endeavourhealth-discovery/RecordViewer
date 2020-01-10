@@ -1,13 +1,15 @@
 package resources;
 
 import ca.uhn.fhir.context.FhirContext;
+import org.endeavourhealth.recordviewer.common.models.AllergyFull;
 import org.hl7.fhir.dstu3.model.*;
 
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 public class AllergyIntolerance {
 
-	public static org.hl7.fhir.dstu3.model.AllergyIntolerance getAllergyIntlResource(Integer patientid, String clineffdate, String allergyname, String snomedcode, String PatientRef, Integer ddsid, String putloc)
+	public static org.hl7.fhir.dstu3.model.AllergyIntolerance getAllergyIntlResource(AllergyFull allergyfull)
 	{
 		org.hl7.fhir.dstu3.model.AllergyIntolerance allergy = new org.hl7.fhir.dstu3.model.AllergyIntolerance();
 
@@ -19,15 +21,15 @@ public class AllergyIntolerance {
 		// manifestation or codeable concept?
 		CodeableConcept code = new CodeableConcept();
 		code.addCoding()
-				.setCode(snomedcode)
+				.setCode(allergyfull.getCode())
 				.setSystem("http://snomed.info/sct")
-				.setDisplay(allergyname);
-
+				.setDisplay(allergyfull.getName());
+         allergy.setId(UUID.randomUUID().toString());
 		allergy.setCode(code);
 
 		try {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			allergy.setAssertedDate(format.parse(clineffdate));
+			allergy.setAssertedDate(format.parse(allergyfull.getDate()));
 		} catch (Exception e) {
 		}
 

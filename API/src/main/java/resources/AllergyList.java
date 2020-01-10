@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 
 public class AllergyList {
 
-    public static org.hl7.fhir.dstu3.model.ListResource getAllergyIntlResource()
+    public static org.hl7.fhir.dstu3.model.ListResource getAllergyListResource()
     {
         ListResource allergyList = new org.hl7.fhir.dstu3.model.ListResource();
         allergyList.setStatus(ListResource.ListStatus.CURRENT);

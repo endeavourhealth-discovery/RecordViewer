@@ -6,6 +6,7 @@ import models.Params;
 import models.Request;
 import models.ResourceNotFoundException;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
+import org.endeavourhealth.recordviewer.common.models.AllergyFull;
 import org.endeavourhealth.recordviewer.common.models.OrganizationSummary;
 import org.endeavourhealth.recordviewer.common.models.PatientFull;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -15,9 +16,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import resources.AllergyIntolerance;
+import resources.AllergyList;
 import resources.Organization;
 import resources.Patient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FhirApi {
@@ -97,8 +101,30 @@ public class FhirApi {
             patient_organizationResource = Organization.getOrgFhirResource(patient_organization);
             patientResource.setManagingOrganization(new Reference(patient_organizationResource));
         }
-
         bundle.addEntry().setResource(patientResource);
+
+        // adding allergies resources for patient
+        List<AllergyFull> allergies=  viewerDAL.getPatientAllergies(Integer.parseInt(patient.getId()));
+        if(allergies.size()>0)
+        {
+            //create AllergiesList Resource
+            org.hl7.fhir.dstu3.model.ListResource allergiesListFhirObj= AllergyList.getAllergyListResource();
+            //injected patient resource reference here
+            allergiesListFhirObj.setSubject(new Reference(patientResource));
+            ArrayList<org.hl7.fhir.dstu3.model.AllergyIntolerance> allergyFhirObjList=new ArrayList<org.hl7.fhir.dstu3.model.AllergyIntolerance>();
+            for(AllergyFull allegyFull:allergies)
+            {
+                org.hl7.fhir.dstu3.model.AllergyIntolerance allergyFhirObj  = AllergyIntolerance.getAllergyIntlResource(allegyFull);
+                allergyFhirObjList.add(allergyFhirObj);
+                allergiesListFhirObj.addEntry().setItem(new Reference(allergyFhirObj));
+            }
+            bundle.addEntry().setResource(allergiesListFhirObj);
+            for(org.hl7.fhir.dstu3.model.AllergyIntolerance allergyFhirObj : allergyFhirObjList)
+            {
+                bundle.addEntry().setResource(allergyFhirObj);
+            }
+        }
+
        // bundle.addEntry().setResource(practitionerResource);
         if(patient_organizationResource!=null)
         bundle.addEntry().setResource(patient_organizationResource);

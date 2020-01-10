@@ -469,8 +469,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     AllergyFull allergyDtls=  new AllergyFull();
                     allergyDtls
                             .setDate(resultSet.getDate("date"))
-                            .setStatus(resultSet.getString("status"))
-                            .setName(resultSet.getString("name"));
+                            .setName(resultSet.getString("name"))
+                            .setCode(resultSet.getString("code"));
                     allergylist.add(allergyDtls);
                 }
 

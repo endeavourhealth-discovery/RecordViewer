@@ -9,6 +9,17 @@ public class AllergyFull {
     private String status;
     private String name;
 
+    public String getCode() {
+        return code;
+    }
+
+    public AllergyFull setCode(String code) {
+        this.code = code;
+        return this;
+    }
+
+    private String code;
+
     public String getDate() {
         return date;
     }
@@ -31,7 +42,7 @@ public class AllergyFull {
     }
 
     public AllergyFull setName(String name) {
-        this.name = toTitleCase(this.name);
+        this.name = toTitleCase(name);
         return this;
     }
 
