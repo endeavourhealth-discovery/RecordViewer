@@ -480,7 +480,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergylist;
     }
 
-    public OrganizationSummary getOrgnizationSummary(Integer organizationId) throws Exception {
+    public OrganizationFull getFhirOrganization(Integer organizationId) throws Exception {
 
         String sql = "select coalesce(ods_code,'') as ods_code," +
                      "coalesce(name,'') as name," +
@@ -490,21 +490,21 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, organizationId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
-                    return getOrgnizationSummary(resultSet);
+                    return getFullOrganization(resultSet);
             }
         }
 
-        return new OrganizationSummary();
+        return new OrganizationFull();
     }
 
-    private static OrganizationSummary getOrgnizationSummary(ResultSet resultSet) throws SQLException {
-         OrganizationSummary organizationSummary = new OrganizationSummary();
-        organizationSummary
+    public static OrganizationFull getFullOrganization(ResultSet resultSet) throws SQLException {
+        OrganizationFull organizationFull = new OrganizationFull();
+        organizationFull
                 .setOdscode(resultSet.getString("ods_code"))
                 .setName(resultSet.getString("name"))
                 .setPostcode(resultSet.getString("postcode"));
 
-        return organizationSummary;
+        return organizationFull;
     }
 
 }
