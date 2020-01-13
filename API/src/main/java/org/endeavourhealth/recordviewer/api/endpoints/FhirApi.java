@@ -150,6 +150,27 @@ public class FhirApi {
             bundle.addEntry().setResource(fihrAllergyListObj);
 
         }
+
+        //add conditions to bundle
+        // adding allergies resources for patient
+        List<ConditionFull> conditions=  viewerDAL.getFhirConditions(Integer.parseInt(patient.getId()));
+        if(conditions.size()>0)
+        {
+            //create AllergiesList Resource
+            org.hl7.fhir.dstu3.model.ListResource fihrConditionListObj= ConditionList.getConditionListResource();
+            //referencing patient resource reference here
+            fihrConditionListObj.setSubject(new Reference(patientResource));
+
+            for(ConditionFull conditionFull:conditions)
+            {
+                org.hl7.fhir.dstu3.model.Condition conditionFhirObj  = Condition.getConditionResource(conditionFull);
+                fihrConditionListObj.addEntry().setItem(new Reference(conditionFhirObj));
+                bundle.addEntry().setResource(conditionFhirObj);
+            }
+            bundle.addEntry().setResource(fihrConditionListObj);
+
+        }
+
        addToBundle(organizationFhirMap,bundle);
        // bundle.addEntry().setResource(practitionerResource);
 

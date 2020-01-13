@@ -557,4 +557,37 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationStatementList;
     }
 
+    //
+    public List<ConditionFull>  getFhirConditions(Integer patientid) throws Exception {
+        ArrayList<ConditionFull> conditionFullList =null;
+        String sql = " SELECT a.clinical_effective_date as date,IF(ISNULL(a.problem_end_date), 'active', 'resolved') AS ClinicalStatus," +
+                " c.name ,c.code " +
+                " FROM observation a join concept c on c.dbid = a.non_core_concept_id where a.is_problem=1 and patient_id = ?";
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientid);
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                conditionFullList= getFullConditions(resultSet);
+            }
+
+        }
+        return conditionFullList;
+    }
+    public static ArrayList<ConditionFull> getFullConditions(ResultSet resultSet) throws SQLException {
+        ArrayList<ConditionFull> conditionlist=new ArrayList<ConditionFull>();
+        if(null !=resultSet) {
+            while (resultSet.next()) {
+                ConditionFull conditionDtls = new ConditionFull();
+                conditionDtls
+                        .setDate(resultSet.getDate("date"))
+                        .setName(resultSet.getString("name"))
+                        .setCode(resultSet.getString("code"))
+                        .setClinicalStatus(resultSet.getString("ClinicalStatus"));
+
+                conditionlist.add(conditionDtls);
+            }
+        }
+        return conditionlist;
+    }
+
 }
