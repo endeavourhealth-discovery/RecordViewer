@@ -1,6 +1,7 @@
 package resources;
 
 import ca.uhn.fhir.context.FhirContext;
+import org.endeavourhealth.recordviewer.common.models.MedicationOrderFull;
 import org.endeavourhealth.recordviewer.common.models.MedicationStatementFull;
 import org.endeavourhealth.recordviewer.common.models.PatientFull;
 import org.hl7.fhir.dstu3.model.*;
@@ -24,6 +25,7 @@ public class MedicationStatement {
 		String clinicalEffDate = replaceNull(medicationStatementResult.getDate());
 		int status = medicationStatementResult.getStatus();
 		String dose = replaceNull(medicationStatementResult.getDose());
+		String valueDateTime = replaceNull(medicationStatementResult.getValueDateTime());
 		UUID id = UUID.randomUUID();
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -37,7 +39,6 @@ public class MedicationStatement {
 
 		medicationStatement.setDateAsserted(clinicalEffDt);
 		//medicationStatement.getEffectivePeriod().setStart(clinicalEffDt);
-		medicationStatement.addBasedOn().setReference("new MedicationRequest()"); //To be updated with MedicationRequest Object
 
 		Extension extension1 = new Extension();
 		extension1.setUrl("https://fhir.hl7.org.uk/STU3/StructureDefinition/Extension-CareConnect-MedicationStatementLastIssueDate-1");
@@ -60,8 +61,6 @@ public class MedicationStatement {
 		else
 			medicationStatement.setStatus(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.COMPLETED);
 
-		//medicationStatement.getMedicationReference().setReference("new Medication()"); //To be updated with Medication Object
-
 		List<Dosage> dosageList = new ArrayList<Dosage>();
 		Dosage dosage = new Dosage();
 		dosage.setPatientInstruction("INSTRUCTIONS FOR PATIENT");
@@ -74,15 +73,15 @@ public class MedicationStatement {
 
 	/**
 	 *
-	 * @param medicationStatementResult
+	 * @param medicationOrderResult
 	 * @return
 	 * @throws Exception
 	 */
-	public org.hl7.fhir.dstu3.model.MedicationRequest getMedicationRequestResource(MedicationStatementFull medicationStatementResult) throws Exception {
-		String clinicalEffDate = replaceNull(medicationStatementResult.getDate());
-		String dose = replaceNull(medicationStatementResult.getDose());
-		double qValue = medicationStatementResult.getQuantityValue();
-		String qUnit = replaceNull(medicationStatementResult.getQuantityUnit());
+	public org.hl7.fhir.dstu3.model.MedicationRequest getMedicationRequestResource(MedicationOrderFull medicationOrderResult) throws Exception {
+		String clinicalEffDate = replaceNull(medicationOrderResult.getDate());
+		String dose = replaceNull(medicationOrderResult.getDose());
+		double qValue = medicationOrderResult.getQValue();
+		String qUnit = replaceNull(medicationOrderResult.getQUnit());
 		UUID id = UUID.randomUUID();
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -119,6 +118,33 @@ public class MedicationStatement {
 				medicationRequest.setDispenseRequest(medicationRequestDispenseRequestComponent);
 
 		return medicationRequest;
+	}
+
+	/**
+	 *
+	 * @param medicationStatementResult
+	 * @return
+	 * @throws Exception
+	 */
+	public org.hl7.fhir.dstu3.model.Medication getMedicationResource(MedicationStatementFull medicationStatementResult) throws Exception {
+		String name = replaceNull(medicationStatementResult.getName());
+		String code = replaceNull(medicationStatementResult.getCode());
+		UUID id = UUID.randomUUID();
+
+		org.hl7.fhir.dstu3.model.Medication medication = new org.hl7.fhir.dstu3.model.Medication();
+
+		medication.setId(String.valueOf(id));
+		medication.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Medication-1");
+
+		Coding coding = new Coding();
+		coding.setDisplay(name);
+		coding.setCode(code);
+		coding.setSystem("http://snomed.info/sct");
+		CodeableConcept codeableConcept = new CodeableConcept();
+		codeableConcept.addCoding(coding);
+		medication.setCode(codeableConcept);
+
+		return medication;
 	}
 
 	/**

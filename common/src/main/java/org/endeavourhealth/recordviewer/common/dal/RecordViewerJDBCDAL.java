@@ -520,11 +520,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
      */
     public List<MedicationStatementFull> getFhirMedicationStatement(Integer patientId) throws Exception {
         List<MedicationStatementFull> result = null;
-        String sql = "select distinct x.clinicalEffDt, x.status, x.dose, x.qValue, x.qUnit, Max(x.valueDtTime) as valueDtTime, atCid" +
-                " from (select ms.id as msid, coalesce(ms.clinical_effective_date, '') as clinicalEffDt, coalesce(ms.is_active,'') as status," +
-                " coalesce(ms.dose,'') as dose, coalesce(ms.quantity_value,'') as qValue, coalesce(ms.quantity_unit,'') as qUnit, " +
-                "coalesce(mo.clinical_effective_date,'') as valueDtTime, ms.authorisation_type_concept_id as atCid from medication_statement ms join medication_order mo " +
-                "on ms.patient_id = ? and ms.id=mo.medication_statement_id and ms.patient_id=mo.patient_id) as x group by x.msid";
+        String sql = "select ms.id as msid, c.name, c.code, " +
+                "coalesce(ms.clinical_effective_date,'') as clinicalEffDt, " +
+                "coalesce(ms.is_active,'') as status, " +
+                "coalesce(ms.dose,'') as dose, " +
+                "coalesce(ms.quantity_value,'') as qValue, " +
+                "coalesce(ms.quantity_unit,'') as qUnit, \n" +
+                "max(coalesce(mo.clinical_effective_date,'')) as valueDtTime, " +
+                "ms.authorisation_type_concept_id as atCid " +
+                "from medication_statement ms join medication_order mo on ms.id=mo.medication_statement_id " +
+                "join concept c on c.dbid=ms.non_core_concept_id where ms.patient_id = ? group by msid";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
@@ -546,15 +551,56 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         MedicationStatementFull medicationStatement = new MedicationStatementFull();
         while (resultSet.next()) {
             medicationStatement
+                    .setName(resultSet.getString("name"))
+                    .setCode(resultSet.getString("code"))
                     .setDate(resultSet.getString("clinicalEffDt"))
                     .setStatus(resultSet.getInt("status"))
                     .setDose(resultSet.getString("dose"))
-                    .setQuantityValue(resultSet.getDouble("qValue"))
-                    .setQuantityUnit(resultSet.getString("qUnit"))
-                    .setCoding(resultSet.getInt("atCid"));
+                    .setValueDateTime(resultSet.getString("valueDtTime"));
             medicationStatementList.add(medicationStatement);
         }
         return medicationStatementList;
+    }
+
+    /**
+     *
+     * @param patientId
+     * @return
+     * @throws Exception
+     */
+    public List<MedicationOrderFull> getFhirMedicationRequest(Integer patientId) throws Exception {
+        List<MedicationOrderFull> result = null;
+        String sql = "SELECT mo.medication_statement_id as msid, mo.clinical_effective_date as clinicalEffDt, mo.dose, mo.quantity_unit as qUnit, " +
+                "mo.quantity_value as qValue FROM medication_order mo join concept c on c.dbid=mo.non_core_concept_id where patient_id=? order by msid, " +
+                "clinical_effective_date";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result = getFullMedicationRequestList(resultSet);
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    public static List<MedicationOrderFull> getFullMedicationRequestList(ResultSet resultSet) throws SQLException {
+        List<MedicationOrderFull> medicationOrderList = new ArrayList<MedicationOrderFull>();
+        MedicationOrderFull medicationOrder = new MedicationOrderFull();
+        while (resultSet.next()) {
+            medicationOrder
+                    .setDate(resultSet.getString("clinicalEffDt"))
+                    .setDose(resultSet.getString("dose"))
+                    .setQValue(resultSet.getDouble("qValue"))
+                    .setQUnit(resultSet.getString("qUnit"));
+            medicationOrderList.add(medicationOrder);
+        }
+        return medicationOrderList;
     }
 
     //

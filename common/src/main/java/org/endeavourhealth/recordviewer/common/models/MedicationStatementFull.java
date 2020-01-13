@@ -9,15 +9,12 @@ import java.util.Date;
 public class MedicationStatementFull {
     private String id;
     private String nhsNumber;
+    private String name;
+    private String code;
+    private String valueDateTime;
+    private int status;
     private String date;
     private String dose;
-    private String name;
-    private double quantityValue;
-    private String quantityUnit;
-    private String note;
-    private String startDate;
-    private int status;
-    private int coding;
 
     public String getId() {
         return id;
@@ -37,6 +34,42 @@ public class MedicationStatementFull {
         return this;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public MedicationStatementFull setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public MedicationStatementFull setCode(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public String getValueDateTime() {
+        return valueDateTime;
+    }
+
+    public MedicationStatementFull setValueDateTime(String valueDateTime) {
+        this.valueDateTime = valueDateTime;
+        return this;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public MedicationStatementFull setStatus(int status) {
+        this.status = status;
+        return this;
+    }
+
     public String getDate() {
         return date;
     }
@@ -52,69 +85,6 @@ public class MedicationStatementFull {
 
     public MedicationStatementFull setDose(String dose) {
         this.dose = dose;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public MedicationStatementFull setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public double getQuantityValue() {
-        return quantityValue;
-    }
-
-    public MedicationStatementFull setQuantityValue(double quantityValue) {
-        this.quantityValue = quantityValue;
-        return this;
-    }
-
-    public String getQuantityUnit() {
-        return quantityUnit;
-    }
-
-    public MedicationStatementFull setQuantityUnit(String quantityUnit) {
-        this.quantityUnit = quantityUnit;
-        return this;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public MedicationStatementFull setNote(String note) {
-        this.note = note;
-        return this;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public MedicationStatementFull setStartDate(String startDate) {
-        this.startDate = startDate;
-        return this;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public MedicationStatementFull setStatus(int status) {
-        this.status = status;
-        return this;
-    }
-
-    public int getCoding() {
-        return coding;
-    }
-
-    public MedicationStatementFull setCoding(int coding) {
-        this.coding = coding;
         return this;
     }
 }
