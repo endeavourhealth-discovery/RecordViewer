@@ -107,19 +107,19 @@ public class FhirApi {
         org.hl7.fhir.dstu3.model.MedicationRequest medicationRequestResource = null;
 
         medicationStatementList = viewerDAL.getFhirMedicationStatement(id);
-        if (medicationStatementList == null || medicationStatementList.isEmpty())
-            throw new ResourceNotFoundException("MedicationStatement resource with id = '"+ nhsNumber +"' not found");
-        MedicationStatement fhirMedicationStatement = new MedicationStatement();
+        if (medicationStatementList != null || medicationStatementList.size() > 0) {
+            MedicationStatement fhirMedicationStatement = new MedicationStatement();
 
-        for(MedicationStatementFull medicationStatementFull : medicationStatementList) {
-            medicationStatementResource = fhirMedicationStatement.getMedicationStatementResource(medicationStatementFull);
-            medicationStatementResource.setSubject(new Reference(patientResource));
+            for (MedicationStatementFull medicationStatementFull : medicationStatementList) {
+                medicationStatementResource = fhirMedicationStatement.getMedicationStatementResource(medicationStatementFull);
+                medicationStatementResource.setSubject(new Reference(patientResource));
 
-            medicationRequestResource = fhirMedicationStatement.getMedicationRequestResource(medicationStatementFull);
-            medicationRequestResource.setSubject(new Reference(patientResource));
+                medicationRequestResource = fhirMedicationStatement.getMedicationRequestResource(medicationStatementFull);
+                medicationRequestResource.setSubject(new Reference(patientResource));
 
-            bundle.addEntry().setResource(medicationStatementResource);
-            bundle.addEntry().setResource(medicationRequestResource);
+                bundle.addEntry().setResource(medicationStatementResource);
+                bundle.addEntry().setResource(medicationRequestResource);
+            }
         }
         //Medication Statement and Medication Request FHIR resource
 
