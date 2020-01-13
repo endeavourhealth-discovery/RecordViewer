@@ -1,31 +1,30 @@
 package resources;
 
-import ca.uhn.fhir.context.FhirContext;
+import org.endeavourhealth.recordviewer.common.models.OrganizationFull;
+import org.endeavourhealth.recordviewer.common.models.OrganizationSummary;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.UUID;
 
 public class Organization {
 
-	private static String GetOrgResource(String odscode, String name, String postcode)
+	public static org.hl7.fhir.dstu3.model.Organization  getOrgFhirResource(OrganizationFull organizationFull)
 	{
-		FhirContext ctx = FhirContext.forDstu3();
-
 		org.hl7.fhir.dstu3.model.Organization organization = null;
 		organization = new org.hl7.fhir.dstu3.model.Organization();
 
-		organization.addIdentifier()
-				.setSystem("https://fhir.nhs.uk/Id/ods-organization-code")
-				.setValue(odscode);
-
-		organization.setName(name);
-
-		organization.addAddress()
-				.setPostalCode(postcode);
-
-		String encoded = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(organization);
-
-		return encoded;
+		if(organizationFull !=null) {
+			organization.addIdentifier()
+					.setSystem("https://fhir.nhs.uk/Id/ods-organization-code")
+					.setValue(organizationFull.getOdscode());
+			organization.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Organization-1");
+			organization.setName(organizationFull.getName());
+			//id is hardcoded now later we need to generate dynamically
+            organization.setId(UUID.randomUUID().toString());
+			organization.addAddress()
+					.setPostalCode(organizationFull.getPostcode());
+		}
+		return organization;
 	}
+
 
 }

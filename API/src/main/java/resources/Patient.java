@@ -6,6 +6,7 @@ import org.hl7.fhir.dstu3.model.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Patient {
 
@@ -32,7 +33,7 @@ public class Patient {
 
 		org.hl7.fhir.dstu3.model.Patient patient = new org.hl7.fhir.dstu3.model.Patient();
 
-		patient.setId(id);
+		patient.setId(UUID.randomUUID().toString());
 
 		patient.addIdentifier()
 				.setSystem("https://discoverydataservice.org");
@@ -157,7 +158,8 @@ public class Patient {
 			registration.setExtension(ext);
 		}
 
-		patient.setManagingOrganization(new Reference("Organization/" + orglocation));
+
+
 
 		return patient;
 	}

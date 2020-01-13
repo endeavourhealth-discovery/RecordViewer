@@ -342,6 +342,23 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    public PractitionerResult getPractitioner(Integer practitionerId) throws Exception {
+        PractitionerResult result = null;
+
+        String sql = "select * from practitioner pr where id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, practitionerId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next())
+                    result = (getPractitioner(resultSet));
+            }
+        } catch (Exception e){
+            System.out.println("exception===" + e.getMessage());
+        }
+        return result;
+    }
+
     public static PatientFull getFullPatient(ResultSet resultSet) throws SQLException {
         PatientFull patient = new PatientFull();
 
@@ -367,6 +384,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setStartdate(resultSet.getDate("startdate"));
 
         return patient;
+    }
+
+    private static PractitionerResult getPractitioner(ResultSet resultSet) throws SQLException {
+        PractitionerResult practitionerResult = new PractitionerResult();
+
+        practitionerResult.setId(resultSet.getString("id"))
+                .setName(resultSet.getString("name"))
+                .setRole_code(resultSet.getString("role_code"))
+                .setRole_desc(resultSet.getString("role_Desc"));
+
+        return practitionerResult;
     }
 
     public AllergyResult getAllergy(Integer page, Integer size, Integer patientId) throws Exception {
@@ -422,6 +450,111 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setStatus(resultSet.getString("status"))
                 .setName(resultSet.getString("name"));
         return allergySummary;
+    }
+
+    public List<AllergyFull>  getFhirAllergies(Integer patientid) throws Exception {
+        ArrayList<AllergyFull> allergiesFullList =null;
+    String sql = " SELECT a.clinical_effective_date as date, c.name ,c.code,a.organization_id,a.practitioner_id " +
+            " FROM allergy_intolerance a join concept c on c.dbid = a.non_core_concept_id where patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientid);
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                allergiesFullList= getFullAllergies(resultSet);
+            }
+
+        }
+        return allergiesFullList;
+    }
+
+    public OrganizationFull getFhirOrganization(Integer organizationId) throws Exception {
+
+        String sql = "select coalesce(ods_code,'') as ods_code," +
+                     "coalesce(name,'') as name," +
+                     "coalesce(postcode,'') as postcode  from organization where id= ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, organizationId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    return getFullOrganization(resultSet);
+            }
+        }
+
+        return new OrganizationFull();
+    }
+
+    public static OrganizationFull getFullOrganization(ResultSet resultSet) throws SQLException {
+        OrganizationFull organizationFull = new OrganizationFull();
+        organizationFull
+                .setOdscode(resultSet.getString("ods_code"))
+                .setName(resultSet.getString("name"))
+                .setPostcode(resultSet.getString("postcode"));
+
+        return organizationFull;
+    }
+
+    public static ArrayList<AllergyFull> getFullAllergies(ResultSet resultSet) throws SQLException {
+        ArrayList<AllergyFull> allergylist=new ArrayList<AllergyFull>();
+        if(null !=resultSet) {
+            while (resultSet.next()) {
+                AllergyFull allergyDtls = new AllergyFull();
+                allergyDtls
+                        .setDate(resultSet.getDate("date"))
+                        .setName(resultSet.getString("name"))
+                        .setCode(resultSet.getString("code"))
+                        .setOrganizationId(resultSet.getInt("organization_id"))
+                       .setPractitionerId(resultSet.getInt("practitioner_id"));
+                allergylist.add(allergyDtls);
+            }
+        }
+        return allergylist;
+    }
+
+    /**
+     *
+     * @param patientId
+     * @return
+     * @throws Exception
+     */
+    public List<MedicationStatementFull> getFhirMedicationStatement(Integer patientId) throws Exception {
+        List<MedicationStatementFull> result = null;
+        String sql = "select distinct x.clinicalEffDt, x.status, x.dose, x.qValue, x.qUnit, Max(x.valueDtTime) as valueDtTime, atCid" +
+                " from (select ms.id as msid, coalesce(ms.clinical_effective_date, '') as clinicalEffDt, coalesce(ms.is_active,'') as status," +
+                " coalesce(ms.dose,'') as dose, coalesce(ms.quantity_value,'') as qValue, coalesce(ms.quantity_unit,'') as qUnit, " +
+                "coalesce(mo.clinical_effective_date,'') as valueDtTime, ms.authorisation_type_concept_id as atCid from medication_statement ms join medication_order mo " +
+                "on ms.patient_id = ? and ms.id=mo.medication_statement_id and ms.patient_id=mo.patient_id) as x group by x.msid";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result = getFullMedicationStatementList(resultSet);
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    public static List<MedicationStatementFull> getFullMedicationStatementList(ResultSet resultSet) throws SQLException {
+        List<MedicationStatementFull> medicationStatementList = new ArrayList<MedicationStatementFull>();
+        MedicationStatementFull medicationStatement = new MedicationStatementFull();
+        while (resultSet.next()) {
+            medicationStatement
+                    .setDate(resultSet.getString("clinicalEffDt"))
+                    .setStatus(resultSet.getInt("status"))
+                    .setDose(resultSet.getString("dose"))
+                    .setQuantityValue(resultSet.getDouble("qValue"))
+                    .setQuantityUnit(resultSet.getString("qUnit"))
+                    .setCoding(resultSet.getInt("atCid"));
+            medicationStatementList.add(medicationStatement);
+        }
+        return medicationStatementList;
     }
 
 }

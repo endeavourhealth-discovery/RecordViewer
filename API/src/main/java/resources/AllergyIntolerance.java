@@ -1,52 +1,39 @@
 package resources;
 
 import ca.uhn.fhir.context.FhirContext;
+import org.endeavourhealth.recordviewer.common.models.AllergyFull;
 import org.hl7.fhir.dstu3.model.*;
 
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 public class AllergyIntolerance {
 
-	private String getAllergyResource(Integer patientid, String clineffdate, String allergyname, String snomedcode, String PatientRef, Integer ddsid, String putloc)
+	public static org.hl7.fhir.dstu3.model.AllergyIntolerance getAllergyIntlResource(AllergyFull allergyfull)
 	{
-		//AllergyIntolerance allergy = null;
-
-		FhirContext ctx = FhirContext.forDstu3();
-
 		org.hl7.fhir.dstu3.model.AllergyIntolerance allergy = new org.hl7.fhir.dstu3.model.AllergyIntolerance();
 
-		if (putloc.length()>0) {
-			allergy.setId(putloc);
-		}
-
-		allergy.addIdentifier()
-				.setSystem("https://discoverydataservice.net")
-				.setValue(ddsid.toString());
-
-		allergy.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-AllergyIntolerance-1");
 		allergy.setClinicalStatus(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceClinicalStatus.ACTIVE);
 		allergy.setVerificationStatus(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceVerificationStatus.CONFIRMED);
-
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			allergy.setAssertedDate(format.parse(clineffdate));
-		} catch (Exception e) {
-		}
+		allergy.setType(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceType.ALLERGY);
+		allergy.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-AllergyIntolerance-1");
 
 		// manifestation or codeable concept?
 		CodeableConcept code = new CodeableConcept();
 		code.addCoding()
-				.setCode(snomedcode)
+				.setCode(allergyfull.getCode())
 				.setSystem("http://snomed.info/sct")
-				.setDisplay(allergyname);
-
+				.setDisplay(allergyfull.getName());
+         allergy.setId(UUID.randomUUID().toString());
 		allergy.setCode(code);
 
-		allergy.setPatient(new Reference("Patient/" + PatientRef));
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			allergy.setAssertedDate(format.parse(allergyfull.getDate()));
+		} catch (Exception e) {
+		}
 
-		String encoded = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(allergy);
-
-		return encoded;
+		return allergy;
 	}
 
 }
