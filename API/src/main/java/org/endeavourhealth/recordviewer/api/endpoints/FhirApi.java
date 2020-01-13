@@ -8,10 +8,7 @@ import models.ResourceNotFoundException;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
-import org.endeavourhealth.recordviewer.common.models.AllergyFull;
-import org.endeavourhealth.recordviewer.common.models.OrganizationFull;
-import org.endeavourhealth.recordviewer.common.models.OrganizationSummary;
-import org.endeavourhealth.recordviewer.common.models.PatientFull;
+import org.endeavourhealth.recordviewer.common.models.*;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Meta;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -20,10 +17,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import resources.AllergyIntolerance;
-import resources.AllergyList;
-import resources.Organization;
-import resources.Patient;
+import resources.*;
 import service.FhirService;
 
 import java.util.*;
@@ -106,6 +100,28 @@ public class FhirApi {
             patientResource.setManagingOrganization(new Reference(organizationFhirMap.get(organizationID)));
        }
         bundle.addEntry().setResource(patientResource);
+
+        //Medication Statement and Medication Request FHIR resource
+        List<MedicationStatementFull> medicationStatementList = null;
+        org.hl7.fhir.dstu3.model.MedicationStatement medicationStatementResource = null;
+        org.hl7.fhir.dstu3.model.MedicationRequest medicationRequestResource = null;
+
+        medicationStatementList = viewerDAL.getFhirMedicationStatement(id);
+        if (medicationStatementList == null || medicationStatementList.isEmpty())
+            throw new ResourceNotFoundException("MedicationStatement resource with id = '"+ nhsNumber +"' not found");
+        MedicationStatement fhirMedicationStatement = new MedicationStatement();
+
+        for(MedicationStatementFull medicationStatementFull : medicationStatementList) {
+            medicationStatementResource = fhirMedicationStatement.getMedicationStatementResource(medicationStatementFull);
+            medicationStatementResource.setSubject(new Reference(patientResource));
+
+            medicationRequestResource = fhirMedicationStatement.getMedicationRequestResource(medicationStatementFull);
+            medicationRequestResource.setSubject(new Reference(patientResource));
+
+            bundle.addEntry().setResource(medicationStatementResource);
+            bundle.addEntry().setResource(medicationRequestResource);
+        }
+        //Medication Statement and Medication Request FHIR resource
 
         // adding allergies resources for patient
         List<AllergyFull> allergies=  viewerDAL.getFhirAllergies(Integer.parseInt(patient.getId()));

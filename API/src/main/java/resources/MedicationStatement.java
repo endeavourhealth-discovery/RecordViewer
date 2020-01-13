@@ -1,78 +1,133 @@
 package resources;
 
 import ca.uhn.fhir.context.FhirContext;
+import org.endeavourhealth.recordviewer.common.models.MedicationStatementFull;
+import org.endeavourhealth.recordviewer.common.models.PatientFull;
 import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.Medication;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class MedicationStatement {
-	private Dosage addDosage(String dosagetext, String qtyvalue, String qtyunit)
-	{
-		Dosage dose = null;
 
-		dose = new Dosage();
-		dose.setText(dosagetext);
+	/**
+	 *
+	 * @param medicationStatementResult
+	 * @return
+	 * @throws Exception
+	 */
+	public org.hl7.fhir.dstu3.model.MedicationStatement getMedicationStatementResource(MedicationStatementFull medicationStatementResult) throws Exception {
+		String clinicalEffDate = replaceNull(medicationStatementResult.getDate());
+		int status = medicationStatementResult.getStatus();
+		String dose = replaceNull(medicationStatementResult.getDose());
+		UUID id = UUID.randomUUID();
 
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date clinicalEffDt = formatter.parse(clinicalEffDate);
 
-		if ( (qtyvalue != null) & (qtyunit != null) ) {
-			dose.setDose(new SimpleQuantity()
-					//.setValue(Integer.parseInt(qtyvalue))
-					.setValue(Double.parseDouble(qtyvalue))
-					.setUnit(qtyunit)
-			);
-		}
+		org.hl7.fhir.dstu3.model.MedicationStatement medicationStatement = new org.hl7.fhir.dstu3.model.MedicationStatement();
 
-		return dose;
+		medicationStatement.setId(String.valueOf(id));
+		medicationStatement.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-MedicationStatement-1");
+		medicationStatement.setTaken(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementTaken.UNK);
+
+		medicationStatement.setDateAsserted(clinicalEffDt);
+		//medicationStatement.getEffectivePeriod().setStart(clinicalEffDt);
+		medicationStatement.addBasedOn().setReference("new MedicationRequest()"); //To be updated with MedicationRequest Object
+
+		Extension extension1 = new Extension();
+		extension1.setUrl("https://fhir.hl7.org.uk/STU3/StructureDefinition/Extension-CareConnect-MedicationStatementLastIssueDate-1");
+
+		Extension extension2 = new Extension();
+		extension2.setUrl("https://fhir.hl7.org.uk/STU3/StructureDefinition/Extension-CareConnect-PrescribingAgency-1");
+
+		Coding coding = new Coding();
+		coding.setCode("prescribed-at-gp-practice");
+		coding.setSystem("https://fhir.hl7.org.uk/STU3/CodeSystem/CareConnect-PrescribingAgency-1");
+		coding.setDisplay("Prescribed at GP practice");
+
+		List<Extension> extensionList = new ArrayList<Extension>();
+		extensionList.add(extension1);
+		extensionList.add(extension2);
+		medicationStatement.setExtension(extensionList);
+
+		if(status == 1)
+			medicationStatement.setStatus(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.ACTIVE);
+		else
+			medicationStatement.setStatus(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.COMPLETED);
+
+		//medicationStatement.getMedicationReference().setReference("new Medication()"); //To be updated with Medication Object
+
+		List<Dosage> dosageList = new ArrayList<Dosage>();
+		Dosage dosage = new Dosage();
+		dosage.setPatientInstruction("INSTRUCTIONS FOR PATIENT");
+		dosage.setText(dose);
+        dosageList.add(dosage);
+		medicationStatement.setDosage(dosageList);
+
+		return medicationStatement;
 	}
 
-	private String GetMedicationStatementResource(Integer patientid, String dose, String quantityvalue, String quantityunit, String clinicaleffdate, String medicationname, String snomedcode, String PatientRef, String rxref, Integer ddsid, String putloc)
-	{
-		FhirContext ctx = FhirContext.forDstu3();
+	/**
+	 *
+	 * @param medicationStatementResult
+	 * @return
+	 * @throws Exception
+	 */
+	public org.hl7.fhir.dstu3.model.MedicationRequest getMedicationRequestResource(MedicationStatementFull medicationStatementResult) throws Exception {
+		String clinicalEffDate = replaceNull(medicationStatementResult.getDate());
+		String dose = replaceNull(medicationStatementResult.getDose());
+		double qValue = medicationStatementResult.getQuantityValue();
+		String qUnit = replaceNull(medicationStatementResult.getQuantityUnit());
+		UUID id = UUID.randomUUID();
 
-		// MedicationStatement rxstatement = null;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date clinicalEffDt = formatter.parse(clinicalEffDate);
 
-		org.hl7.fhir.dstu3.model.MedicationStatement rxstatement = new org.hl7.fhir.dstu3.model.MedicationStatement();
+		org.hl7.fhir.dstu3.model.MedicationRequest medicationRequest = new org.hl7.fhir.dstu3.model.MedicationRequest();
 
-		if (putloc.length()>0) {
-			rxstatement.setId(putloc);
-		}
+		medicationRequest.setId(String.valueOf(id));
+		medicationRequest.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-MedicationRequest-1");
+		medicationRequest.setStatus(org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus.COMPLETED);
+		medicationRequest.setIntent(org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent.PLAN);
 
-		rxstatement.addIdentifier()
-				.setSystem("https://discoverydataservice.net")
-				.setValue(ddsid.toString());
+		medicationRequest.setAuthoredOn(clinicalEffDt);
 
-		rxstatement.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-MedicationStatement-1");
+		List<Dosage> dosageList = new ArrayList<Dosage>();
+		Dosage dosage = new Dosage();
+		dosage.setPatientInstruction("INSTRUCTIONS FOR PATIENT");
+		dosage.setText(dose);
+		dosageList.add(dosage);
+		medicationRequest.setDosageInstruction(dosageList);
 
-		// this needs to be a switch statement using ?
-		rxstatement.setStatus(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.ACTIVE);
+		Extension extension = new Extension();
+		extension.setUrl("https://fhir.hl7.org.uk/STU3/StructureDefinition/Extension-CareConnect-PrescriptionType-1");
+		medicationRequest.addExtension(extension);
 
-		//rxstatement.setSubject(new Reference("/api/Patient/33"));
+		Extension extension1 = new Extension();
 
-		Period period = new Period();
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			period.setStart(format.parse(clinicaleffdate));
-		} catch (Exception e) {
-		}
-		rxstatement.setEffective(period);
+		Quantity quantity = new Quantity();
+		quantity.getExtension().add(extension1);
 
-		rxstatement.setTaken(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementTaken.UNK);
+				org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestDispenseRequestComponent medicationRequestDispenseRequestComponent = new
+						MedicationRequest.MedicationRequestDispenseRequestComponent();
+		medicationRequestDispenseRequestComponent.getQuantity().setValue(qValue);
+				medicationRequest.setDispenseRequest(medicationRequestDispenseRequestComponent);
 
-		rxstatement.setSubject(new Reference("Patient/" + PatientRef));
+		return medicationRequest;
+	}
 
-		rxstatement.setMedication(new Reference("Medication/" + rxref)
-				.setDisplay(medicationname));
-
-		ArrayList dosages=new ArrayList();
-
-		Dosage doseage = addDosage(dose, quantityvalue, quantityunit);
-		dosages.add(doseage);
-		rxstatement.setDosage(dosages);
-
-		String encoded = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(rxstatement);
-
-		return encoded;
+	/**
+	 *
+	 * @param input
+	 * @return
+	 */
+	public static String replaceNull(String input) {
+		return input == null ? "" : input;
 	}
 
 }

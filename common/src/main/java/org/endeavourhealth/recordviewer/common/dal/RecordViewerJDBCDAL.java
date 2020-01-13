@@ -512,4 +512,49 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergylist;
     }
 
+    /**
+     *
+     * @param patientId
+     * @return
+     * @throws Exception
+     */
+    public List<MedicationStatementFull> getFhirMedicationStatement(Integer patientId) throws Exception {
+        List<MedicationStatementFull> result = null;
+        String sql = "select distinct x.clinicalEffDt, x.status, x.dose, x.qValue, x.qUnit, Max(x.valueDtTime) as valueDtTime, atCid" +
+                " from (select ms.id as msid, coalesce(ms.clinical_effective_date, '') as clinicalEffDt, coalesce(ms.is_active,'') as status," +
+                " coalesce(ms.dose,'') as dose, coalesce(ms.quantity_value,'') as qValue, coalesce(ms.quantity_unit,'') as qUnit, " +
+                "coalesce(mo.clinical_effective_date,'') as valueDtTime, ms.authorisation_type_concept_id as atCid from medication_statement ms join medication_order mo " +
+                "on ms.patient_id = ? and ms.id=mo.medication_statement_id and ms.patient_id=mo.patient_id) as x group by x.msid";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result = getFullMedicationStatementList(resultSet);
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    public static List<MedicationStatementFull> getFullMedicationStatementList(ResultSet resultSet) throws SQLException {
+        List<MedicationStatementFull> medicationStatementList = new ArrayList<MedicationStatementFull>();
+        MedicationStatementFull medicationStatement = new MedicationStatementFull();
+        while (resultSet.next()) {
+            medicationStatement
+                    .setDate(resultSet.getString("clinicalEffDt"))
+                    .setStatus(resultSet.getInt("status"))
+                    .setDose(resultSet.getString("dose"))
+                    .setQuantityValue(resultSet.getDouble("qValue"))
+                    .setQuantityUnit(resultSet.getString("qUnit"))
+                    .setCoding(resultSet.getInt("atCid"));
+            medicationStatementList.add(medicationStatement);
+        }
+        return medicationStatementList;
+    }
+
 }
