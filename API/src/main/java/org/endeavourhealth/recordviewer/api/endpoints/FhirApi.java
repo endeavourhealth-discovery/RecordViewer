@@ -165,6 +165,7 @@ public class FhirApi {
             {
                 org.hl7.fhir.dstu3.model.Condition conditionFhirObj  = Condition.getConditionResource(conditionFull);
                 fihrConditionListObj.addEntry().setItem(new Reference(conditionFhirObj));
+                conditionFhirObj.setSubject(new Reference(patientResource));
                 bundle.addEntry().setResource(conditionFhirObj);
             }
             bundle.addEntry().setResource(fihrConditionListObj);
