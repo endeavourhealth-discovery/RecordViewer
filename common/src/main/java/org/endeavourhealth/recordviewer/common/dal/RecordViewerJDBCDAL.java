@@ -495,7 +495,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return organizationFull;
     }
 
-    public static ArrayList<AllergyFull> getFullAllergies(ResultSet resultSet) throws SQLException {
+    public  ArrayList<AllergyFull> getFullAllergies(ResultSet resultSet) throws SQLException {
         ArrayList<AllergyFull> allergylist=new ArrayList<AllergyFull>();
         if(null !=resultSet) {
             while (resultSet.next()) {
@@ -619,7 +619,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
         return conditionFullList;
     }
-    public static ArrayList<ConditionFull> getFullConditions(ResultSet resultSet) throws SQLException {
+    public  ArrayList<ConditionFull> getFullConditions(ResultSet resultSet) throws SQLException {
         ArrayList<ConditionFull> conditionlist=new ArrayList<ConditionFull>();
         if(null !=resultSet) {
             while (resultSet.next()) {
