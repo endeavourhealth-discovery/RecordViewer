@@ -185,7 +185,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             name = "@ @";
 
         String[] names = name.split(" ", 2);
- 
+
         if (names.length==1) { // only 1 name specified in search
             sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age,coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name," +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address \n" +
@@ -342,6 +342,32 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    public List<ObservationFull> getFhirObservation(Integer id) throws Exception {
+        List<ObservationFull> observationFullList = new ArrayList<>();
+
+        String sql = "SELECT o.clinical_effective_date as date," +
+                "coalesce(o.practitioner_id, '') as practitionerId, " +
+                "coalesce(o.organization_id, '') as organizationId, " +
+                "coalesce(o.result_value, '') as resultValue, " +
+                "coalesce(o.result_value, '') as resultValue, " +
+                "coalesce(c.code,'') as code," +
+                "coalesce(c.name, '') as name, " +
+                "coalesce(c.description, '') as description," +
+                "coalesce(o.result_value_units,'') as resultValueUnits from observation o " +
+                "join concept c on o.non_core_concept_id = c.dbid " +
+                "where o.patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    observationFullList.add(getFullObservation(resultSet));
+            }
+        }
+
+        return observationFullList;
+    }
+
     public PractitionerResult getPractitioner(Integer practitionerId) throws Exception {
         PractitionerResult result = null;
 
@@ -353,10 +379,24 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 while (resultSet.next())
                     result = (getPractitioner(resultSet));
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("exception===" + e.getMessage());
         }
         return result;
+    }
+
+    public ObservationFull getFullObservation(ResultSet resultSet) throws SQLException {
+        ObservationFull observationFull = new ObservationFull();
+
+        observationFull.setCode(resultSet.getString("code"))
+                .setDate(resultSet.getString("date"))
+                .setDescription(resultSet.getString("description"))
+                .setPractitionerId(resultSet.getInt("practitionerId"))
+                .setOrganizationId(resultSet.getInt("organizationId"))
+                .setName(resultSet.getString("name"))
+                .setResultValue(resultSet.getString("resultValue"))
+                .setResultValueUnits(resultSet.getString("resultValueUnits"));
+        return observationFull;
     }
 
     public static PatientFull getFullPatient(ResultSet resultSet) throws SQLException {

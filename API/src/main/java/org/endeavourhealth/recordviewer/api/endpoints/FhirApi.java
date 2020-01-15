@@ -5,6 +5,7 @@ import models.Parameter;
 import models.Params;
 import models.Request;
 import models.ResourceNotFoundException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
@@ -18,19 +19,18 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import resources.*;
-import service.FhirService;
+
 
 import java.util.*;
 
 public class FhirApi {
     private static final Logger LOG = LoggerFactory.getLogger(FhirApi.class);
-    HashMap<Integer, org.hl7.fhir.dstu3.model.Organization> organizationFhirMap = null;
-    Map<Integer, List<Resource>> practitionerAndRoleResource = null;
-    RecordViewerJDBCDAL viewerDAL = null;
-    Bundle bundle = null;
-    org.hl7.fhir.dstu3.model.Patient patientResource = null;
-    FhirService fhirService = null;
 
+    HashMap<Integer, org.hl7.fhir.dstu3.model.Organization> organizationFhirMap;
+    Map<Integer, List<Resource>> practitionerAndRoleResource;
+    RecordViewerJDBCDAL viewerDAL;
+    Bundle bundle;
+    org.hl7.fhir.dstu3.model.Patient patientResource;
 
     public Object handleRequest(Request request) throws ResourceNotFoundException {
         JSONObject json = null;
@@ -75,7 +75,6 @@ public class FhirApi {
         //Practitioner and PractitionerRole Resource
         practitionerAndRoleResource = new HashedMap<>();
         viewerDAL = new RecordViewerJDBCDAL();
-        fhirService = new FhirService(viewerDAL, practitionerAndRoleResource);
 
         PatientFull patient = null;
         patient = viewerDAL.getFhirPatient(id, nhsNumber);
@@ -142,11 +141,29 @@ public class FhirApi {
                 bundle.addEntry().setResource(medicationRequestResource);
             }
         }
+
+        // Observation resource
+        List<ObservationFull> observationFullList =  viewerDAL.getFhirObservation(Integer.parseInt(patient.getId()));
+
+        if(observationFullList.size() > 0) {
+            org.hl7.fhir.dstu3.model.ListResource observationListResource = ObservationList.getObservationResource();
+            if (CollectionUtils.isNotEmpty(observationFullList)) {
+                for (ObservationFull observationFull : observationFullList) {
+                    ObservationFhir observationFhir = new ObservationFhir(observationFull);
+                    org.hl7.fhir.dstu3.model.Observation observationResource = observationFhir.getObservationResource();
+                    bundle.addEntry().setResource(observationResource);
+                    observationResource.setPerformer(Arrays.asList(new Reference(getPractitionerRoleResource(new Integer(observationFull.getPractitionerId()), observationFull.getOrganizationId()))));
+                    observationResource.setSubject(new Reference(patientResource));
+                    bundle.addEntry().setResource(observationResource);
+                    observationListResource.addEntry().setItem(new Reference(observationResource));
+                };
+            }
+        }
+
         //Medication Statement and Medication Request FHIR resource
 
         // adding allergies resources for patient
         addFhirAllergiesToBundle(Integer.parseInt(patient.getId()));
-
 
         //add conditions to bundle
         addFhirConditionsToBundle(Integer.parseInt(patient.getId()));
@@ -166,6 +183,29 @@ public class FhirApi {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(encodedBundle);
     }
+
+    private org.hl7.fhir.dstu3.model.PractitionerRole getPractitionerRoleResource(Integer practitionerId, Integer organizationID) throws Exception {
+        if(practitionerAndRoleResource.get(practitionerId) != null) {
+            return (org.hl7.fhir.dstu3.model.PractitionerRole) practitionerAndRoleResource.get(practitionerId).get(1);
+        }
+
+        PractitionerResult practitionerResult = viewerDAL.getPractitioner(practitionerId);
+        resources.Practitioner practitioner = new resources.Practitioner(practitionerResult);
+        org.hl7.fhir.dstu3.model.Practitioner practitionerResource = practitioner.getPractitionerResource();
+
+        resources.PractitionerRole practitionerRole = new resources.PractitionerRole(practitionerResult);
+        org.hl7.fhir.dstu3.model.PractitionerRole practitionerRoleResource = practitionerRole.getPractitionerRoleResource();
+        practitionerRoleResource.setPractitioner(new Reference(practitionerResource));
+        practitionerRoleResource.setOrganization(new Reference(getOrganizationFhirObj(organizationID)));
+        practitionerAndRoleResource.put(practitionerId, Arrays.asList(practitionerResource, practitionerRoleResource));
+        return practitionerRoleResource;
+    }
+
+    private org.hl7.fhir.dstu3.model.Practitioner getPractitionerResource(Integer practitionerId, Integer organizationID) throws Exception {
+        getPractitionerRoleResource(practitionerId, organizationID);
+        return (org.hl7.fhir.dstu3.model.Practitioner) practitionerAndRoleResource.get(practitionerId).get(0);
+    }
+
 
     /*
     This method adds condition Fhir Resources to bundle for given patientid
@@ -203,15 +243,9 @@ public class FhirApi {
             fihrAllergyListObj.setSubject(new Reference(patientResource));
             for (AllergyFull allegyFull : allergies) {
                 org.hl7.fhir.dstu3.model.AllergyIntolerance allergyFhirObj = AllergyIntolerance.getAllergyIntlResource(allegyFull);
-                if (practitionerAndRoleResource.containsKey(new Integer(allegyFull.getPractitionerId()))) {
-                    allergyFhirObj.setAsserter(new Reference((org.hl7.fhir.dstu3.model.PractitionerRole) practitionerAndRoleResource.get(new Integer(allegyFull.getPractitionerId())).get(1)));
-                } else {
-                    Integer organizationID = new Integer(allegyFull.getOrganizationId());
-                    if (!organizationFhirMap.containsKey(organizationID)) {
-                        organizationFhirMap.put(organizationID, getOrganizationFhirObj(organizationID));
-                    }
-                    allergyFhirObj.setAsserter(new Reference(fhirService.getPractitionerRoleResource(new Integer(allegyFull.getPractitionerId()), organizationFhirMap.get(organizationID))));
-                }
+                Integer organizationID = new Integer(allegyFull.getOrganizationId());
+                allergyFhirObj.setAsserter(new Reference(getPractitionerRoleResource(new Integer(allegyFull.getPractitionerId()), organizationID)));
+
                 bundle.addEntry().setResource(allergyFhirObj);
                 fihrAllergyListObj.addEntry().setItem(new Reference(allergyFhirObj));
             }
