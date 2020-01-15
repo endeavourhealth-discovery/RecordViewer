@@ -94,14 +94,14 @@ public class FhirApi {
         }
         bundle.addEntry().setResource(patientResource);
 
-        //Medication Statement and Medication Request FHIR resource
+        //Medication Statement, Medication Request, List(Medication Statement), Medication FHIR resource
         List<MedicationStatementFull> medicationStatementList = null;
         org.hl7.fhir.dstu3.model.MedicationStatement medicationStatementResource = null;
         org.hl7.fhir.dstu3.model.Medication medicationResource = null;
 
         medicationStatementList = viewerDAL.getFhirMedicationStatement(id);
         if (medicationStatementList != null || medicationStatementList.size() > 0) {
-            org.hl7.fhir.dstu3.model.ListResource fhirMedicationStatementObj = MedicationStatementList.getMedicationStatementListResource();
+            org.hl7.fhir.dstu3.model.ListResource fhirMedicationStatementObj =  MedicationStatementList.getMedicationStatementListResource();
             fhirMedicationStatementObj.setSubject(new Reference(patientResource));
 
             MedicationStatement fhirMedicationStatement = new MedicationStatement();
@@ -111,14 +111,32 @@ public class FhirApi {
                 medicationStatementResource.setSubject(new Reference(patientResource));
 
                 medicationResource = fhirMedicationStatement.getMedicationResource(medicationStatementFull);
+                medicationStatementResource.setMedication(new Reference(medicationResource));
 
-                /*List<Reference> referenceList = new ArrayList<Reference>();
-                referenceList.add(new Reference(medicationRequestResource));
-                medicationStatementResource.setBasedOn(referenceList);
-                medicationStatementResource.setMedication(new Reference(medicationResource));*/
+                //Medication Request FHIR resource
+                List<MedicationOrderFull> medicationRequestList = null;
+                org.hl7.fhir.dstu3.model.MedicationRequest medicationRequestResource = null;
 
-                /*medicationRequestResource.setMedication(new Reference(medicationResource));*/
-                //medicationRequestResource.setRecorder(new Reference(fhirService.getPractitionerRoleResource(new Integer(allegyFull.getPractitionerId()), organizationFhirMap.get(organizationID))));
+                medicationRequestList = viewerDAL.getFhirMedicationRequest(medicationStatementFull.getId());
+                if (medicationRequestList != null || medicationRequestList.size() > 0) {
+
+                    for (MedicationOrderFull medicationOrderFull : medicationRequestList) {
+                        medicationRequestResource = fhirMedicationStatement.getMedicationRequestResource(medicationOrderFull);
+                        medicationRequestResource.setSubject(new Reference(patientResource));
+                        medicationRequestResource.setMedication(new Reference(medicationResource));
+                        //medicationRequestResource.setRecorder(new Reference(getPractitionerRoleResource(medicationOrderFull.getPractitionerId(), medicationOrderFull.getOrgId())));
+
+                        List<Reference> referenceList = new ArrayList<Reference>();
+                        referenceList.add(new Reference(medicationRequestResource));
+                        if(medicationRequestList.get(0) == medicationOrderFull) {
+                            medicationStatementResource.setBasedOn(referenceList);
+                        } else {
+                            medicationRequestResource.setBasedOn(referenceList);
+                        }
+                        bundle.addEntry().setResource(medicationRequestResource);
+                    }
+                }
+                //Medication Request FHIR resource
 
                 bundle.addEntry().setResource(medicationStatementResource);
                 bundle.addEntry().setResource(medicationResource);
@@ -126,21 +144,7 @@ public class FhirApi {
             }
             bundle.addEntry().setResource(fhirMedicationStatementObj);
         }
-
-        List<MedicationOrderFull> medicationRequestList = null;
-        org.hl7.fhir.dstu3.model.MedicationRequest medicationRequestResource = null;
-
-        medicationRequestList = viewerDAL.getFhirMedicationRequest(id);
-        if (medicationRequestList != null || medicationRequestList.size() > 0) {
-            MedicationStatement fhirMedicationStatement = new MedicationStatement();
-
-            for (MedicationOrderFull medicationOrderFull : medicationRequestList) {
-                medicationRequestResource = fhirMedicationStatement.getMedicationRequestResource(medicationOrderFull);
-                medicationRequestResource.setSubject(new Reference(patientResource));
-
-                bundle.addEntry().setResource(medicationRequestResource);
-            }
-        }
+        //Medication Statement, Medication Request, List(Medication Statement), Medication FHIR resource
 
         // Observation resource
         List<ObservationFull> observationFullList =  viewerDAL.getFhirObservation(Integer.parseInt(patient.getId()));
@@ -159,8 +163,6 @@ public class FhirApi {
                 };
             }
         }
-
-        //Medication Statement and Medication Request FHIR resource
 
         // adding allergies resources for patient
         addFhirAllergiesToBundle(Integer.parseInt(patient.getId()));

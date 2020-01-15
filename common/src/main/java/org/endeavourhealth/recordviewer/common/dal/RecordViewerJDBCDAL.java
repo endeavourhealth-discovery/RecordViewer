@@ -588,9 +588,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
      */
     public static List<MedicationStatementFull> getFullMedicationStatementList(ResultSet resultSet) throws SQLException {
         List<MedicationStatementFull> medicationStatementList = new ArrayList<MedicationStatementFull>();
-        MedicationStatementFull medicationStatement = new MedicationStatementFull();
         while (resultSet.next()) {
+            MedicationStatementFull medicationStatement = new MedicationStatementFull();
             medicationStatement
+                    .setId(resultSet.getInt("msid"))
                     .setName(resultSet.getString("name"))
                     .setCode(resultSet.getString("code"))
                     .setDate(resultSet.getString("clinicalEffDt"))
@@ -604,18 +605,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     /**
      *
-     * @param patientId
+     * @param msId
      * @return
      * @throws Exception
      */
-    public List<MedicationOrderFull> getFhirMedicationRequest(Integer patientId) throws Exception {
+    public List<MedicationOrderFull> getFhirMedicationRequest(Integer msId) throws Exception {
         List<MedicationOrderFull> result = null;
-        String sql = "SELECT mo.medication_statement_id as msid, mo.clinical_effective_date as clinicalEffDt, mo.dose, mo.quantity_unit as qUnit, " +
-                "mo.quantity_value as qValue FROM medication_order mo join concept c on c.dbid=mo.non_core_concept_id where patient_id=? order by msid, " +
+        String sql = "SELECT mo.id, mo.practitioner_id as prid, mo.organization_id as oid, mo.medication_statement_id as msid, mo.clinical_effective_date as clinicalEffDt, mo.dose, mo.quantity_unit as qUnit, " +
+                "mo.quantity_value as qValue FROM medication_order mo join concept c on c.dbid=mo.non_core_concept_id where mo.medication_statement_id=? order by msid, " +
                 "clinical_effective_date";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setInt(1, msId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result = getFullMedicationRequestList(resultSet);
             }
@@ -631,9 +632,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
      */
     public static List<MedicationOrderFull> getFullMedicationRequestList(ResultSet resultSet) throws SQLException {
         List<MedicationOrderFull> medicationOrderList = new ArrayList<MedicationOrderFull>();
-        MedicationOrderFull medicationOrder = new MedicationOrderFull();
         while (resultSet.next()) {
+            MedicationOrderFull medicationOrder = new MedicationOrderFull();
             medicationOrder
+                    .setId(resultSet.getInt("id"))
+                    .setPractitionerId(resultSet.getInt("prid"))
+                    .setOrgId(resultSet.getInt("oid"))
                     .setDate(resultSet.getString("clinicalEffDt"))
                     .setDose(resultSet.getString("dose"))
                     .setQValue(resultSet.getDouble("qValue"))

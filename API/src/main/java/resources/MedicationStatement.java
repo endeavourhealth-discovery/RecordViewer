@@ -108,6 +108,8 @@ public class MedicationStatement {
 		medicationRequest.addExtension(extension);
 
 		Extension extension1 = new Extension();
+		/*extension1.addChild(qUnit);
+		medicationRequest.addExtension(extension1);*/
 
 		Quantity quantity = new Quantity();
 		quantity.getExtension().add(extension1);
