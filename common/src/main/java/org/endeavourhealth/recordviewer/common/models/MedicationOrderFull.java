@@ -4,18 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedicationOrderFull {
-    private String id;
+    private int id;
     private String nhsNumber;
     private String date;
     private String dose;
     private double qValue;
     private String qUnit;
+    private int practitionerId;
+    private int orgId;
 
-    public String getId() {
-        return id;
-    }
+    public int getId() { return id; }
 
-    public MedicationOrderFull setId(String id) {
+    public MedicationOrderFull setId(int id) {
         this.id = id;
         return this;
     }
@@ -62,6 +62,24 @@ public class MedicationOrderFull {
 
     public MedicationOrderFull setQUnit(String qUnit) {
         this.qUnit = qUnit;
+        return this;
+    }
+
+    public int getPractitionerId() {
+        return practitionerId;
+    }
+
+    public MedicationOrderFull setPractitionerId(int practitionerId) {
+        this.practitionerId = practitionerId;
+        return this;
+    }
+
+    public int getOrgId() {
+        return orgId;
+    }
+
+    public MedicationOrderFull setOrgId(int orgId) {
+        this.orgId = orgId;
         return this;
     }
 }
