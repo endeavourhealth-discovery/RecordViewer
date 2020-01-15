@@ -146,23 +146,8 @@ public class FhirApi {
         }
         //Medication Statement, Medication Request, List(Medication Statement), Medication FHIR resource
 
-        // Observation resource
-        List<ObservationFull> observationFullList =  viewerDAL.getFhirObservation(Integer.parseInt(patient.getId()));
-
-        if(observationFullList.size() > 0) {
-            org.hl7.fhir.dstu3.model.ListResource observationListResource = ObservationList.getObservationResource();
-            if (CollectionUtils.isNotEmpty(observationFullList)) {
-                for (ObservationFull observationFull : observationFullList) {
-                    ObservationFhir observationFhir = new ObservationFhir(observationFull);
-                    org.hl7.fhir.dstu3.model.Observation observationResource = observationFhir.getObservationResource();
-                    bundle.addEntry().setResource(observationResource);
-                    observationResource.setPerformer(Arrays.asList(new Reference(getPractitionerRoleResource(new Integer(observationFull.getPractitionerId()), observationFull.getOrganizationId()))));
-                    observationResource.setSubject(new Reference(patientResource));
-                    bundle.addEntry().setResource(observationResource);
-                    observationListResource.addEntry().setItem(new Reference(observationResource));
-                };
-            }
-        }
+        //Observation Resource
+        addObservationToBundle(Integer.parseInt(patient.getId()));
 
         // adding allergies resources for patient
         addFhirAllergiesToBundle(Integer.parseInt(patient.getId()));
@@ -256,6 +241,27 @@ public class FhirApi {
         }
     }
 
+    private void addObservationToBundle(Integer patientId) throws Exception{
+        // Observation resource
+        List<ObservationFull> observationFullList =  viewerDAL.getFhirObservation(patientId);
+
+        if(observationFullList.size() > 0) {
+            org.hl7.fhir.dstu3.model.ListResource observationListResource = ObservationList.getObservationResource();
+            observationListResource.setSubject(new Reference(patientResource));
+            if (CollectionUtils.isNotEmpty(observationFullList)) {
+                for (ObservationFull observationFull : observationFullList) {
+                    ObservationFhir observationFhir = new ObservationFhir(observationFull);
+                    org.hl7.fhir.dstu3.model.Observation observationResource = observationFhir.getObservationResource();
+                    observationResource.setPerformer(Arrays.asList(new Reference(getPractitionerRoleResource(new Integer(observationFull.getPractitionerId()), observationFull.getOrganizationId()))));
+                    observationResource.setSubject(new Reference(patientResource));
+                    bundle.addEntry().setResource(observationResource);
+                    observationListResource.addEntry().setItem(new Reference(observationResource));
+                };
+            }
+            bundle.addEntry().setResource(observationListResource);
+        }
+
+    }
     /*
        This method creates new organization resource for given organization id
        and add it to global organizationMap , if it is not available in global map

@@ -32,30 +32,27 @@ public class ObservationFhir {
         observation.addIdentifier()
                 .setSystem(OBSERVATION_IDENTIFIER).setValue(uuid.toString());
 
-        List<Extension> extensionList = new ArrayList<>();
+       // List<Extension> extensionList = new ArrayList<>();
         Extension extension = new Extension();
         extension.setUrl(OBSERVATION_DESCRIPTION);
-        extension.setValue(new StringType(observationFull.getName()));
-        extension.addChild(VALUE_STRING);
-        extensionList.add(extension);
+        StringType stringType = (StringType) extension.addChild(VALUE_STRING);
+        stringType.setValue(observationFull.getName());
 
-        Extension extension1 = new Extension();
-        Quantity typeQuantity = (Quantity) extension.addChild(VALUE_QUANTITY);
+        Quantity typeQuantity = (Quantity) observation.addChild(VALUE_QUANTITY);
         if(StringUtils.isNotEmpty(observationFull.getResultValue())) {
             typeQuantity.setValue(Long.parseLong(observationFull.getResultValue()));
         }
         typeQuantity.setSystem(OBSERVATION_QUANTITY_VALUE);
         typeQuantity.setUnit(observationFull.getResultValueUnits());
-        extensionList.add(extension1);
 
         CodeableConcept codeConcept = addCodeableConcept(observationFull.getCode(), observationFull.getDescription(), ResourceConstants.OBSERVATION_SYSTEM,
-                "");
-        codeConcept.setExtension(extensionList);
-        observation.setCode(codeConcept).addExtension(extension);
+                "",extension);
 
+        observation.setCode(codeConcept);
 
         return observation;
     }
+
 
     private Period getEffectiveDateTime(String date) {
         Period period = new Period();
@@ -68,13 +65,13 @@ public class ObservationFhir {
     }
 
 
-    private CodeableConcept addCodeableConcept(String codeValue, String displayValue, String systemValue, String idValue) {
+    private CodeableConcept addCodeableConcept(String codeValue, String displayValue, String systemValue, String idValue, Extension extension) {
         CodeableConcept code = new CodeableConcept();
         code.addCoding()
                 .setCode(codeValue)
                 .setDisplay(displayValue)
                 .setSystem(systemValue)
-                .setId(idValue);
+                .setId(idValue).addExtension(extension);
 
         return code;
     }
