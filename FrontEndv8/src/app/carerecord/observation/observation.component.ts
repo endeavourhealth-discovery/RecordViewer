@@ -53,27 +53,27 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     if (this.eventType==1) {
       this.eventTypeTitle = "Conditions";
       this.subTitle = "conditions (problems)";
-      this.icon = 'error_outline';
+      this.icon = 'fa-lungs';
     }
     else if (this.eventType==2) {
       this.eventTypeTitle = "Observations";
       this.subTitle = "general clinical observations";
-      this.icon = 'event_note';
+      this.icon = 'fa-book-medical';
     }
     else if (this.eventType==3) {
       this.eventTypeTitle = "Procedures";
       this.subTitle = "procedures";
-      this.icon = 'airline_seat_flat';
+      this.icon = 'fa-procedures';
     }
     else if (this.eventType==4) {
       this.eventTypeTitle = "Family History";
       this.subTitle = "family history";
-      this.icon = 'people_outline';
+      this.icon = 'fa-users';
     }
     else if (this.eventType==5) {
       this.eventTypeTitle = "Immunisations";
       this.subTitle = "immunisations";
-      this.icon = 'colorize';
+      this.icon = 'fa-syringe';
     }
 
     this.events = null;
