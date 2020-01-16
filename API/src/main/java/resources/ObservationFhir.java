@@ -39,9 +39,8 @@ public class ObservationFhir {
         stringType.setValue(observationFull.getName());
 
         Quantity typeQuantity = (Quantity) observation.addChild(VALUE_QUANTITY);
-        if(StringUtils.isNotEmpty(observationFull.getResultValue())) {
-            typeQuantity.setValue(Long.parseLong(observationFull.getResultValue()));
-        }
+        typeQuantity.setValue(observationFull.getResultValue());
+
         typeQuantity.setSystem(OBSERVATION_QUANTITY_VALUE);
         typeQuantity.setUnit(observationFull.getResultValueUnits());
 

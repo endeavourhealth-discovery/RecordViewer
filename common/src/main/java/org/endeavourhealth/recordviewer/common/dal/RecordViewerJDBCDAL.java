@@ -394,7 +394,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setPractitionerId(resultSet.getInt("practitionerId"))
                 .setOrganizationId(resultSet.getInt("organizationId"))
                 .setName(resultSet.getString("name"))
-                .setResultValue(resultSet.getString("resultValue"))
+                .setResultValue(resultSet.getDouble("resultValue"))
                 .setResultValueUnits(resultSet.getString("resultValueUnits"));
         return observationFull;
     }

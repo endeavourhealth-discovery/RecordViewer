@@ -3,7 +3,7 @@ package org.endeavourhealth.recordviewer.common.models;
 public class ObservationFull {
     private String date;
     private String description;
-    private String resultValue;
+    private double resultValue;
     private String resultValueUnits;
     private String code;
     private String name;
@@ -46,11 +46,11 @@ public class ObservationFull {
         return this;
     }
 
-    public String getResultValue() {
+    public double getResultValue() {
         return resultValue;
     }
 
-    public ObservationFull setResultValue(String resultValue) {
+    public ObservationFull setResultValue(double resultValue) {
         this.resultValue = resultValue;
         return this;
     }
