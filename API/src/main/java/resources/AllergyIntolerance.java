@@ -27,11 +27,9 @@ public class AllergyIntolerance {
          allergy.setId(UUID.randomUUID().toString());
 		allergy.setCode(code);
 
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			allergy.setAssertedDate(format.parse(allergyfull.getDate()));
-		} catch (Exception e) {
-		}
+
+			allergy.setAssertedDate(allergyfull.getDate());
+
 
 		return allergy;
 	}
