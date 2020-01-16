@@ -328,7 +328,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join patient_address a on a.id = p.current_address_id "+
                 "join concept c on c.dbid = p.gender_concept_id "+
                 "join episode_of_care e on e.patient_id = p.id "+
-                "where p.id = ? or p.nhs_number = ?";
+                "where e.date_registered_end is null and p.id = ? or p.nhs_number = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, id);
