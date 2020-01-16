@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.OBSERVATION_DESCRIPTION;
+import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.VALUE_STRING;
+
 public class MedicationStatement {
 
 	/**
@@ -108,16 +111,15 @@ public class MedicationStatement {
 		medicationRequest.addExtension(extension);
 
 		Extension extension1 = new Extension();
-		/*extension1.addChild(qUnit);
-		medicationRequest.addExtension(extension1);*/
+		extension1.setUrl("https://fhir.hl7.org.uk/STU3/StructureDefinition/Extension-CareConnect-MedicationQuantityText-1");
+		StringType stringType = (StringType) extension1.addChild(VALUE_STRING);
+		stringType.setValue(qUnit);
 
-		Quantity quantity = new Quantity();
-		quantity.getExtension().add(extension1);
-
-				org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestDispenseRequestComponent medicationRequestDispenseRequestComponent = new
+		org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestDispenseRequestComponent medicationRequestDispenseRequestComponent = new
 						MedicationRequest.MedicationRequestDispenseRequestComponent();
 		medicationRequestDispenseRequestComponent.getQuantity().setValue(qValue);
-				medicationRequest.setDispenseRequest(medicationRequestDispenseRequestComponent);
+		medicationRequestDispenseRequestComponent.getQuantity().addExtension(extension1);
+		medicationRequest.setDispenseRequest(medicationRequestDispenseRequestComponent);
 
 		return medicationRequest;
 	}
