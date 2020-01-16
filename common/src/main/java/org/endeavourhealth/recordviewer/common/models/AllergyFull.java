@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class AllergyFull {
 
-    private String date;
+    private Date date;
     private String status;
     private String name;
     private int organizationId;
@@ -40,22 +40,17 @@ public class AllergyFull {
 
     private String code;
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
 
 
     public AllergyFull setDate(Date date) {
-        try {
-            String pattern = "dd-MMM-yyyy";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-            this.date = simpleDateFormat.format(date);
-        }
-        catch (Exception e) {
 
-        }
+            this.date = date;
+
         return this;
     }
 

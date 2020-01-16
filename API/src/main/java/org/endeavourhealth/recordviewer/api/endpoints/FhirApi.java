@@ -174,7 +174,9 @@ public class FhirApi {
     */
     private void addFhirAllergiesToBundle(Integer patientId) throws Exception {
         List<AllergyFull> allergies = viewerDAL.getFhirAllergies(patientId);
+
         if (allergies.size() > 0) {
+
             //create AllergiesList Resource
             org.hl7.fhir.dstu3.model.ListResource fihrAllergyListObj = AllergyList.getAllergyListResource();
             //referencing patient resource reference here
