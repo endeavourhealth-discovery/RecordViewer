@@ -41,7 +41,7 @@ public class PractitionerRole {
                 .setDisplay(practitionerResult.getRoleDesc())
                 .setSystem(PRACTITIONER_ROLE_SYSTEM);
         practitionerRole.addCode(code);
-        
+
         return practitionerRole;
     }
 }

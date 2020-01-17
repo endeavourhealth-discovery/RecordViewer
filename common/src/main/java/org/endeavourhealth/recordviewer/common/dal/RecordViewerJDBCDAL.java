@@ -308,7 +308,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT p.id,"+
                 "coalesce(p.organization_id,'') as orglocation,"+
                 "coalesce(p.date_of_birth,'') as dob,"+
-                "coalesce(p.date_of_death,'') as dod,"+
+                "p.date_of_death as dod,"+
                 "coalesce(c.name,'') as gender,"+
                 "coalesce(p.nhs_number,'') as nhsNumber,"+
                 "coalesce(p.last_name,'') as lastname,"+
