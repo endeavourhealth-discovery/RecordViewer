@@ -24,12 +24,10 @@ public class AllergyIntolerance {
 				.setCode(allergyfull.getCode())
 				.setSystem("http://snomed.info/sct")
 				.setDisplay(allergyfull.getName());
-         allergy.setId(UUID.randomUUID().toString());
-		allergy.setCode(code);
+		allergy.setId(UUID.randomUUID().toString());
+        allergy.setCode(code);
 
-
-			allergy.setAssertedDate(allergyfull.getDate());
-
+		allergy.setAssertedDate(allergyfull.getDate());
 
 		return allergy;
 	}

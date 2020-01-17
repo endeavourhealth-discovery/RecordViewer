@@ -28,7 +28,6 @@ public class Condition {
         condition.setId(UUID.randomUUID().toString());
         condition.setCode(code);
 
-
         return condition;
     }
 }

@@ -48,6 +48,7 @@ public class Practitioner {
         } else {
             LOG.error("Something wrong in receiving Practitioner name details" + practitionerResult.getName());
         }
+
         return practitioner;
     }
 

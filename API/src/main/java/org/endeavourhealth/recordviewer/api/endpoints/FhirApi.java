@@ -101,7 +101,7 @@ public class FhirApi {
         addFhirAllergiesToBundle(Integer.parseInt(patient.getId()));
 
         // Adding MedicationStatement, MedicationRequest, Medication & MedicationStatementList to bundle
-        addFhirMedicationStatementToBundle(id);
+        addFhirMedicationStatementToBundle(Integer.parseInt(patient.getId()));
 
         //add conditions to bundle
         addFhirConditionsToBundle(Integer.parseInt(patient.getId()));

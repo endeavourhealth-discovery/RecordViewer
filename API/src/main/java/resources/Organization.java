@@ -23,6 +23,7 @@ public class Organization {
 			organization.addAddress()
 					.setPostalCode(organizationFull.getPostCode());
 		}
+
 		return organization;
 	}
 
