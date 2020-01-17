@@ -66,7 +66,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
       this.icon = 'fa-procedures';
     }
     else if (this.eventType==4) {
-      this.eventTypeTitle = "Family History";
+      this.eventTypeTitle = "Family history";
       this.subTitle = "family history";
       this.icon = 'fa-users';
     }

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class AllergyIntolerance {
 
-	public static org.hl7.fhir.dstu3.model.AllergyIntolerance getAllergyIntlResource(AllergyFull allergyfull)
+	public static org.hl7.fhir.dstu3.model.AllergyIntolerance getAllergyIntoleranceResource(AllergyFull allergyfull)
 	{
 		org.hl7.fhir.dstu3.model.AllergyIntolerance allergy = new org.hl7.fhir.dstu3.model.AllergyIntolerance();
 

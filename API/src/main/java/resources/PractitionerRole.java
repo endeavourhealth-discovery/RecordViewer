@@ -1,7 +1,7 @@
 package resources;
 
 import org.apache.commons.lang3.StringUtils;
-import org.endeavourhealth.recordviewer.common.models.PractitionerResult;
+import org.endeavourhealth.recordviewer.common.models.PractitionerFull;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.slf4j.Logger;
@@ -14,9 +14,9 @@ import static org.endeavourhealth.recordviewer.common.constants.ResourceConstant
 public class PractitionerRole {
     private static final Logger LOG = LoggerFactory.getLogger(PractitionerRole.class);
 
-    private PractitionerResult practitionerResult;
+    private PractitionerFull practitionerResult;
 
-    public PractitionerRole(PractitionerResult practitionerResult) {
+    public PractitionerRole(PractitionerFull practitionerResult) {
         this.practitionerResult = practitionerResult;
     }
 
@@ -37,8 +37,8 @@ public class PractitionerRole {
 
         CodeableConcept code = new CodeableConcept();
         code.addCoding()
-                .setCode(practitionerResult.getRole_code())
-                .setDisplay(practitionerResult.getRole_desc())
+                .setCode(practitionerResult.getRoleCode())
+                .setDisplay(practitionerResult.getRoleDesc())
                 .setSystem(PRACTITIONER_ROLE_SYSTEM);
         practitionerRole.addCode(code);
         return practitionerRole;

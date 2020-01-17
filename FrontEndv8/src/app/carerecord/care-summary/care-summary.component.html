@@ -5,7 +5,7 @@
     <div mat-card-avatar>
       <i class="fad fa-notes-medical"></i>
     </div>
-    <mat-card-title>Care Record Summary</mat-card-title>
+    <mat-card-title>Care record summary</mat-card-title>
     <mat-card-subtitle>A summary of the key care record events</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
@@ -13,7 +13,7 @@
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 mat-table-compact" *ngIf="events2" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Condition (Problem)</th>
+            <th mat-header-cell *matHeaderCellDef>Condition (problem)</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
@@ -34,7 +34,7 @@
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8 mat-table-compact" *ngIf="events3" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Allergies & Intolerances</th>
+            <th mat-header-cell *matHeaderCellDef>Allergies & intolerances</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
@@ -58,7 +58,7 @@
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8 mat-table-compact" *ngIf="events1" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Current Medication</th>
+            <th mat-header-cell *matHeaderCellDef>Current medication</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
           </ng-container>
 

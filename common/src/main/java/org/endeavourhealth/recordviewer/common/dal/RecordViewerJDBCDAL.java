@@ -10,7 +10,7 @@ import java.util.*;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-    public MedicationResult getMedication(Integer page, Integer size, Integer patientId) throws Exception {
+    public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId) throws Exception {
         MedicationResult result = new MedicationResult();
 
         String sql = "SELECT m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity \n" +
@@ -23,7 +23,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(2, page*15);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
-                result.setResults(getMedicationFromResultSet(resultSet));
+                result.setResults(getMedicationSummaryList(resultSet));
             }
         }
 
@@ -43,16 +43,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    private List<MedicationSummary> getMedicationFromResultSet(ResultSet resultSet) throws SQLException {
+    private List<MedicationSummary> getMedicationSummaryList(ResultSet resultSet) throws SQLException {
         List<MedicationSummary> result = new ArrayList<>();
         while (resultSet.next()) {
-            result.add(getMedication(resultSet));
+            result.add(getMedicationSummary(resultSet));
         }
 
         return result;
     }
 
-    public static MedicationSummary getMedication(ResultSet resultSet) throws SQLException {
+    public static MedicationSummary getMedicationSummary(ResultSet resultSet) throws SQLException {
         MedicationSummary medicationSummary = new MedicationSummary();
         medicationSummary
                 .setDate(resultSet.getDate("date"))
@@ -62,7 +62,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationSummary;
     }
 
-    public ObservationResult getObservation(Integer page, Integer size, Integer patientId, Integer eventType) throws Exception {
+    public ObservationResult getObservationResult(Integer page, Integer size, Integer patientId, Integer eventType) throws Exception {
         ObservationResult result = new ObservationResult();
 
         String sql = "";
@@ -143,7 +143,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(2, page*15);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
-                result.setResults(getObservationFromResultSet(resultSet));
+                result.setResults(getObservationSummaryList(resultSet));
             }
         }
 
@@ -158,16 +158,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    private List<ObservationSummary> getObservationFromResultSet(ResultSet resultSet) throws SQLException {
+    private List<ObservationSummary> getObservationSummaryList(ResultSet resultSet) throws SQLException {
         List<ObservationSummary> result = new ArrayList<>();
         while (resultSet.next()) {
-            result.add(getObservation(resultSet));
+            result.add(getObservationSummary(resultSet));
         }
 
         return result;
     }
 
-    public static ObservationSummary getObservation(ResultSet resultSet) throws SQLException {
+    public static ObservationSummary getObservationSummary(ResultSet resultSet) throws SQLException {
         ObservationSummary observationSummary = new ObservationSummary();
         observationSummary
                 .setDate(resultSet.getDate("date"))
@@ -176,7 +176,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return observationSummary;
     }
 
-    public PatientResult getPatients(Integer page, Integer size, String name, String nhsNumber) throws Exception {
+    public PatientResult getPatientResult(Integer page, Integer size, String name, String nhsNumber) throws Exception {
         PatientResult result = new PatientResult();
 
         String sql = "";
@@ -200,7 +200,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 statement.setInt(4, size);
 
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    result.setResults(getPatientFromResultSet(resultSet));
+                    result.setResults(getPatientSummaryList(resultSet));
                 }
             }
 
@@ -233,7 +233,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 statement.setInt(5, size);
 
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    result.setResults(getPatientFromResultSet(resultSet));
+                    result.setResults(getPatientSummaryList(resultSet));
                 }
             }
 
@@ -258,10 +258,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    private List<PatientSummary> getPatientFromResultSet(ResultSet resultSet) throws SQLException {
+    private List<PatientSummary> getPatientSummaryList(ResultSet resultSet) throws SQLException {
         List<PatientSummary> result = new ArrayList<>();
         while (resultSet.next()) {
-            result.add(getPatient(resultSet));
+            result.add(getPatientSummary(resultSet));
         }
 
         return result;
@@ -281,14 +281,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, patientId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
-                    result = getPatient(resultSet);
+                    result = getPatientSummary(resultSet);
             }
         }
 
         return result;
     }
 
-    public static PatientSummary getPatient(ResultSet resultSet) throws SQLException {
+    public static PatientSummary getPatientSummary(ResultSet resultSet) throws SQLException {
         PatientSummary patientSummary = new PatientSummary();
         patientSummary
                 .setId(resultSet.getString("id"))
@@ -302,7 +302,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return patientSummary;
     }
 
-    public PatientFull getFhirPatient(Integer id, String nhsNumber) throws Exception {
+    public PatientFull getPatientFull(Integer id, String nhsNumber) throws Exception {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
@@ -335,14 +335,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setString(2, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
-                    result = getFullPatient(resultSet);
+                    result = getPatientFull(resultSet);
             }
         }
 
         return result;
     }
 
-    public List<ObservationFull> getFhirObservation(Integer id) throws Exception {
+    public List<ObservationFull> getObservationFullList(Integer id) throws Exception {
         List<ObservationFull> observationFullList = new ArrayList<>();
 
         String sql = "SELECT o.clinical_effective_date as date," +
@@ -361,15 +361,15 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
-                    observationFullList.add(getFullObservation(resultSet));
+                    observationFullList.add(getObservationFull(resultSet));
             }
         }
 
         return observationFullList;
     }
 
-    public PractitionerResult getPractitioner(Integer practitionerId) throws Exception {
-        PractitionerResult result = null;
+    public PractitionerFull getPractitionerFull(Integer practitionerId) throws Exception {
+        PractitionerFull result = null;
 
         String sql = "select * from practitioner pr where id = ?";
 
@@ -377,7 +377,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, practitionerId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next())
-                    result = (getPractitioner(resultSet));
+                    result = (getPractitionerFull(resultSet));
             }
         } catch (Exception e) {
             System.out.println("exception===" + e.getMessage());
@@ -385,7 +385,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    public ObservationFull getFullObservation(ResultSet resultSet) throws SQLException {
+    public ObservationFull getObservationFull(ResultSet resultSet) throws SQLException {
         ObservationFull observationFull = new ObservationFull();
 
         observationFull.setCode(resultSet.getString("code"))
@@ -399,7 +399,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return observationFull;
     }
 
-    public static PatientFull getFullPatient(ResultSet resultSet) throws SQLException {
+    public static PatientFull getPatientFull(ResultSet resultSet) throws SQLException {
         PatientFull patient = new PatientFull();
 
         patient
@@ -426,18 +426,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return patient;
     }
 
-    private static PractitionerResult getPractitioner(ResultSet resultSet) throws SQLException {
-        PractitionerResult practitionerResult = new PractitionerResult();
+    private static PractitionerFull getPractitionerFull(ResultSet resultSet) throws SQLException {
+        PractitionerFull practitionerFull = new PractitionerFull();
 
-        practitionerResult.setId(resultSet.getString("id"))
+        practitionerFull.setId(resultSet.getString("id"))
                 .setName(resultSet.getString("name"))
-                .setRole_code(resultSet.getString("role_code"))
-                .setRole_desc(resultSet.getString("role_Desc"));
+                .setRoleCode(resultSet.getString("role_code"))
+                .setRoleDesc(resultSet.getString("role_Desc"));
 
-        return practitionerResult;
+        return practitionerFull;
     }
 
-    public AllergyResult getAllergy(Integer page, Integer size, Integer patientId) throws Exception {
+    public AllergyResult getAllergyResult(Integer page, Integer size, Integer patientId) throws Exception {
         AllergyResult result = new AllergyResult();
 
         String sql = "";
@@ -459,7 +459,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(2, page*15);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
-                result.setResults(getAllergyFromResultSet(resultSet));
+                result.setResults(getAllergySummaryList(resultSet));
             }
         }
 
@@ -474,16 +474,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    private List<AllergySummary> getAllergyFromResultSet(ResultSet resultSet) throws SQLException {
+    private List<AllergySummary> getAllergySummaryList(ResultSet resultSet) throws SQLException {
         List<AllergySummary> result = new ArrayList<>();
         while (resultSet.next()) {
-            result.add(getAllergy(resultSet));
+            result.add(getAllergySummary(resultSet));
         }
 
         return result;
     }
 
-    public static AllergySummary getAllergy(ResultSet resultSet) throws SQLException {
+    public static AllergySummary getAllergySummary(ResultSet resultSet) throws SQLException {
         AllergySummary allergySummary = new AllergySummary();
         allergySummary
                 .setDate(resultSet.getDate("date"))
@@ -492,23 +492,22 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergySummary;
     }
 
-    public List<AllergyFull>  getFhirAllergies(Integer patientid) throws Exception {
+    public List<AllergyFull> getAllergyFullList(Integer patientid) throws Exception {
         ArrayList<AllergyFull> allergiesFullList =null;
-    String sql = " SELECT a.clinical_effective_date as date, c.name ,c.code,a.organization_id,a.practitioner_id " +
+        String sql = " SELECT a.clinical_effective_date as date, c.name ,c.code,a.organization_id,a.practitioner_id " +
             " FROM allergy_intolerance a join concept c on c.dbid = a.non_core_concept_id where patient_id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientid);
             try (ResultSet resultSet = statement.executeQuery()) {
-
-                allergiesFullList= getFullAllergies(resultSet);
+                allergiesFullList = getAllergyFullList(resultSet);
             }
-
         }
+
         return allergiesFullList;
     }
 
-    public OrganizationFull getFhirOrganization(Integer organizationId) throws Exception {
+    public OrganizationFull getOrganizationFull(Integer organizationId) throws Exception {
 
         String sql = "select coalesce(ods_code,'') as ods_code," +
                      "coalesce(name,'') as name," +
@@ -518,24 +517,24 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, organizationId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
-                    return getFullOrganization(resultSet);
+                    return getOrganizationFull(resultSet);
             }
         }
 
         return new OrganizationFull();
     }
 
-    public static OrganizationFull getFullOrganization(ResultSet resultSet) throws SQLException {
+    public static OrganizationFull getOrganizationFull(ResultSet resultSet) throws SQLException {
         OrganizationFull organizationFull = new OrganizationFull();
         organizationFull
-                .setOdscode(resultSet.getString("ods_code"))
+                .setOdsCode(resultSet.getString("ods_code"))
                 .setName(resultSet.getString("name"))
-                .setPostcode(resultSet.getString("postcode"));
+                .setPostCode(resultSet.getString("postcode"));
 
         return organizationFull;
     }
 
-    public  ArrayList<AllergyFull> getFullAllergies(ResultSet resultSet) throws SQLException {
+    public ArrayList<AllergyFull> getAllergyFullList(ResultSet resultSet) throws SQLException {
         ArrayList<AllergyFull> allergylist=new ArrayList<AllergyFull>();
         if(null !=resultSet) {
             while (resultSet.next()) {
@@ -552,13 +551,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergylist;
     }
 
-    /**
-     *
-     * @param patientId
-     * @return
-     * @throws Exception
-     */
-    public List<MedicationStatementFull> getFhirMedicationStatement(Integer patientId) throws Exception {
+    public List<MedicationStatementFull> getMedicationStatementFullList(Integer patientId) throws Exception {
         List<MedicationStatementFull> result = null;
         String sql = "select ms.id as msid, c.name, c.code, " +
                 "coalesce(ms.clinical_effective_date,'') as clinicalEffDt, " +
@@ -574,19 +567,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
             try (ResultSet resultSet = statement.executeQuery()) {
-                result = getFullMedicationStatementList(resultSet);
+                result = getMedicationStatementFullList(resultSet);
             }
         }
         return result;
     }
 
-    /**
-     *
-     * @param resultSet
-     * @return
-     * @throws SQLException
-     */
-    public static List<MedicationStatementFull> getFullMedicationStatementList(ResultSet resultSet) throws SQLException {
+    public static List<MedicationStatementFull> getMedicationStatementFullList(ResultSet resultSet) throws SQLException {
         List<MedicationStatementFull> medicationStatementList = new ArrayList<MedicationStatementFull>();
         while (resultSet.next()) {
             MedicationStatementFull medicationStatement = new MedicationStatementFull();
@@ -603,13 +590,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationStatementList;
     }
 
-    /**
-     *
-     * @param msId
-     * @return
-     * @throws Exception
-     */
-    public List<MedicationOrderFull> getFhirMedicationRequest(Integer msId) throws Exception {
+    public List<MedicationOrderFull> getMedicationOrderFullList(Integer msId) throws Exception {
         List<MedicationOrderFull> result = null;
         String sql = "SELECT mo.id, mo.practitioner_id as prid, mo.organization_id as oid, mo.medication_statement_id as msid, mo.clinical_effective_date as clinicalEffDt, mo.dose, mo.quantity_unit as qUnit, " +
                 "mo.quantity_value as qValue FROM medication_order mo join concept c on c.dbid=mo.non_core_concept_id where mo.medication_statement_id=? order by clinical_effective_date, msid";
@@ -617,19 +598,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, msId);
             try (ResultSet resultSet = statement.executeQuery()) {
-                result = getFullMedicationRequestList(resultSet);
+                result = getMedicationOrderFullList(resultSet);
             }
         }
         return result;
     }
 
-    /**
-     *
-     * @param resultSet
-     * @return
-     * @throws SQLException
-     */
-    public static List<MedicationOrderFull> getFullMedicationRequestList(ResultSet resultSet) throws SQLException {
+    public static List<MedicationOrderFull> getMedicationOrderFullList(ResultSet resultSet) throws SQLException {
         List<MedicationOrderFull> medicationOrderList = new ArrayList<MedicationOrderFull>();
         while (resultSet.next()) {
             MedicationOrderFull medicationOrder = new MedicationOrderFull();
@@ -646,8 +621,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationOrderList;
     }
 
-    //
-    public List<ConditionFull>  getFhirConditions(Integer patientid) throws Exception {
+    public List<ConditionFull>  getConditionFullList(Integer patientid) throws Exception {
         ArrayList<ConditionFull> conditionFullList =null;
         String sql = " SELECT a.clinical_effective_date as date,IF(ISNULL(a.problem_end_date), 'active', 'resolved') AS ClinicalStatus," +
                 " c.name ,c.code " +
@@ -656,13 +630,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, patientid);
             try (ResultSet resultSet = statement.executeQuery()) {
 
-                conditionFullList= getFullConditions(resultSet);
+                conditionFullList= getConditionFullList(resultSet);
             }
 
         }
         return conditionFullList;
     }
-    public  ArrayList<ConditionFull> getFullConditions(ResultSet resultSet) throws SQLException {
+
+    public  ArrayList<ConditionFull> getConditionFullList(ResultSet resultSet) throws SQLException {
         ArrayList<ConditionFull> conditionlist=new ArrayList<ConditionFull>();
         if(null !=resultSet) {
             while (resultSet.next()) {

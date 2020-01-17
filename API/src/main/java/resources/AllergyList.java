@@ -26,6 +26,6 @@ public class AllergyList {
                 .setCode(" event-date")
                 .setSystem("http://hl7.org/fhir/list-order");
        allergyList.setOrderedBy(orderbycode);
-        return allergyList;
+       return allergyList;
     }
 }

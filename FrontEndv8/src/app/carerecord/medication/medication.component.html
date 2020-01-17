@@ -12,7 +12,7 @@
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Current Medication</th>
+          <th mat-header-cell *matHeaderCellDef>Current medication</th>
           <td mat-cell *matCellDef="let element"> {{element.name}} </td>
         </ng-container>
         <ng-container matColumnDef="dose">
@@ -24,7 +24,7 @@
           <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
         </ng-container>
         <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date Prescribed</th>
+          <th mat-header-cell *matHeaderCellDef>Date prescribed</th>
           <td mat-cell *matCellDef="let element"> {{element.date}} </td>
         </ng-container>
 

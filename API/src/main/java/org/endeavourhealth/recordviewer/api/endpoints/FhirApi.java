@@ -77,7 +77,7 @@ public class FhirApi {
         viewerDAL = new RecordViewerJDBCDAL();
 
         PatientFull patient = null;
-        patient = viewerDAL.getFhirPatient(id, nhsNumber);
+        patient = viewerDAL.getPatientFull(id, nhsNumber);
         if (patient == null)
             throw new ResourceNotFoundException("Patient resource with id = '" + nhsNumber + "' not found");
         Patient fhirPatient = new Patient();
@@ -127,7 +127,7 @@ public class FhirApi {
             return (org.hl7.fhir.dstu3.model.PractitionerRole) practitionerAndRoleResource.get(practitionerId).get(1);
         }
 
-        PractitionerResult practitionerResult = viewerDAL.getPractitioner(practitionerId);
+        PractitionerFull practitionerResult = viewerDAL.getPractitionerFull(practitionerId);
         resources.Practitioner practitioner = new resources.Practitioner(practitionerResult);
         org.hl7.fhir.dstu3.model.Practitioner practitionerResource = practitioner.getPractitionerResource();
 
@@ -150,7 +150,7 @@ public class FhirApi {
     author:pp141
     */
     private void addFhirConditionsToBundle(Integer patientId) throws Exception {
-        List<ConditionFull> conditions = viewerDAL.getFhirConditions(patientId);
+        List<ConditionFull> conditions = viewerDAL.getConditionFullList(patientId);
         if (conditions.size() > 0) {
             //create AllergiesList Resource
             org.hl7.fhir.dstu3.model.ListResource fihrConditionListObj = ConditionList.getConditionListResource();
@@ -173,7 +173,7 @@ public class FhirApi {
     author :pp141
     */
     private void addFhirAllergiesToBundle(Integer patientId) throws Exception {
-        List<AllergyFull> allergies = viewerDAL.getFhirAllergies(patientId);
+        List<AllergyFull> allergies = viewerDAL.getAllergyFullList(patientId);
 
         if (allergies.size() > 0) {
 
@@ -182,7 +182,7 @@ public class FhirApi {
             //referencing patient resource reference here
             fihrAllergyListObj.setSubject(new Reference(patientResource));
             for (AllergyFull allegyFull : allergies) {
-                org.hl7.fhir.dstu3.model.AllergyIntolerance allergyFhirObj = AllergyIntolerance.getAllergyIntlResource(allegyFull);
+                org.hl7.fhir.dstu3.model.AllergyIntolerance allergyFhirObj = AllergyIntolerance.getAllergyIntoleranceResource(allegyFull);
                 Integer organizationID = new Integer(allegyFull.getOrganizationId());
                 allergyFhirObj.setAsserter(new Reference(getPractitionerRoleResource(new Integer(allegyFull.getPractitionerId()), organizationID)));
 
@@ -196,14 +196,14 @@ public class FhirApi {
 
     private void addObservationToBundle(Integer patientId) throws Exception{
         // Observation resource
-        List<ObservationFull> observationFullList =  viewerDAL.getFhirObservation(patientId);
+        List<ObservationFull> observationFullList =  viewerDAL.getObservationFullList(patientId);
 
         if(observationFullList.size() > 0) {
             org.hl7.fhir.dstu3.model.ListResource observationListResource = ObservationList.getObservationResource();
             observationListResource.setSubject(new Reference(patientResource));
             if (CollectionUtils.isNotEmpty(observationFullList)) {
                 for (ObservationFull observationFull : observationFullList) {
-                    ObservationFhir observationFhir = new ObservationFhir(observationFull);
+                    Observation observationFhir = new Observation(observationFull);
                     org.hl7.fhir.dstu3.model.Observation observationResource = observationFhir.getObservationResource();
                     observationResource.setPerformer(Arrays.asList(new Reference(getPractitionerRoleResource(new Integer(observationFull.getPractitionerId()), observationFull.getOrganizationId()))));
                     observationResource.setSubject(new Reference(patientResource));
@@ -226,7 +226,7 @@ public class FhirApi {
         org.hl7.fhir.dstu3.model.MedicationStatement medicationStatementResource = null;
         org.hl7.fhir.dstu3.model.Medication medicationResource = null;
 
-        medicationStatementList = viewerDAL.getFhirMedicationStatement(patientId);
+        medicationStatementList = viewerDAL.getMedicationStatementFullList(patientId);
         if (medicationStatementList != null || medicationStatementList.size() > 0) {
             org.hl7.fhir.dstu3.model.ListResource fhirMedicationStatementList =  MedicationStatementList.getMedicationStatementListResource();
             fhirMedicationStatementList.setSubject(new Reference(patientResource));
@@ -244,7 +244,7 @@ public class FhirApi {
                 List<MedicationOrderFull> medicationRequestList = null;
                 org.hl7.fhir.dstu3.model.MedicationRequest medicationRequestResource = null;
 
-                medicationRequestList = viewerDAL.getFhirMedicationRequest(medicationStatementFull.getId());
+                medicationRequestList = viewerDAL.getMedicationOrderFullList(medicationStatementFull.getId());
                 if (medicationRequestList != null || medicationRequestList.size() > 0) {
 
                     List<Reference> primaryMedReqRefList = new ArrayList<Reference>();
@@ -281,8 +281,8 @@ public class FhirApi {
      */
     private org.hl7.fhir.dstu3.model.Organization getOrganizationFhirObj(Integer organizationID) throws Exception {
         if (!organizationFhirMap.containsKey(organizationID)) {
-            OrganizationFull patient_organization = viewerDAL.getFhirOrganization(organizationID);
-            organizationFhirMap.put(organizationID, Organization.getOrgFhirResource(patient_organization));
+            OrganizationFull patient_organization = viewerDAL.getOrganizationFull(organizationID);
+            organizationFhirMap.put(organizationID, Organization.getOrganizationResource(patient_organization));
         }
         return organizationFhirMap.get(organizationID);
     }

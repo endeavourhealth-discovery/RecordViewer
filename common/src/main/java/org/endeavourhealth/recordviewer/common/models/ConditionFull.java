@@ -5,6 +5,14 @@ import java.util.Date;
 
 public class ConditionFull {
 
+    private  String clinicalStatus;
+    private Date date;
+    private String code;
+    private String name;
+    public Date getDate() {
+        return date;
+    }
+
     public String getClinicalStatus() {
         return clinicalStatus;
     }
@@ -14,20 +22,9 @@ public class ConditionFull {
         return this;
     }
 
-    private  String clinicalStatus;
-    private Date date;
-    private String code;
-    private String name;
-    public Date getDate() {
-        return date;
-    }
-
     public ConditionFull setDate(Date date) {
-
-            this.date = (date);
-
+        this.date = (date);
         return this;
-
     }
 
     public String getCode() {

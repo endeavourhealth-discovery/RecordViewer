@@ -9,7 +9,8 @@ public class AllergyFull {
     private String status;
     private String name;
     private int organizationId;
-    private int PractitionerId;
+    private int practitionerId;
+    private String code;
 
     public int getOrganizationId() {
         return organizationId;
@@ -21,11 +22,11 @@ public class AllergyFull {
     }
 
     public int getPractitionerId() {
-        return PractitionerId;
+        return practitionerId;
     }
 
     public AllergyFull setPractitionerId(int practitionerId) {
-        PractitionerId = practitionerId;
+        practitionerId = practitionerId;
         return this;
     }
 
@@ -38,19 +39,12 @@ public class AllergyFull {
         return this;
     }
 
-    private String code;
-
     public Date getDate() {
         return date;
     }
 
-
-
     public AllergyFull setDate(Date date) {
-
-
-            this.date = date;
-
+        this.date = date;
         return this;
     }
 

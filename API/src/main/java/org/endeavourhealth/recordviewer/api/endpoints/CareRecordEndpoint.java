@@ -27,7 +27,7 @@ public class CareRecordEndpoint {
         LOG.debug("getMedication");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            MedicationResult result = viewerDAL.getMedication(page, size, patientId);
+            MedicationResult result = viewerDAL.getMedicationResult(page, size, patientId);
 
             return Response
                     .ok()
@@ -48,7 +48,7 @@ public class CareRecordEndpoint {
         LOG.debug("getObservation");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            ObservationResult result = viewerDAL.getObservation(page, size, patientId, eventType);
+            ObservationResult result = viewerDAL.getObservationResult(page, size, patientId, eventType);
 
             return Response
                     .ok()
@@ -68,7 +68,7 @@ public class CareRecordEndpoint {
         LOG.debug("getAllergy");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            AllergyResult result = viewerDAL.getAllergy(page, size, patientId);
+            AllergyResult result = viewerDAL.getAllergyResult(page, size, patientId);
 
             return Response
                     .ok()
@@ -89,7 +89,7 @@ public class CareRecordEndpoint {
         LOG.debug("getPatients");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            PatientResult result = viewerDAL.getPatients(page, size, name, nhsNumber);
+            PatientResult result = viewerDAL.getPatientResult(page, size, name, nhsNumber);
 
             return Response
                     .ok()
@@ -125,7 +125,7 @@ public class CareRecordEndpoint {
         LOG.debug("getDemographic");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            PatientFull result = viewerDAL.getFhirPatient(patientId, "0");
+            PatientFull result = viewerDAL.getPatientFull(patientId, "0");
 
             return Response
                     .ok()

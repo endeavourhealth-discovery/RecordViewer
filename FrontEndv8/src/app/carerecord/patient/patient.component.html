@@ -3,7 +3,7 @@
     <div mat-card-avatar>
       <i class="fad fa-search"></i>
     </div>
-    <mat-card-title>Find Patient</mat-card-title>
+    <mat-card-title>Find patient</mat-card-title>
     <mat-card-subtitle>Use any of the criteria below to find the required patient</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
@@ -16,7 +16,7 @@
       </mat-grid-tile>
       <mat-grid-tile>
         <mat-form-field appearance="outline">
-          <mat-label>NHS Number</mat-label>
+          <mat-label>NHS number</mat-label>
           <input matInput placeholder="NHS Number" [(ngModel)]="nhsNumber" (keyup)="patientEntered($event)">
         </mat-form-field>
       </mat-grid-tile>
@@ -28,7 +28,7 @@
       </mat-grid-tile>
       <mat-grid-tile>
         <mat-form-field class="example-full-width" appearance="outline">
-          <mat-label>Date of Birth</mat-label>
+          <mat-label>Date of birth</mat-label>
           <input matInput [matDatepicker]="picker" placeholder="Date of Birth" [(ngModel)]="dob">
           <mat-datepicker-toggle matSuffix [for]="picker">
             <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
@@ -55,11 +55,11 @@
           <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
         </ng-container>
         <ng-container matColumnDef="dob">
-          <th mat-header-cell *matHeaderCellDef>Date of Birth</th>
+          <th mat-header-cell *matHeaderCellDef>Date of birth</th>
           <td mat-cell *matCellDef="let element"> {{element.dob}} </td>
         </ng-container>
         <ng-container matColumnDef="nhsNumber">
-          <th mat-header-cell *matHeaderCellDef>NHS Number</th>
+          <th mat-header-cell *matHeaderCellDef>NHS number</th>
           <td mat-cell *matCellDef="let element"> {{element.nhsNumber}} </td>
         </ng-container>
         <ng-container matColumnDef="address">

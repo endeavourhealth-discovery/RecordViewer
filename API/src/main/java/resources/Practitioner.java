@@ -1,7 +1,7 @@
 package resources;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.endeavourhealth.recordviewer.common.models.PractitionerResult;
+import org.endeavourhealth.recordviewer.common.models.PractitionerFull;
 import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.slf4j.Logger;
@@ -18,9 +18,9 @@ import static org.endeavourhealth.recordviewer.common.constants.ResourceConstant
 public class Practitioner {
     private static final Logger LOG = LoggerFactory.getLogger(Practitioner.class);
 
-    private PractitionerResult practitionerResult;
+    private PractitionerFull practitionerResult;
 
-    public Practitioner(PractitionerResult practitionerResult) {
+    public Practitioner(PractitionerFull practitionerResult) {
         this.practitionerResult = practitionerResult;
     }
 

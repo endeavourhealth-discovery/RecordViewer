@@ -45,7 +45,7 @@ export class AllergyComponent implements OnInit, AfterViewInit {
   }
 
   loadEvents() {
-    this.eventTypeTitle = "Allergies & Intolerances";
+    this.eventTypeTitle = "Allergies & intolerances";
     this.subTitle = "allergies & intolerances";
     this.icon = 'warning';
 
