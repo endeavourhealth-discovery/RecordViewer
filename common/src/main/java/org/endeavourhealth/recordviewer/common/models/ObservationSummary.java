@@ -33,9 +33,16 @@ public class ObservationSummary {
     }
 
     public ObservationSummary setName(String name) {
-        this.name = name.replaceAll("Product containing precisely ","");
-        this.name = this.name.replaceAll("Product containing ","");
-        this.name = toTitleCase(this.name);
+        this.name = name.replaceAll("Product containing precisely ","").
+        replaceAll("Product containing ","").
+        replaceAll("\\(finding\\)","").
+        replaceAll("\\(procedure\\)","").
+        replaceAll("\\(disorder\\)","").
+        replaceAll("\\(situation\\)","").
+        replaceAll("\\(observable entity\\)","").
+        replaceAll("On examination - ","");
+
+        //this.name = toTitleCase(this.name);
         return this;
     }
 

@@ -85,10 +85,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             case 2: // observations
                 sql = "SELECT o.clinical_effective_date as date," +
                         "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
-                        "ELSE 'Past' END as status,c.name " +
+                        "ELSE 'Past' END as status,concat(c.name,' ',coalesce(o.result_value,''),' ',coalesce(o.result_value_units,'')) as name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? "+
+                        "and c.name not like '%(procedure)' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        "order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -127,12 +129,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%immunisation%' order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%immunisation%'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%')"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
                 break;
             default:
                 // code block
