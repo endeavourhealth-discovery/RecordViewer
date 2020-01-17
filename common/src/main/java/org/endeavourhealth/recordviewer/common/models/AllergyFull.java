@@ -26,7 +26,7 @@ public class AllergyFull {
     }
 
     public AllergyFull setPractitionerId(int practitionerId) {
-        practitionerId = practitionerId;
+        this.practitionerId = practitionerId;
         return this;
     }
 
