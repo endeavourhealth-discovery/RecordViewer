@@ -656,4 +656,35 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return conditionlist;
     }
 
+    public List<EncounterFull> getEncounterFullList(Integer patientid) throws Exception {
+        ArrayList<EncounterFull> encounterFullList =null;
+        String sql = " SELECT  coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
+                     " FROM encounter e LEFT JOIN concept c on c.dbid = e.non_core_concept_id where patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientid);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                encounterFullList = getEncounterFullList(resultSet);
+            }
+        }
+
+        return encounterFullList;
+    }
+
+    public ArrayList<EncounterFull> getEncounterFullList(ResultSet resultSet) throws SQLException {
+        ArrayList<EncounterFull> encounterFullList=new ArrayList<EncounterFull>();
+        if(null !=resultSet) {
+            while (resultSet.next()) {
+                EncounterFull allergyDtls = new EncounterFull();
+                allergyDtls
+                        .setName(resultSet.getString("name"))
+                        .setCode(resultSet.getString("code"))
+                        .setCode(resultSet.getString("code"));
+
+                encounterFullList.add(allergyDtls);
+            }
+        }
+        return encounterFullList;
+    }
+
 }
