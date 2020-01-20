@@ -2,16 +2,16 @@ package org.endeavourhealth.recordviewer.common.models;
 
 public class OrganizationFull {
 
-    private String odscode;
+    private String odsCode;
     private String name;
-    private String postcode;
+    private String postCode;
 
-    public String getOdscode() {
-        return odscode;
+    public String getOdsCode() {
+        return odsCode;
     }
 
-    public OrganizationFull setOdscode(String odscode) {
-        this.odscode = odscode;
+    public OrganizationFull setOdsCode(String odsCode) {
+        this.odsCode = odsCode;
         return this;
     }
 
@@ -24,12 +24,12 @@ public class OrganizationFull {
         return this;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public String getPostCode() {
+        return postCode;
     }
 
-    public OrganizationFull setPostcode(String postcode) {
-        this.postcode = postcode;
+    public OrganizationFull setPostCode(String postCode) {
+        this.postCode = postCode;
         return this;
     }
 

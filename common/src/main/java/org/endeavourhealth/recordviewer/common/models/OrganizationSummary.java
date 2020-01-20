@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrganizationSummary {
 
-    private String odscode;
+    private String odsCode;
     private String name;
-    private String postcode;
+    private String postCode;
 
-    public String getOdscode() {
-        return odscode;
+    public String getOdsCode() {
+        return odsCode;
     }
 
-    public OrganizationSummary setOdscode(String odscode) {
-        this.odscode = odscode;
+    public OrganizationSummary setOdsCode(String odsCode) {
+        this.odsCode = odsCode;
         return this;
     }
 
@@ -27,12 +27,12 @@ public class OrganizationSummary {
         return this;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public String getPostCode() {
+        return postCode;
     }
 
-    public OrganizationSummary setPostcode(String postcode) {
-        this.postcode = postcode;
+    public OrganizationSummary setPostCode(String postCode) {
+        this.postCode = postCode;
         return this;
     }
 

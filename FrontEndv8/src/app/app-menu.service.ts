@@ -38,23 +38,23 @@ export class AppMenuService implements  AbstractMenuProvider {
 
   getMenuOptions(): MenuOption[] {
     return [
-      {icon: 'http', caption: 'FHIR Care Connect API', state: 'fhir'},
-      {icon: 'account_circle', caption: 'Patient Demographics', state: 'demographic'},
-      {icon: 'list_alt', caption: 'Care Record Summary', state: 'summary'},
-      {icon: 'error_outline', caption: 'Conditions', state: 'condition'},
-      {icon: 'enhanced_encryption', caption: 'Medication', state: 'medication'},
-      {icon: 'notifications_active', caption: 'Warnings', state: 'observation'},
-      {icon: 'event_note', caption: 'Observations', state: 'observation'},
-      {icon: 'bar_chart', caption: 'Investigations', state: 'values'},
-      {icon: 'warning', caption: 'Allergies', state: 'allergy'},
-      {icon: 'supervised_user_circle', caption: 'Encounters', state: 'observation'},
-      {icon: 'airline_seat_flat', caption: 'Procedures', state: 'procedure'},
-      {icon: 'local_hospital', caption: 'Procedure requests', state: 'observation'},
-      {icon: 'apartment', caption: 'Referrals', state: 'observation'},
-      {icon: 'poll', caption: 'Diagnostic Reports', state: 'observation'},
-      {icon: 'people_alt', caption: 'Family history', state: 'family'},
-      {icon: 'colorize', caption: 'Immunisations', state: 'immunisation'},
-      {icon: 'today', caption: 'Appointments', state: 'observation'}
+      {icon: 'fas fa-fire-alt', caption: 'FHIR Care Connect API', state: 'fhir'},
+      {icon: 'fas fa-address-card', caption: 'Patient demographics', state: 'demographic'},
+      {icon: 'fas fa-notes-medical', caption: 'Care record summary', state: 'summary'},
+      {icon: 'fas fa-lungs', caption: 'Conditions', state: 'condition'},
+      {icon: 'fas fa-prescription-bottle-alt', caption: 'Medication', state: 'medication'},
+      {icon: 'fas fa-exclamation-triangle', caption: 'Warnings', state: 'observation'},
+      {icon: 'fas fa-book-medical', caption: 'Observations', state: 'observation'},
+      {icon: 'fas fa-file-medical-alt', caption: 'Investigations', state: 'values'},
+      {icon: 'fas fa-allergies', caption: 'Allergies', state: 'allergy'},
+      {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'observation'},
+      {icon: 'fas fa-procedures', caption: 'Procedures', state: 'procedure'},
+      {icon: 'fas fa-hospital', caption: 'Procedure requests', state: 'observation'},
+      {icon: 'fas fa-hospital-user', caption: 'Referrals', state: 'observation'},
+      {icon: 'fas fa-x-ray', caption: 'Diagnostic reports', state: 'observation'},
+      {icon: 'fas fa-users', caption: 'Family history', state: 'family'},
+      {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
+      {icon: 'fas fa-calendar-alt', caption: 'Appointments', state: 'observation'}
     ];
   }
 }

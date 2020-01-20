@@ -20,12 +20,13 @@ public class AllergyList {
                 .setCode("886921000000105")
                 .setSystem("http://snomed.info/sct")
                 .setDisplay("Allergies and adverse reaction");
-
+        allergyList.setCode(code);
         CodeableConcept orderbycode = new CodeableConcept();
-        code.addCoding()
+        orderbycode.addCoding()
                 .setCode(" event-date")
                 .setSystem("http://hl7.org/fhir/list-order");
-       allergyList.setOrderedBy(orderbycode);
-        return allergyList;
+        allergyList.setOrderedBy(orderbycode);
+
+       return allergyList;
     }
 }

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class AllergyIntolerance {
 
-	public static org.hl7.fhir.dstu3.model.AllergyIntolerance getAllergyIntlResource(AllergyFull allergyfull)
+	public static org.hl7.fhir.dstu3.model.AllergyIntolerance getAllergyIntoleranceResource(AllergyFull allergyfull)
 	{
 		org.hl7.fhir.dstu3.model.AllergyIntolerance allergy = new org.hl7.fhir.dstu3.model.AllergyIntolerance();
 
@@ -24,14 +24,10 @@ public class AllergyIntolerance {
 				.setCode(allergyfull.getCode())
 				.setSystem("http://snomed.info/sct")
 				.setDisplay(allergyfull.getName());
-         allergy.setId(UUID.randomUUID().toString());
-		allergy.setCode(code);
+		allergy.setId(UUID.randomUUID().toString());
+        allergy.setCode(code);
 
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			allergy.setAssertedDate(format.parse(allergyfull.getDate()));
-		} catch (Exception e) {
-		}
+		allergy.setAssertedDate(allergyfull.getDate());
 
 		return allergy;
 	}

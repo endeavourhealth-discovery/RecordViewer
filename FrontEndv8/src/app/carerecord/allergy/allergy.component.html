@@ -3,7 +3,7 @@
   </app-precis>
   <mat-card-header class="header2">
     <div mat-card-avatar>
-      <mat-icon>{{icon}}</mat-icon>
+      <i class="fad fa-allergies"></i>
     </div>
     <mat-card-title>{{eventTypeTitle}}</mat-card-title>
     <mat-card-subtitle>A record of the patient's {{subTitle}}.</mat-card-subtitle>
@@ -20,7 +20,7 @@
           <td mat-cell *matCellDef="let element"> {{element.status}} </td>
         </ng-container>
         <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date Diagnosed</th>
+          <th mat-header-cell *matHeaderCellDef>Date diagnosed</th>
           <td mat-cell *matCellDef="let element"> {{element.date}} </td>
         </ng-container>
 
