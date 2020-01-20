@@ -675,13 +675,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         ArrayList<EncounterFull> encounterFullList=new ArrayList<EncounterFull>();
         if(null !=resultSet) {
             while (resultSet.next()) {
-                EncounterFull allergyDtls = new EncounterFull();
-                allergyDtls
+                EncounterFull encounterFull = new EncounterFull();
+                encounterFull
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
-                        .setCode(resultSet.getString("code"));
+                        .setCode(resultSet.getString("status"));
 
-                encounterFullList.add(allergyDtls);
+                encounterFullList.add(encounterFull);
             }
         }
         return encounterFullList;

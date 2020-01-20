@@ -97,8 +97,12 @@ public class FhirApi {
         //Observation Resource
         addObservationToBundle(Integer.parseInt(patient.getId()));
 
-        // adding allergies resources for patient
+        // adding allergies resources for bundle
         addFhirAllergiesToBundle(Integer.parseInt(patient.getId()));
+
+        // adding encounter resources for bundle
+        addFhirEncountersToBundle(Integer.parseInt(patient.getId()));
+
 
         // Adding MedicationStatement, MedicationRequest, Medication & MedicationStatementList to bundle
         addFhirMedicationStatementToBundle(Integer.parseInt(patient.getId()));
@@ -297,6 +301,24 @@ public class FhirApi {
             while (iter.hasNext()) {
                 bundle.addEntry().setResource((org.hl7.fhir.dstu3.model.Resource) organizationFhirMap.get(iter.next()));
             }
+        }
+    }
+
+    /*
+    Create Encounters FhirResources and adds to the bundle
+    author :pp141
+    */
+    private void addFhirEncountersToBundle(Integer patientId) throws Exception {
+        List<EncounterFull> encounterFullLis = viewerDAL.getEncounterFullList(patientId);
+
+        if (encounterFullLis.size() > 0) {
+
+            for (EncounterFull encounterFull : encounterFullLis) {
+                org.hl7.fhir.dstu3.model.Encounter encounterObj = Encounter.getEncounterResource(encounterFull);
+                encounterObj.setSubject(new Reference(patientResource));
+                bundle.addEntry().setResource(encounterObj);
+            }
+
         }
     }
 }
