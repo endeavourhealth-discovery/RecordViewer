@@ -344,6 +344,39 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    public List<EpisodeOfCareFull> getEpisodeOfCareFull(Integer id) throws Exception {
+        List<EpisodeOfCareFull> episodeOfCareFullResult = new ArrayList<>();;
+
+        String sql = "SELECT coalesce(e.date_registered, '') as dateRegistered," +
+                "coalesce(e.date_registered_end, '') as dateRegisteredEnd, " +
+                "coalesce(e.organization_id, '') as organizationId, " +
+                "coalesce(e.usual_gp_practitioner_id, '') as practitionerId, " +
+                "coalesce(co.code, '') as code," +
+                "coalesce(co.description, '') as description " +
+                "FROM episode_of_care e join concept co on e.registration_type_concept_id = co.dbid " +
+                "where e.patient_id = ? order by e.organization_id";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    episodeOfCareFullResult.add(getEpisodeOfCareFull(resultSet));
+            }
+        }
+        return episodeOfCareFullResult;
+    }
+
+    private EpisodeOfCareFull getEpisodeOfCareFull(ResultSet resultSet) throws Exception {
+        EpisodeOfCareFull episodeOfCareFull = new EpisodeOfCareFull();
+
+        episodeOfCareFull.setCode(resultSet.getString("code"))
+                .setDateRegistered(resultSet.getString("dateRegistered"))
+                .setDateRegisteredEnd(resultSet.getString("dateRegisteredEnd"))
+                .setDescription(resultSet.getString("description"));
+
+        return episodeOfCareFull;
+    }
+
     public List<ObservationFull> getObservationFullList(Integer id) throws Exception {
         List<ObservationFull> observationFullList = new ArrayList<>();
 
@@ -381,8 +414,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 while (resultSet.next())
                     result = (getPractitionerFull(resultSet));
             }
-        } catch (Exception e) {
-            System.out.println("exception===" + e.getMessage());
         }
         return result;
     }
@@ -428,7 +459,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return patient;
     }
 
-    private static PractitionerFull getPractitionerFull(ResultSet resultSet) throws SQLException {
+    private PractitionerFull getPractitionerFull(ResultSet resultSet) throws SQLException {
         PractitionerFull practitionerFull = new PractitionerFull();
 
         practitionerFull.setId(resultSet.getString("id"))

@@ -23,4 +23,7 @@ public class ResourceConstants {
     public static final String VALUE_STRING = "valueString";
     public static final String VALUE_QUANTITY = "valueQuantity";
 
+    //Episode Of Care
+    public static final String EPISODE_OF_CARE_TYPE_CODING = "http://terminology.hl7.org/CodeSystem/episodeofcare-type";
+
 }

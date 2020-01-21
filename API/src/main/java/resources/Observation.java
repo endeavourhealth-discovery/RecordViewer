@@ -1,19 +1,19 @@
 package resources;
 
-import org.apache.commons.lang3.StringUtils;
 import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.ObservationFull;
 import org.hl7.fhir.dstu3.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.*;
 
 public class Observation {
+    private static final Logger LOG = LoggerFactory.getLogger(Observation.class);
     private ObservationFull observationFull;
 
     public Observation(ObservationFull observationFull) {
@@ -59,6 +59,7 @@ public class Observation {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             period.setStart(format.parse(date));
         } catch (Exception e) {
+            LOG.error(e.getMessage());
         }
         return period;
     }
