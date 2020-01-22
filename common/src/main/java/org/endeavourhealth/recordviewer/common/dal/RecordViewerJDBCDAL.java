@@ -687,10 +687,20 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return conditionlist;
     }
 
-    public List<EncounterFull> getEncounterFullList(Integer patientid) throws Exception {
+    public List<EncounterFull> getEncounterFullList(Integer patientid,boolean isPatient) throws Exception {
         ArrayList<EncounterFull> encounterFullList =null;
-        String sql = " SELECT  coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
-                     " FROM encounter e LEFT JOIN concept c on c.dbid = e.non_core_concept_id where patient_id = ?";
+        String sql = " SELECT  e.id,coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
+                     " FROM encounter e LEFT JOIN concept c on c.dbid = e.non_core_concept_id ";
+        String where_clause="";
+        if(isPatient)
+        {
+            where_clause=  " where e.patient_id =?";
+        }
+        else
+        {
+            where_clause= " where e.id =?";
+        }
+        sql=sql+where_clause;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientid);
@@ -710,12 +720,59 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 encounterFull
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
+                        .setEncounterid(resultSet.getInt("id"))
                         .setCode(resultSet.getString("status"));
 
                 encounterFullList.add(encounterFull);
             }
         }
         return encounterFullList;
+    }
+
+
+    //immunizations
+
+    public List<ImmunizationFull> getImmunizationsFullList(Integer patientid) throws Exception {
+        ArrayList<ImmunizationFull> immunizationFullList =null;
+        String sql = " SELECT o.clinical_effective_date as cfd, coalesce(o.encounter_id ,'') as encounterid ,coalesce(o.practitioner_id,''), c.name ,c.code  " +
+                     " FROM observation o  join concept c on c.dbid = o.non_core_concept_id " +
+                     " where patient_id = ? and c.name like '%immunisation%' ";
+
+        /* sql = " SELECT o.clinical_effective_date as cfd, coalesce(o.encounter_id ,'') as encounterid ,coalesce(o.practitioner_id,'') as practitionerid, c.name ,c.code  " +
+                " FROM observation o  join concept c on c.dbid = o.non_core_concept_id " +
+                " where patient_id = ?";
+                System.out.println(sql);*/
+
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientid);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                immunizationFullList = getImmunizationFullList(resultSet);
+            }
+        }
+
+        return immunizationFullList;
+    }
+
+    public ArrayList<ImmunizationFull> getImmunizationFullList(ResultSet resultSet) throws SQLException {
+        ArrayList<ImmunizationFull> immunizationFullList=new ArrayList<ImmunizationFull>();
+        if(null !=resultSet) {
+            while (resultSet.next()) {
+                ImmunizationFull immunizationFull = new ImmunizationFull();
+                immunizationFull
+                        .setName(resultSet.getString("name"))
+                        .setCode(resultSet.getString("code"))
+                        .setClinicalEffectiveDate(resultSet.getDate("cfd"))
+                        .setEncounterID(resultSet.getString("encounterid"))
+                        .setPractitionerID(resultSet.getString("practitionerid"));
+
+
+
+
+                immunizationFullList.add(immunizationFull);
+            }
+        }
+        return immunizationFullList;
     }
 
 }

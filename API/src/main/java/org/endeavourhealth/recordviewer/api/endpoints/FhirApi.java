@@ -26,7 +26,8 @@ import java.util.*;
 public class FhirApi {
     private static final Logger LOG = LoggerFactory.getLogger(FhirApi.class);
 
-    HashMap<Integer, org.hl7.fhir.dstu3.model.Organization> organizationFhirMap;
+    HashMap<Integer, Resource> organizationFhirMap;
+    HashMap<Integer, Resource> encounterFhirMap;
     Map<Integer, List<Resource>> practitionerAndRoleResource;
     RecordViewerJDBCDAL viewerDAL;
     Bundle bundle;
@@ -72,6 +73,7 @@ public class FhirApi {
 
     public JSONObject getFhirBundle(Integer id, String nhsNumber) throws Exception {
         organizationFhirMap = new HashMap<>();
+        encounterFhirMap = new HashMap<>();
         //Practitioner and PractitionerRole Resource
         practitionerAndRoleResource = new HashedMap<>();
         viewerDAL = new RecordViewerJDBCDAL();
@@ -113,6 +115,9 @@ public class FhirApi {
         addFhirConditionsToBundle(patientId);
 
         addEpisodeOfCareToBundle(patientId);
+
+        //add immunizations to undle
+        addFhirImmunizationsToBundle(patientId);
 
         addToBundle("organizations");
         // bundle.addEntry().setResource(practitionerResource);
@@ -328,7 +333,7 @@ public class FhirApi {
        and returns the organization resource from global organizationMap
        author :pp141
      */
-    private org.hl7.fhir.dstu3.model.Organization getOrganizationFhirObj(Integer organizationID) throws Exception {
+    private Resource getOrganizationFhirObj(Integer organizationID) throws Exception {
         if (!organizationFhirMap.containsKey(organizationID)) {
             OrganizationFull patient_organization = viewerDAL.getOrganizationFull(organizationID);
             organizationFhirMap.put(organizationID, Organization.getOrganizationResource(patient_organization));
@@ -354,16 +359,62 @@ public class FhirApi {
     author :pp141
     */
     private void addFhirEncountersToBundle(Integer patientId) throws Exception {
-        List<EncounterFull> encounterFullLis = viewerDAL.getEncounterFullList(patientId);
+        List<EncounterFull> encounterFullList = viewerDAL.getEncounterFullList(patientId,true);
 
-        if (encounterFullLis.size() > 0) {
+        if (encounterFullList.size() > 0) {
 
-            for (EncounterFull encounterFull : encounterFullLis) {
+            for (EncounterFull encounterFull : encounterFullList) {
                 org.hl7.fhir.dstu3.model.Encounter encounterObj = Encounter.getEncounterResource(encounterFull);
                 encounterObj.setSubject(new Reference(patientResource));
-                bundle.addEntry().setResource(encounterObj);
+                Integer encounterID=new Integer(encounterFull.getEncounterid());
+                if (!encounterFhirMap.containsKey(encounterID)) {
+                    encounterFhirMap.put(encounterID, encounterObj);
+                    bundle.addEntry().setResource(encounterObj);
+                }
+                }
             }
 
         }
+
+
+    /*
+   Create Encounters FhirResource and adds to the bundle
+   author :pp141
+   */
+    private Resource getEncounterFhirObj(Integer encounterID) throws Exception {
+
+        if (!encounterFhirMap.containsKey(encounterID)) {
+            List<EncounterFull> encounterFullLis = viewerDAL.getEncounterFullList(encounterID, false);
+            EncounterFull encounterFull = encounterFullLis.get(0);
+            org.hl7.fhir.dstu3.model.Encounter encounterObj = Encounter.getEncounterResource(encounterFull);
+            encounterObj.setSubject(new Reference(patientResource));
+            encounterFhirMap.put(encounterID, encounterObj);
+            bundle.addEntry().setResource(encounterObj);
+        }
+            return encounterFhirMap.get(encounterID);
     }
+
+    /*
+   Create Encounters FhirResources and adds to the bundle
+   author :pp141
+   */
+    private void addFhirImmunizationsToBundle(Integer patientId) throws Exception {
+        List<ImmunizationFull> immunizationfullList= viewerDAL.getImmunizationsFullList(patientId);
+
+        if (immunizationfullList.size() > 0) {
+
+            for (ImmunizationFull immunizationFull : immunizationfullList) {
+                org.hl7.fhir.dstu3.model.Immunization immunizationObj = Immunization.getImmunizationResource(immunizationFull);
+                immunizationObj.setPatient(new Reference(patientResource));
+                if(immunizationFull.getEncounterID().trim().length()>0)
+                immunizationObj.setEncounter(new Reference(getEncounterFhirObj(Integer.parseInt(immunizationFull.getEncounterID()))));
+                if(immunizationFull.getPractitionerID().trim().length()>0)
+                immunizationObj.setEncounter(new Reference(getPractitionerResource( Integer.parseInt(immunizationFull.getPractitionerID()))));
+                bundle.addEntry().setResource(immunizationObj);
+                }
+            }
+        }
+
+
+
 }

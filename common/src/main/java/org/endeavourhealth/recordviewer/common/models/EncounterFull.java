@@ -5,6 +5,15 @@ public class EncounterFull {
         return status;
     }
 
+    public int getEncounterid() {
+        return encounterid;
+    }
+
+    public EncounterFull setEncounterid(int encounterid) {
+        this.encounterid = encounterid;
+        return this;
+    }
+
     public EncounterFull setStatus(String status) {
         this.status = status;
         return this;
@@ -31,4 +40,5 @@ public class EncounterFull {
     private String status;
     private String name;
     private String code;
+    private int encounterid;
 }
