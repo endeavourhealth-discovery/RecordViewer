@@ -409,7 +409,7 @@ public class FhirApi {
                 if(immunizationFull.getEncounterID().trim().length()>0)
                 immunizationObj.setEncounter(new Reference(getEncounterFhirObj(Integer.parseInt(immunizationFull.getEncounterID()))));
                 if(immunizationFull.getPractitionerID().trim().length()>0)
-                immunizationObj.setEncounter(new Reference(getPractitionerResource( Integer.parseInt(immunizationFull.getPractitionerID()))));
+                immunizationObj.addPractitioner().setActor(new Reference(getPractitionerResource( Integer.parseInt(immunizationFull.getPractitionerID()))));
                 bundle.addEntry().setResource(immunizationObj);
                 }
             }
