@@ -107,9 +107,11 @@ public class FhirApi {
         // adding encounter resources for bundle
         addFhirEncountersToBundle(patientId);
 
-
         // Adding MedicationStatement, MedicationRequest, Medication & MedicationStatementList to bundle
         addFhirMedicationStatementToBundle(patientId);
+
+        // Adding Appointment to bundle
+        addFhirAppointmentToBundle(Integer.parseInt(patient.getId()));
 
         //add conditions to bundle
         addFhirConditionsToBundle(patientId);
@@ -415,6 +417,29 @@ public class FhirApi {
             }
         }
 
+    /**
+     * Method to add Appointment FHIR resource to bundle
+     *
+     * @param patientId
+     * @throws Exception
+     */
+    private void addFhirAppointmentToBundle(Integer patientId) throws Exception {
+        List<AppointmentFull> appointmentList = null;
+        org.hl7.fhir.dstu3.model.Appointment appointmentResource = null;
 
+        appointmentList = viewerDAL.getAppointmentFullList(patientId);
+        if (appointmentList != null || appointmentList.size() > 0) {
+            Appointment fhirAppointment = new Appointment();
+
+            for (AppointmentFull appointmentFull : appointmentList) {
+                appointmentResource = fhirAppointment.getAppointmentResource(appointmentFull);
+
+                //appointmentResource.addSlot(new Reference(patientResource));
+                appointmentResource.addParticipant().setActor(new Reference(patientResource));
+
+                bundle.addEntry().setResource(appointmentResource);
+            }
+        }
+    }
 
 }

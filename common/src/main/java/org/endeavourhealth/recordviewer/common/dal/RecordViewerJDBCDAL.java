@@ -775,4 +775,32 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return immunizationFullList;
     }
 
+    public List<AppointmentFull> getAppointmentFullList(Integer patientId) throws Exception {
+        List<AppointmentFull> result = null;
+        String sql = "SELECT a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type" +
+                " FROM appointment a join schedule s on a.schedule_id = s.id where a.patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result = getAppointmentFullList(resultSet);
+            }
+        }
+        return result;
+    }
+
+    public static List<AppointmentFull> getAppointmentFullList(ResultSet resultSet) throws SQLException {
+        List<AppointmentFull> appointmentList = new ArrayList<AppointmentFull>();
+        while (resultSet.next()) {
+            AppointmentFull appointment = new AppointmentFull();
+            appointment
+                    .setActualDuration(resultSet.getInt("actualDura"))
+                    .setStartDate(resultSet.getString("startDt"))
+                    .setPlannedDuration(resultSet.getInt("plannedDura"))
+                    .setType(resultSet.getString("type"));
+            appointmentList.add(appointment);
+        }
+        return appointmentList;
+    }
+
 }
