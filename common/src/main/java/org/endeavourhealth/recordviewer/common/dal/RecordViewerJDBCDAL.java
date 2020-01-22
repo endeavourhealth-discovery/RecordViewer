@@ -721,7 +721,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
                         .setEncounterid(resultSet.getInt("id"))
-                        .setCode(resultSet.getString("status"));
+                        .setStatus(resultSet.getString("status"));
 
                 encounterFullList.add(encounterFull);
             }
