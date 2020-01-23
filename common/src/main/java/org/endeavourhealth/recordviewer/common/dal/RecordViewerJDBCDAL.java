@@ -352,7 +352,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(e.organization_id, '') as organizationId, " +
                 "coalesce(e.usual_gp_practitioner_id, '') as practitionerId, " +
                 "coalesce(co.code, '') as code," +
-                "coalesce(co.description, '') as description " +
+                "coalesce(co.name, '') as name " +
                 "FROM episode_of_care e join concept co on e.registration_type_concept_id = co.dbid " +
                 "where e.patient_id = ? order by e.organization_id";
 
@@ -372,7 +372,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         episodeOfCareFull.setCode(resultSet.getString("code"))
                 .setDateRegistered(resultSet.getString("dateRegistered"))
                 .setDateRegisteredEnd(resultSet.getString("dateRegisteredEnd"))
-                .setDescription(resultSet.getString("description"));
+                .setName(resultSet.getString("name"));
 
         return episodeOfCareFull;
     }
@@ -416,6 +416,36 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             }
         }
         return result;
+    }
+
+    public List<ProcedureFull> getProcedureFull(Integer patientId) throws Exception {
+        List<ProcedureFull> procedureList = new ArrayList<>();
+
+        String sql = "SELECT coalesce(o.clinical_effective_date, '') as date," +
+                "CASE WHEN o.problem_end_date IS NULL THEN 'Active'\n" +
+                "ELSE 'Past' END as status,c.name, c.code\n" +
+                "FROM observation o\n" +
+                "join concept c on c.dbid = o.non_core_concept_id\n" +
+                "where patient_id = ? and c.name like '%(procedure)' order by o.clinical_effective_date DESC";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next())
+                    procedureList.add(getProcedure(resultSet));
+            }
+        }
+        return procedureList;
+    }
+
+    private ProcedureFull getProcedure(ResultSet resultSet) throws SQLException {
+        ProcedureFull procedureFull = new ProcedureFull();
+
+        procedureFull.setDate(resultSet.getDate("date"))
+                .setCode(resultSet.getString("status"))
+                .setName(resultSet.getString("name"))
+                .setCode(resultSet.getString("code"));
+        return procedureFull;
     }
 
     public ObservationFull getObservationFull(ResultSet resultSet) throws SQLException {

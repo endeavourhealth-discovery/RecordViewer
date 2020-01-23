@@ -80,7 +80,7 @@ public class EpisodeOfCare {
         Coding coding = new Coding();
         coding.setSystem(EPISODE_OF_CARE_TYPE_CODING);
         coding.setCode(episodeOfCareFull.getCode());
-        coding.setDisplay(episodeOfCareFull.getDescription());
+        coding.setDisplay(episodeOfCareFull.getName());
         return codeableConcept.addCoding(coding);
     }
 

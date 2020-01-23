@@ -98,13 +98,10 @@ public class FhirApi {
 
         Integer patientId = Integer.parseInt(patient.getId());
 
-        //Observation Resource
         addObservationToBundle(patientId);
 
-        // adding allergies resources for bundle
         addFhirAllergiesToBundle(patientId);
 
-        // adding encounter resources for bundle
         addFhirEncountersToBundle(patientId);
 
         // Adding MedicationStatement, MedicationRequest, Medication & MedicationStatementList to bundle
@@ -118,11 +115,12 @@ public class FhirApi {
 
         addEpisodeOfCareToBundle(patientId);
 
-        //add immunizations to undle
+        addProcedureToBundle(patientId);
+
         addFhirImmunizationsToBundle(patientId);
 
         addToBundle("organizations");
-        // bundle.addEntry().setResource(practitionerResource);
+
         if (MapUtils.isNotEmpty(practitionerAndRoleResource)) {
             for (Map.Entry entry : practitionerAndRoleResource.entrySet()) {
                 List<Resource> resourceList = (List) entry.getValue();
@@ -394,6 +392,21 @@ public class FhirApi {
             bundle.addEntry().setResource(encounterObj);
         }
             return encounterFhirMap.get(encounterID);
+    }
+
+    private void addProcedureToBundle(Integer patientId) throws Exception {
+        patientId = 94686;
+        List<ProcedureFull> procedureFullList= viewerDAL.getProcedureFull(patientId);
+
+        if (CollectionUtils.isNotEmpty(procedureFullList)) {
+
+            for (ProcedureFull procedureFull : procedureFullList) {
+                Procedure procedureObj = new Procedure(procedureFull);
+                org.hl7.fhir.dstu3.model.Procedure procedureResource = procedureObj.getProcedureResource();
+               procedureResource.setSubject(new Reference(patientResource));
+                bundle.addEntry().setResource(procedureResource);
+            }
+        }
     }
 
     /*

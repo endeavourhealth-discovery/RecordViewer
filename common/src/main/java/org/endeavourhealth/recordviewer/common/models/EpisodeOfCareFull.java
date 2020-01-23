@@ -2,7 +2,7 @@ package org.endeavourhealth.recordviewer.common.models;
 
 public class EpisodeOfCareFull {
     private String code;
-    private String description;
+    private String name;
     private String dateRegistered;
     private String dateRegisteredEnd;
     private int organizationId;
@@ -17,12 +17,12 @@ public class EpisodeOfCareFull {
         return this;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public EpisodeOfCareFull setDescription(String description) {
-        this.description = description;
+    public EpisodeOfCareFull setName(String name) {
+        this.name = name;
         return this;
     }
 
