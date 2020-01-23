@@ -395,7 +395,6 @@ public class FhirApi {
     }
 
     private void addProcedureToBundle(Integer patientId) throws Exception {
-        patientId = 94686;
         List<ProcedureFull> procedureFullList= viewerDAL.getProcedureFull(patientId);
 
         if (CollectionUtils.isNotEmpty(procedureFullList)) {
