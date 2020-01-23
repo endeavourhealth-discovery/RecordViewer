@@ -442,7 +442,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         ProcedureFull procedureFull = new ProcedureFull();
 
         procedureFull.setDate(resultSet.getDate("date"))
-                .setCode(resultSet.getString("status"))
+                .setStatus(resultSet.getString("status"))
                 .setName(resultSet.getString("name"))
                 .setCode(resultSet.getString("code"));
         return procedureFull;
