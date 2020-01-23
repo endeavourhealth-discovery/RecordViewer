@@ -32,6 +32,7 @@ public class Appointment {
 		org.hl7.fhir.dstu3.model.Appointment appointment = new org.hl7.fhir.dstu3.model.Appointment();
 
 		appointment.setId(String.valueOf(id));
+		appointment.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Appointment-1");
 		appointment.setMinutesDuration(actualDuration);
 		appointment.setCreated(startDt);
 

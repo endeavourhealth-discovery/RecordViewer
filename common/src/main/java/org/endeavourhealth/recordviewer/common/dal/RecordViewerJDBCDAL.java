@@ -833,4 +833,48 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return appointmentList;
     }
 
+    /**
+     *
+     * @param patientId
+     * @return
+     * @throws Exception
+     */
+    public List<FamilyMemberHistoryFull> getFamilyMemberHistoryFullList(Integer patientId) throws Exception {
+        List<FamilyMemberHistoryFull> result = null;
+        String sql = "SELECT o.clinical_effective_date as date," +
+                "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
+                "ELSE 'Past' END as status,c.name,c.code " +
+                "FROM observation o " +
+                "join concept c on c.dbid = o.non_core_concept_id \n"+
+                "where patient_id = ? and c.name like '%family history%' order by o.clinical_effective_date DESC";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result = getFamilyMemberHistoryFullList(resultSet);
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    public static List<FamilyMemberHistoryFull> getFamilyMemberHistoryFullList(ResultSet resultSet) throws SQLException {
+        List<FamilyMemberHistoryFull> familyMemberHistoryList = new ArrayList<FamilyMemberHistoryFull>();
+        while (resultSet.next()) {
+            FamilyMemberHistoryFull familyMemberHistory = new FamilyMemberHistoryFull();
+            familyMemberHistory
+                    .setDate(resultSet.getString("date"))
+                    .setStatus(resultSet.getString("status"))
+                    .setName(resultSet.getString("name"))
+                    .setCode(resultSet.getString("code"));
+            familyMemberHistoryList.add(familyMemberHistory);
+        }
+        return familyMemberHistoryList;
+    }
+
 }
