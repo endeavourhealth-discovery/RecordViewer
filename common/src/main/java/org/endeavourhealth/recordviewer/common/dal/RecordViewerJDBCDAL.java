@@ -448,6 +448,37 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return procedureFull;
     }
 
+    public LocationFull getLocation(Integer organizationId) throws Exception {
+        LocationFull locationFull = new LocationFull();
+
+        String sql = "SELECT coalesce(l.name, '') as name, " +
+                "coalesce(l.type_code, '') as code, " +
+                "coalesce(l.type_desc,'') as description, " +
+                "coalesce(l.postcode, '') as postcode " +
+                "from location l " +
+                "where l.managing_organization_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, organizationId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next())
+                    locationFull = getLocation(resultSet);
+            }
+        }
+        return locationFull;
+    }
+
+    private LocationFull getLocation(ResultSet resultSet) throws SQLException {
+        LocationFull locationFull = new LocationFull();
+
+        locationFull.setName(resultSet.getString("name"))
+                .setCode(resultSet.getString("code"))
+                .setDesc(resultSet.getString("description"))
+                .setPostCode(resultSet.getString("postCode"));
+
+        return locationFull;
+    }
+
     public ObservationFull getObservationFull(ResultSet resultSet) throws SQLException {
         ObservationFull observationFull = new ObservationFull();
 

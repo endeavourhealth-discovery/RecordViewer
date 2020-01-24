@@ -8,6 +8,7 @@ import models.ResourceNotFoundException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.lang3.StringUtils;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
 import org.endeavourhealth.recordviewer.common.models.*;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -107,17 +108,17 @@ public class FhirApi {
         // Adding MedicationStatement, MedicationRequest, Medication & MedicationStatementList to bundle
         addFhirMedicationStatementToBundle(patientId);
 
-        // Adding Appointment to bundle
         addFhirAppointmentToBundle(patientId);
 
-        addFhirFamilyMemberHistoryToBundle(patientId);
+        addFhirAppointmentToBundle(patientId);
 
-        //add conditions to bundle
         addFhirConditionsToBundle(patientId);
 
         addEpisodeOfCareToBundle(patientId);
 
         addProcedureToBundle(patientId);
+
+        addLocationToBundle(patient.getOrglocation());
 
         addFhirImmunizationsToBundle(patientId);
 
@@ -209,7 +210,17 @@ public class FhirApi {
                 bundle.addEntry().setResource(episodeOfCare);
             }
         }
+    }
 
+    private void addLocationToBundle(String organizationId) throws Exception {
+        if (StringUtils.isNotEmpty(organizationId)) {
+            LocationFull locationFull = viewerDAL.getLocation(Integer.parseInt(organizationId));
+            Location location = new Location(locationFull);
+            org.hl7.fhir.dstu3.model.Location locationModel = location.getLocationResource();
+
+            locationModel.setManagingOrganization(new Reference(organizationId));
+            bundle.addEntry().setResource(locationModel);
+        }
     }
 
     private Map<Integer,List<EpisodeOfCareFull>> getOrganizationList(List<EpisodeOfCareFull> episodeOfCareFullList){
@@ -452,30 +463,6 @@ public class FhirApi {
                 appointmentResource.addParticipant().setActor(new Reference(patientResource));
 
                 bundle.addEntry().setResource(appointmentResource);
-            }
-        }
-    }
-
-    /**
-     * Method to add FamilyMemberHistory FHIR resource to bundle
-     *
-     * @param patientId
-     * @throws Exception
-     */
-    private void addFhirFamilyMemberHistoryToBundle(Integer patientId) throws Exception {
-        List<FamilyMemberHistoryFull> familyMemberHistoryList = null;
-        org.hl7.fhir.dstu3.model.FamilyMemberHistory familyMemberHistoryResource = null;
-
-        familyMemberHistoryList = viewerDAL.getFamilyMemberHistoryFullList(patientId);
-        if (familyMemberHistoryList != null || familyMemberHistoryList.size() > 0) {
-            FamilyMemberHistory familyMemberHistory = new FamilyMemberHistory();
-
-            for (FamilyMemberHistoryFull familyMemberHistoryFull : familyMemberHistoryList) {
-                familyMemberHistoryResource = familyMemberHistory.getFamilyMemberHistoryResource(familyMemberHistoryFull);
-
-                familyMemberHistoryResource.setPatient(new Reference(patientResource));
-
-                bundle.addEntry().setResource(familyMemberHistoryResource);
             }
         }
     }

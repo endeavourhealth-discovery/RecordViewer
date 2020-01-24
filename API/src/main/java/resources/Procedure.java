@@ -1,7 +1,5 @@
 package resources;
 
-import org.endeavourhealth.recordviewer.common.models.EpisodeOfCareFull;
-import org.endeavourhealth.recordviewer.common.models.PractitionerFull;
 import org.endeavourhealth.recordviewer.common.models.ProcedureFull;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -12,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.*;
+import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.PROCEDURE_SYSTEM;
 
 public class Procedure {
-    private static final Logger LOG = LoggerFactory.getLogger(PractitionerRole.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Procedure.class);
 
     private ProcedureFull procedureFull;
 

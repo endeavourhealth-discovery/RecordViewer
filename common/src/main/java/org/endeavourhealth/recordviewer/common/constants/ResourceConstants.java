@@ -26,6 +26,9 @@ public class ResourceConstants {
     //Episode Of Care
     public static final String EPISODE_OF_CARE_TYPE_CODING = "http://terminology.hl7.org/CodeSystem/episodeofcare-type";
 
+    //Location
+    public static final String LOCATION_SYSTEM = "http://terminology.hl7.org/CodeSystem/location-physical-type";
+
     //Procedure
     public static final String PROCEDURE_SYSTEM = "http://snomed.info/sct";
 
