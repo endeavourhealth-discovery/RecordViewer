@@ -110,7 +110,7 @@ public class FhirApi {
 
         addFhirAppointmentToBundle(patientId);
 
-        addFhirAppointmentToBundle(patientId);
+        addFhirFamilyMemberHistoryToBundle(patientId);
 
         addFhirConditionsToBundle(patientId);
 
@@ -463,6 +463,30 @@ public class FhirApi {
                 appointmentResource.addParticipant().setActor(new Reference(patientResource));
 
                 bundle.addEntry().setResource(appointmentResource);
+            }
+        }
+    }
+
+    /**
+     * Method to add FamilyMemberHistory FHIR resource to bundle
+     *
+     * @param patientId
+     * @throws Exception
+     */
+    private void addFhirFamilyMemberHistoryToBundle(Integer patientId) throws Exception {
+        List<FamilyMemberHistoryFull> familyMemberHistoryList = null;
+        org.hl7.fhir.dstu3.model.FamilyMemberHistory familyMemberHistoryResource = null;
+
+        familyMemberHistoryList = viewerDAL.getFamilyMemberHistoryFullList(patientId);
+        if (familyMemberHistoryList != null || familyMemberHistoryList.size() > 0) {
+            FamilyMemberHistory familyMemberHistory = new FamilyMemberHistory();
+
+            for (FamilyMemberHistoryFull familyMemberHistoryFull : familyMemberHistoryList) {
+                familyMemberHistoryResource = familyMemberHistory.getFamilyMemberHistoryResource(familyMemberHistoryFull);
+
+                familyMemberHistoryResource.setPatient(new Reference(patientResource));
+
+                bundle.addEntry().setResource(familyMemberHistoryResource);
             }
         }
     }
