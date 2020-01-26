@@ -122,6 +122,8 @@ public class FhirApi {
 
         addFhirImmunizationsToBundle(patientId);
 
+        addFhirReferralRequestsToBundle(patientId);
+
         addToBundle("organizations");
 
         if (MapUtils.isNotEmpty(practitionerAndRoleResource)) {
@@ -487,6 +489,30 @@ public class FhirApi {
                 familyMemberHistoryResource.setPatient(new Reference(patientResource));
 
                 bundle.addEntry().setResource(familyMemberHistoryResource);
+            }
+        }
+    }
+
+    /*
+  Create Encounters FhirResources and adds to the bundle
+  author :pp141
+  */
+    private void addFhirReferralRequestsToBundle(Integer patientId) throws Exception {
+        List<ReferralRequestFull> referralRequestFullList= viewerDAL.getReferralRequestFullList(patientId);
+
+        if (referralRequestFullList.size() > 0) {
+
+            for (ReferralRequestFull referralRequestFull : referralRequestFullList) {
+                org.hl7.fhir.dstu3.model.ReferralRequest referralRequest = ReferralRequest.getReferralRequestResource(referralRequestFull);
+                referralRequest.setSubject(new Reference(patientResource));
+                if(referralRequestFull.getRecipientOrganizationId()!=null) {
+                    List<Reference> recipients=new ArrayList<>();
+                    recipients.add(new Reference(getOrganizationFhirObj(Integer.parseInt(referralRequestFull.getRecipientOrganizationId()))));
+                    referralRequest.setRecipient(recipients);
+                }
+                    if(referralRequestFull.getPractitionerId()!=null)
+                        referralRequest.setRequester(new org.hl7.fhir.dstu3.model.ReferralRequest.ReferralRequestRequesterComponent(new Reference(getPractitionerResource( Integer.parseInt(referralRequestFull.getPractitionerId())))));
+                    bundle.addEntry().setResource(referralRequest);
             }
         }
     }

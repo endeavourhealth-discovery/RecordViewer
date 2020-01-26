@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
@@ -906,6 +907,61 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             familyMemberHistoryList.add(familyMemberHistory);
         }
         return familyMemberHistoryList;
+    }
+
+
+    //ReferralRequest
+
+    public List<ReferralRequestFull> getReferralRequestFullList(Integer patientid) throws Exception {
+        ArrayList<ReferralRequestFull> referralRequestFullList =null;
+        String sql = "SELECT rr.practitioner_id ,rr.recipient_organization_id as recipent_orgid,rr.mode as intent,rr.clinical_effective_date as authored_on, "+
+                " priorityConcept.name as priority, "+
+                " refferalConcept.code as type_code, refferalConcept.name as type_display, "+
+                " specialityConcept.name as speciality_name, specialityConcept.code as speciality_code "+
+                " FROM referral_request rr "+
+                " LEFT JOIN "+
+                " concept priorityConcept "+
+                " ON priorityConcept.dbid  = rr.referral_request_priority_concept_id "+
+                " LEFT JOIN "+
+                " concept refferalConcept "+
+                " ON refferalConcept.dbid = rr.referral_request_type_concept_id "+
+                " LEFT JOIN " +
+                " concept specialityConcept" +
+                " ON specialityConcept.dbid = rr.non_core_concept_id "+
+
+                " where rr.patient_id=? ";
+
+
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientid);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                referralRequestFullList = getReferralRequestFullList(resultSet);
+            }
+        }
+
+        return referralRequestFullList;
+    }
+
+    private ArrayList<ReferralRequestFull> getReferralRequestFullList(ResultSet resultSet) throws SQLException {
+        ArrayList<ReferralRequestFull> referralRequestFullList=new ArrayList<ReferralRequestFull>();
+        if(null !=resultSet) {
+            while (resultSet.next()) {
+                ReferralRequestFull referralRequestFull = new ReferralRequestFull();
+                referralRequestFull
+                        .setPractitionerId(resultSet.getString("practitioner_id"))
+                        .setRecipientOrganizationId(resultSet.getString("recipent_orgid"))
+                        .setIntent(resultSet.getString("intent"))
+                        .setClinicalEffectiveDate(resultSet.getDate("authored_on"))
+                        .setPriority(resultSet.getString("priority"))
+                        .setTypeCode(resultSet.getString("type_code"))
+                        .setTypeDisplay(resultSet.getString("type_display"))
+                        .setSpecialityName(resultSet.getString("speciality_name"))
+                        .setSpecialityCode(resultSet.getString("speciality_code"));
+                referralRequestFullList.add(referralRequestFull);
+            }
+        }
+        return referralRequestFullList;
     }
 
 }
