@@ -57,6 +57,52 @@ public class Appointment {
 
 	/**
 	 *
+	 * @param appointmentResult
+	 * @return
+	 * @throws Exception
+	 */
+	public org.hl7.fhir.dstu3.model.Slot getSlotResource(AppointmentFull appointmentResult) throws Exception {
+		String startdate = replaceNull(appointmentResult.getStartDate());
+		int plannedDuration = appointmentResult.getPlannedDuration();
+		UUID id = UUID.randomUUID();
+
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date startDt = formatter.parse(startdate);
+
+		org.hl7.fhir.dstu3.model.Slot slot = new org.hl7.fhir.dstu3.model.Slot();
+
+		slot.setId(String.valueOf(id));
+		slot.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Slot-1");
+		slot.setStart(startDt);
+		//slot.setEnd();
+
+		return slot;
+	}
+
+	/**
+	 *
+	 * @param appointmentResult
+	 * @return
+	 * @throws Exception
+	 */
+	public org.hl7.fhir.dstu3.model.Schedule getScheduleResource(AppointmentFull appointmentResult) throws Exception {
+		String startdate = replaceNull(appointmentResult.getStartDate());
+		int plannedDuration = appointmentResult.getPlannedDuration();
+		UUID id = UUID.randomUUID();
+
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date startDt = formatter.parse(startdate);
+
+		org.hl7.fhir.dstu3.model.Schedule schedule = new org.hl7.fhir.dstu3.model.Schedule();
+
+		schedule.setId(String.valueOf(id));
+		schedule.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Schedule-1");
+
+		return schedule;
+	}
+
+	/**
+	 *
 	 * @param input
 	 * @return
 	 */

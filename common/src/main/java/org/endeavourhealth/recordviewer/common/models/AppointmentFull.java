@@ -4,18 +4,38 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppointmentFull {
-    private int id;
+    private int scheduleId;
+    private int orgId;
+    private int practitionerId;
     private int actualDuration;
     private String startDate;
     private int plannedDuration;
     private String type;
 
-    public int getId() {
-        return id;
+    public int getScheduleId() {
+        return scheduleId;
     }
 
-    public AppointmentFull setId(int id) {
-        this.id = id;
+    public AppointmentFull setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
+        return this;
+    }
+
+    public int getOrgId() {
+        return orgId;
+    }
+
+    public AppointmentFull setOrgId(int orgId) {
+        this.orgId = orgId;
+        return this;
+    }
+
+    public int getPractitionerId() {
+        return practitionerId;
+    }
+
+    public AppointmentFull setPractitionerId(int practitionerId) {
+        this.practitionerId = practitionerId;
         return this;
     }
 

@@ -453,18 +453,58 @@ public class FhirApi {
     private void addFhirAppointmentToBundle(Integer patientId) throws Exception {
         List<AppointmentFull> appointmentList = null;
         org.hl7.fhir.dstu3.model.Appointment appointmentResource = null;
+        org.hl7.fhir.dstu3.model.Slot slotResource = null;
+        org.hl7.fhir.dstu3.model.Schedule scheduleResource = null;
 
         appointmentList = viewerDAL.getAppointmentFullList(patientId);
         if (appointmentList != null || appointmentList.size() > 0) {
             Appointment fhirAppointment = new Appointment();
 
+            AppointmentFull previousAppointment = null;
+            List<Reference> slotList = new ArrayList<Reference>();
+
             for (AppointmentFull appointmentFull : appointmentList) {
-                appointmentResource = fhirAppointment.getAppointmentResource(appointmentFull);
+                if(previousAppointment != null) {
+                    if(previousAppointment.getScheduleId() != appointmentFull.getScheduleId()) {
+                        List<Reference> actorList = new ArrayList<Reference>();
+                        appointmentResource = fhirAppointment.getAppointmentResource(previousAppointment);
+                        appointmentResource.setSlot(slotList);
+                        appointmentResource.addParticipant().setActor(new Reference(patientResource));
 
-                //appointmentResource.addSlot(new Reference(patientResource));
-                appointmentResource.addParticipant().setActor(new Reference(patientResource));
+                        scheduleResource = fhirAppointment.getScheduleResource(previousAppointment);
+                        actorList.add(new Reference(getOrganizationFhirObj(previousAppointment.getOrgId())));
+                        actorList.add(new Reference(getPractitionerRoleResource(previousAppointment.getPractitionerId(), previousAppointment.getOrgId())));
+                        actorList.add(new Reference(getPractitionerResource(previousAppointment.getPractitionerId())));
+                        scheduleResource.setActor(actorList);
 
-                bundle.addEntry().setResource(appointmentResource);
+                        bundle.addEntry().setResource(appointmentResource);
+                        bundle.addEntry().setResource(scheduleResource);
+                        slotList = new ArrayList<Reference>();
+
+                        if(appointmentFull.equals(appointmentList.get(appointmentList.size()-1))) {
+                            List<Reference> actorList1 = new ArrayList<Reference>();
+                            List<Reference> slotList1 = new ArrayList<Reference>();
+                            appointmentResource = fhirAppointment.getAppointmentResource(appointmentFull);
+                            slotList1.add(new Reference(slotResource));
+                            appointmentResource.setSlot(slotList1);
+                            appointmentResource.addParticipant().setActor(new Reference(patientResource));
+
+                            scheduleResource = fhirAppointment.getScheduleResource(appointmentFull);
+                            actorList1.add(new Reference(getOrganizationFhirObj(appointmentFull.getOrgId())));
+                            actorList1.add(new Reference(getPractitionerRoleResource(appointmentFull.getPractitionerId(), appointmentFull.getOrgId())));
+                            actorList1.add(new Reference(getPractitionerResource(appointmentFull.getPractitionerId())));
+                            scheduleResource.setActor(actorList1);
+
+                            bundle.addEntry().setResource(appointmentResource);
+                            bundle.addEntry().setResource(scheduleResource);
+                        }
+                    }
+                }
+                previousAppointment = appointmentFull;
+                slotResource = fhirAppointment.getSlotResource(appointmentFull);
+                slotResource.setSchedule(new Reference(scheduleResource));
+                slotList.add(new Reference(slotResource));
+                bundle.addEntry().setResource(slotResource);
             }
         }
     }

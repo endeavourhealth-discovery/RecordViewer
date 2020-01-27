@@ -646,6 +646,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergylist;
     }
 
+    /**
+     *
+     * @param patientId
+     * @return
+     * @throws Exception
+     */
     public List<MedicationStatementFull> getMedicationStatementFullList(Integer patientId) throws Exception {
         List<MedicationStatementFull> result = null;
         String sql = "select ms.id as msid, c.name, c.code, " +
@@ -668,6 +674,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    /**
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
     public static List<MedicationStatementFull> getMedicationStatementFullList(ResultSet resultSet) throws SQLException {
         List<MedicationStatementFull> medicationStatementList = new ArrayList<MedicationStatementFull>();
         while (resultSet.next()) {
@@ -685,6 +697,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationStatementList;
     }
 
+    /**
+     *
+     * @param msId
+     * @return
+     * @throws Exception
+     */
     public List<MedicationOrderFull> getMedicationOrderFullList(Integer msId) throws Exception {
         List<MedicationOrderFull> result = null;
         String sql = "SELECT mo.id, mo.practitioner_id as prid, mo.organization_id as oid, mo.medication_statement_id as msid, mo.clinical_effective_date as clinicalEffDt, mo.dose, mo.quantity_unit as qUnit, " +
@@ -699,6 +717,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    /**
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
     public static List<MedicationOrderFull> getMedicationOrderFullList(ResultSet resultSet) throws SQLException {
         List<MedicationOrderFull> medicationOrderList = new ArrayList<MedicationOrderFull>();
         while (resultSet.next()) {
@@ -837,9 +861,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return immunizationFullList;
     }
 
+    /**
+     *
+     * @param patientId
+     * @return
+     * @throws Exception
+     */
     public List<AppointmentFull> getAppointmentFullList(Integer patientId) throws Exception {
         List<AppointmentFull> result = null;
-        String sql = "SELECT a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type" +
+        String sql = "SELECT a.schedule_id as sId, a.practitioner_id as prId, a.organization_id as oId, " +
+                "a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type" +
                 " FROM appointment a join schedule s on a.schedule_id = s.id where a.patient_id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -851,6 +882,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    /**
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
     public static List<AppointmentFull> getAppointmentFullList(ResultSet resultSet) throws SQLException {
         List<AppointmentFull> appointmentList = new ArrayList<AppointmentFull>();
         while (resultSet.next()) {
@@ -859,7 +896,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     .setActualDuration(resultSet.getInt("actualDura"))
                     .setStartDate(resultSet.getString("startDt"))
                     .setPlannedDuration(resultSet.getInt("plannedDura"))
-                    .setType(resultSet.getString("type"));
+                    .setType(resultSet.getString("type"))
+                    .setOrgId(resultSet.getInt("oId"))
+                    .setPractitionerId(resultSet.getInt("prId"))
+                    .setScheduleId(resultSet.getInt("sId"));
+
             appointmentList.add(appointment);
         }
         return appointmentList;
