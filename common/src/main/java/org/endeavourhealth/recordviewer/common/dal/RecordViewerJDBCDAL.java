@@ -869,7 +869,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
      */
     public List<AppointmentFull> getAppointmentFullList(Integer patientId) throws Exception {
         List<AppointmentFull> result = null;
-        String sql = "SELECT a.schedule_id as sId, a.practitioner_id as prId, a.organization_id as oId, " +
+        String sql = "SELECT a.id, a.schedule_id as sId, a.practitioner_id as prId, a.organization_id as oId, " +
                 "a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type" +
                 " FROM appointment a join schedule s on a.schedule_id = s.id where a.patient_id = ?";
 
@@ -893,6 +893,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         while (resultSet.next()) {
             AppointmentFull appointment = new AppointmentFull();
             appointment
+                    .setId(resultSet.getInt("id"))
                     .setActualDuration(resultSet.getInt("actualDura"))
                     .setStartDate(resultSet.getString("startDt"))
                     .setPlannedDuration(resultSet.getInt("plannedDura"))

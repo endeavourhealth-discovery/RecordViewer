@@ -480,24 +480,6 @@ public class FhirApi {
                         bundle.addEntry().setResource(appointmentResource);
                         bundle.addEntry().setResource(scheduleResource);
                         slotList = new ArrayList<Reference>();
-
-                        if(appointmentFull.equals(appointmentList.get(appointmentList.size()-1))) {
-                            List<Reference> actorList1 = new ArrayList<Reference>();
-                            List<Reference> slotList1 = new ArrayList<Reference>();
-                            appointmentResource = fhirAppointment.getAppointmentResource(appointmentFull);
-                            slotList1.add(new Reference(slotResource));
-                            appointmentResource.setSlot(slotList1);
-                            appointmentResource.addParticipant().setActor(new Reference(patientResource));
-
-                            scheduleResource = fhirAppointment.getScheduleResource(appointmentFull);
-                            actorList1.add(new Reference(getOrganizationFhirObj(appointmentFull.getOrgId())));
-                            actorList1.add(new Reference(getPractitionerRoleResource(appointmentFull.getPractitionerId(), appointmentFull.getOrgId())));
-                            actorList1.add(new Reference(getPractitionerResource(appointmentFull.getPractitionerId())));
-                            scheduleResource.setActor(actorList1);
-
-                            bundle.addEntry().setResource(appointmentResource);
-                            bundle.addEntry().setResource(scheduleResource);
-                        }
                     }
                 }
                 previousAppointment = appointmentFull;
@@ -505,6 +487,22 @@ public class FhirApi {
                 slotResource.setSchedule(new Reference(scheduleResource));
                 slotList.add(new Reference(slotResource));
                 bundle.addEntry().setResource(slotResource);
+
+                if(appointmentFull.equals(appointmentList.get(appointmentList.size()-1))) {
+                    List<Reference> actorList1 = new ArrayList<Reference>();
+                    appointmentResource = fhirAppointment.getAppointmentResource(appointmentFull);
+                    appointmentResource.setSlot(slotList);
+                    appointmentResource.addParticipant().setActor(new Reference(patientResource));
+
+                    scheduleResource = fhirAppointment.getScheduleResource(appointmentFull);
+                    actorList1.add(new Reference(getOrganizationFhirObj(appointmentFull.getOrgId())));
+                    actorList1.add(new Reference(getPractitionerRoleResource(appointmentFull.getPractitionerId(), appointmentFull.getOrgId())));
+                    actorList1.add(new Reference(getPractitionerResource(appointmentFull.getPractitionerId())));
+                    scheduleResource.setActor(actorList1);
+
+                    bundle.addEntry().setResource(appointmentResource);
+                    bundle.addEntry().setResource(scheduleResource);
+                }
             }
         }
     }
