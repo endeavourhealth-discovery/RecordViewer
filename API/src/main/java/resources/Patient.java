@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class Patient {
 
-	public org.hl7.fhir.dstu3.model.Patient getPatientResource(PatientFull patientResult) throws Exception {
+	public static org.hl7.fhir.dstu3.model.Patient getPatientResource(PatientFull patientResult) throws Exception {
 		String id = replaceNull(patientResult.getId());
 		String nhsNumber = replaceNull(patientResult.getNhsNumber());
 		String gender = replaceNull(patientResult.getGender());

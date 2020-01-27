@@ -11,13 +11,7 @@ import java.util.UUID;
 
 public class FamilyMemberHistory {
 
-	/**
-	 *
-	 * @param familyMemberHistoryResult
-	 * @return
-	 * @throws Exception
-	 */
-	public org.hl7.fhir.dstu3.model.FamilyMemberHistory getFamilyMemberHistoryResource(FamilyMemberHistoryFull familyMemberHistoryResult) throws Exception {
+	public static org.hl7.fhir.dstu3.model.FamilyMemberHistory getFamilyMemberHistoryResource(FamilyMemberHistoryFull familyMemberHistoryResult) throws Exception {
 		String date = replaceNull(familyMemberHistoryResult.getDate());
 		String status = replaceNull(familyMemberHistoryResult.getStatus());
 		String name = replaceNull(familyMemberHistoryResult.getName());

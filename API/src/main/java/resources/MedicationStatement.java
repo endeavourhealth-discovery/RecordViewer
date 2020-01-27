@@ -1,11 +1,8 @@
 package resources;
 
-import ca.uhn.fhir.context.FhirContext;
 import org.endeavourhealth.recordviewer.common.models.MedicationOrderFull;
 import org.endeavourhealth.recordviewer.common.models.MedicationStatementFull;
-import org.endeavourhealth.recordviewer.common.models.PatientFull;
 import org.hl7.fhir.dstu3.model.*;
-import org.hl7.fhir.dstu3.model.Medication;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,18 +10,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.OBSERVATION_DESCRIPTION;
 import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.VALUE_STRING;
 
 public class MedicationStatement {
 
-	/**
-	 *
-	 * @param medicationStatementResult
-	 * @return
-	 * @throws Exception
-	 */
-	public org.hl7.fhir.dstu3.model.MedicationStatement getMedicationStatementResource(MedicationStatementFull medicationStatementResult) throws Exception {
+	public static org.hl7.fhir.dstu3.model.MedicationStatement getMedicationStatementResource(MedicationStatementFull medicationStatementResult) throws Exception {
 		String clinicalEffDate = replaceNull(medicationStatementResult.getDate());
 		int status = medicationStatementResult.getStatus();
 		String dose = replaceNull(medicationStatementResult.getDose());
@@ -74,13 +64,7 @@ public class MedicationStatement {
 		return medicationStatement;
 	}
 
-	/**
-	 *
-	 * @param medicationOrderResult
-	 * @return
-	 * @throws Exception
-	 */
-	public org.hl7.fhir.dstu3.model.MedicationRequest getMedicationRequestResource(MedicationOrderFull medicationOrderResult) throws Exception {
+	public static org.hl7.fhir.dstu3.model.MedicationRequest getMedicationRequestResource(MedicationOrderFull medicationOrderResult) throws Exception {
 		String clinicalEffDate = replaceNull(medicationOrderResult.getDate());
 		String dose = replaceNull(medicationOrderResult.getDose());
 		double qValue = medicationOrderResult.getQValue();
@@ -124,13 +108,7 @@ public class MedicationStatement {
 		return medicationRequest;
 	}
 
-	/**
-	 *
-	 * @param medicationStatementResult
-	 * @return
-	 * @throws Exception
-	 */
-	public org.hl7.fhir.dstu3.model.Medication getMedicationResource(MedicationStatementFull medicationStatementResult) throws Exception {
+	public static org.hl7.fhir.dstu3.model.Medication getMedicationResource(MedicationStatementFull medicationStatementResult) throws Exception {
 		String name = replaceNull(medicationStatementResult.getName());
 		String code = replaceNull(medicationStatementResult.getCode());
 		UUID id = UUID.randomUUID();

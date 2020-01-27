@@ -18,13 +18,7 @@ import static org.endeavourhealth.recordviewer.common.constants.ResourceConstant
 public class Practitioner {
     private static final Logger LOG = LoggerFactory.getLogger(Practitioner.class);
 
-    private PractitionerFull practitionerResult;
-
-    public Practitioner(PractitionerFull practitionerResult) {
-        this.practitionerResult = practitionerResult;
-    }
-
-    public org.hl7.fhir.dstu3.model.Practitioner getPractitionerResource() {
+    public static org.hl7.fhir.dstu3.model.Practitioner getPractitionerResource(PractitionerFull practitionerResult) {
         LOG.info("Entering getPractitionerResource() method");
         org.hl7.fhir.dstu3.model.Practitioner practitioner = new org.hl7.fhir.dstu3.model.Practitioner();
 
@@ -52,7 +46,7 @@ public class Practitioner {
         return practitioner;
     }
 
-    private Date getSystemDate() {
+    private static Date getSystemDate() {
         return java.sql.Timestamp.valueOf(LocalDateTime.now());
     }
 

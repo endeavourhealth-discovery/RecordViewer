@@ -83,8 +83,7 @@ public class FhirApi {
         patient = viewerDAL.getPatientFull(id, nhsNumber);
         if (patient == null)
             throw new ResourceNotFoundException("Patient resource with id = '" + nhsNumber + "' not found");
-        Patient fhirPatient = new Patient();
-        patientResource = fhirPatient.getPatientResource(patient);
+        patientResource = Patient.getPatientResource(patient);
 
         bundle = new Bundle();
         bundle.setType(Bundle.BundleType.COLLECTION);
@@ -146,11 +145,9 @@ public class FhirApi {
         }
 
         PractitionerFull practitionerResult = viewerDAL.getPractitionerFull(practitionerId);
-        resources.Practitioner practitioner = new resources.Practitioner(practitionerResult);
-        org.hl7.fhir.dstu3.model.Practitioner practitionerResource = practitioner.getPractitionerResource();
+        org.hl7.fhir.dstu3.model.Practitioner practitionerResource = Practitioner.getPractitionerResource(practitionerResult);
 
-        resources.PractitionerRole practitionerRole = new resources.PractitionerRole(practitionerResult);
-        org.hl7.fhir.dstu3.model.PractitionerRole practitionerRoleResource = practitionerRole.getPractitionerRoleResource();
+        org.hl7.fhir.dstu3.model.PractitionerRole practitionerRoleResource = PractitionerRole.getPractitionerRoleResource(practitionerResult);
         practitionerRoleResource.setPractitioner(new Reference(practitionerResource));
         practitionerRoleResource.setOrganization(new Reference(getOrganizationFhirObj(organizationID)));
         practitionerAndRoleResource.put(practitionerId, Arrays.asList(practitionerResource, practitionerRoleResource));
@@ -160,11 +157,9 @@ public class FhirApi {
     private org.hl7.fhir.dstu3.model.Practitioner getPractitionerResource(Integer practitionerId) throws Exception {
         if (!practitionerAndRoleResource.containsKey(practitionerId)) {
             PractitionerFull practitionerResult = viewerDAL.getPractitionerFull(practitionerId);
-            resources.Practitioner practitioner = new resources.Practitioner(practitionerResult);
-            org.hl7.fhir.dstu3.model.Practitioner practitionerResource = practitioner.getPractitionerResource();
+            org.hl7.fhir.dstu3.model.Practitioner practitionerResource = Practitioner.getPractitionerResource(practitionerResult);
 
-            resources.PractitionerRole practitionerRole = new resources.PractitionerRole(practitionerResult);
-            org.hl7.fhir.dstu3.model.PractitionerRole practitionerRoleResource = practitionerRole.getPractitionerRoleResource();
+            org.hl7.fhir.dstu3.model.PractitionerRole practitionerRoleResource = PractitionerRole.getPractitionerRoleResource(practitionerResult);
             practitionerRoleResource.setPractitioner(new Reference(practitionerResource));
             practitionerAndRoleResource.put(practitionerId, Arrays.asList(practitionerResource, practitionerRoleResource));
         }
@@ -200,8 +195,7 @@ public class FhirApi {
         Map<Integer, List<EpisodeOfCareFull>> episodeOfCareOrganizationMap = getOrganizationList(episodeOfCareFullList);
         if (MapUtils.isNotEmpty(episodeOfCareOrganizationMap)) {
             for (Map.Entry<Integer, List<EpisodeOfCareFull>> episodeOfCareList : episodeOfCareOrganizationMap.entrySet()) {
-                EpisodeOfCare episodeOfCareResource = new EpisodeOfCare(episodeOfCareList.getValue());
-                org.hl7.fhir.dstu3.model.EpisodeOfCare episodeOfCare = episodeOfCareResource.getEpisodeOfCareResource();
+                org.hl7.fhir.dstu3.model.EpisodeOfCare episodeOfCare = EpisodeOfCare.getEpisodeOfCareResource(episodeOfCareList.getValue());
                 episodeOfCare.setPatient(new Reference(patientResource));
                 if (episodeOfCareFullList.get(0).getOrganizationId() != 0) {
                     episodeOfCare.setManagingOrganization(new Reference(getOrganizationFhirObj(episodeOfCareFullList.get(0).getOrganizationId())));
@@ -217,8 +211,7 @@ public class FhirApi {
     private void addLocationToBundle(String organizationId) throws Exception {
         if (StringUtils.isNotEmpty(organizationId)) {
             LocationFull locationFull = viewerDAL.getLocation(Integer.parseInt(organizationId));
-            Location location = new Location(locationFull);
-            org.hl7.fhir.dstu3.model.Location locationModel = location.getLocationResource();
+            org.hl7.fhir.dstu3.model.Location locationModel = Location.getLocationResource(locationFull);
 
             locationModel.setManagingOrganization(new Reference(organizationId));
             bundle.addEntry().setResource(locationModel);
@@ -300,13 +293,11 @@ public class FhirApi {
             org.hl7.fhir.dstu3.model.ListResource fhirMedicationStatementList = MedicationStatementList.getMedicationStatementListResource();
             fhirMedicationStatementList.setSubject(new Reference(patientResource));
 
-            MedicationStatement fhirMedicationStatement = new MedicationStatement();
-
             for (MedicationStatementFull medicationStatementFull : medicationStatementList) {
-                medicationStatementResource = fhirMedicationStatement.getMedicationStatementResource(medicationStatementFull);
+                medicationStatementResource = MedicationStatement.getMedicationStatementResource(medicationStatementFull);
                 medicationStatementResource.setSubject(new Reference(patientResource));
 
-                medicationResource = fhirMedicationStatement.getMedicationResource(medicationStatementFull);
+                medicationResource = MedicationStatement.getMedicationResource(medicationStatementFull);
                 medicationStatementResource.setMedication(new Reference(medicationResource));
 
                 //Medication Request FHIR resource
@@ -316,9 +307,9 @@ public class FhirApi {
                 medicationRequestList = viewerDAL.getMedicationOrderFullList(medicationStatementFull.getId());
                 if (medicationRequestList != null || medicationRequestList.size() > 0) {
 
-                    List<Reference> primaryMedReqRefList = new ArrayList<Reference>();
+                    List<Reference> primaryMedReqRefList = new ArrayList<>();
                     for (MedicationOrderFull medicationOrderFull : medicationRequestList) {
-                        medicationRequestResource = fhirMedicationStatement.getMedicationRequestResource(medicationOrderFull);
+                        medicationRequestResource = MedicationStatement.getMedicationRequestResource(medicationOrderFull);
                         medicationRequestResource.setSubject(new Reference(patientResource));
                         medicationRequestResource.setMedication(new Reference(medicationResource));
                         medicationRequestResource.setRecorder(new Reference(getPractitionerRoleResource(medicationOrderFull.getPractitionerId(), medicationOrderFull.getOrgId())));
@@ -415,8 +406,7 @@ public class FhirApi {
         if (CollectionUtils.isNotEmpty(procedureFullList)) {
 
             for (ProcedureFull procedureFull : procedureFullList) {
-                Procedure procedureObj = new Procedure(procedureFull);
-                org.hl7.fhir.dstu3.model.Procedure procedureResource = procedureObj.getProcedureResource();
+                org.hl7.fhir.dstu3.model.Procedure procedureResource = Procedure.getProcedureResource(procedureFull);
                procedureResource.setSubject(new Reference(patientResource));
                 bundle.addEntry().setResource(procedureResource);
             }

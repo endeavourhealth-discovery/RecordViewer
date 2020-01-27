@@ -13,13 +13,7 @@ import static org.endeavourhealth.recordviewer.common.constants.ResourceConstant
 public class PractitionerRole {
     private static final Logger LOG = LoggerFactory.getLogger(PractitionerRole.class);
 
-    private PractitionerFull practitionerResult;
-
-    public PractitionerRole(PractitionerFull practitionerResult) {
-        this.practitionerResult = practitionerResult;
-    }
-
-    public org.hl7.fhir.dstu3.model.PractitionerRole getPractitionerRoleResource() {
+    public static org.hl7.fhir.dstu3.model.PractitionerRole getPractitionerRoleResource(PractitionerFull practitionerResult) {
         LOG.info("Entering getPractitionerRoleResource() method");
         org.hl7.fhir.dstu3.model.PractitionerRole practitionerRole = new org.hl7.fhir.dstu3.model.PractitionerRole();
 

@@ -19,7 +19,7 @@ public class Appointment {
 	 * @return
 	 * @throws Exception
 	 */
-	public org.hl7.fhir.dstu3.model.Appointment getAppointmentResource(AppointmentFull appointmentResult) throws Exception {
+	public static org.hl7.fhir.dstu3.model.Appointment getAppointmentResource(AppointmentFull appointmentResult) throws Exception {
 		int actualDuration = appointmentResult.getActualDuration();
 		String startdate = replaceNull(appointmentResult.getStartDate());
 		int plannedDuration = appointmentResult.getPlannedDuration();

@@ -15,13 +15,7 @@ import static org.endeavourhealth.recordviewer.common.constants.ResourceConstant
 public class Procedure {
     private static final Logger LOG = LoggerFactory.getLogger(Procedure.class);
 
-    private ProcedureFull procedureFull;
-
-    public Procedure(ProcedureFull procedureFull) {
-        this.procedureFull = procedureFull;
-    }
-
-    public org.hl7.fhir.dstu3.model.Procedure getProcedureResource() {
+    public static org.hl7.fhir.dstu3.model.Procedure getProcedureResource(ProcedureFull procedureFull) {
         LOG.info("Entering getProcedureResource() method");
         org.hl7.fhir.dstu3.model.Procedure procedure = new org.hl7.fhir.dstu3.model.Procedure();
 
@@ -36,12 +30,11 @@ public class Procedure {
         narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
         procedure.setText(narrative);
 
-        procedure.setCode(getCode());
-
+        procedure.setCode(getCode(procedureFull));
         return procedure;
     }
 
-    private CodeableConcept getCode() {
+    private static CodeableConcept getCode(ProcedureFull procedureFull) {
         CodeableConcept codeableConcept = new CodeableConcept();
         Coding coding = new Coding();
         coding.setSystem(PROCEDURE_SYSTEM);

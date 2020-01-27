@@ -1,16 +1,15 @@
 package resources;
 
 
-
 import org.endeavourhealth.recordviewer.common.models.ImmunizationFull;
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.DateTimeType;
+import org.hl7.fhir.dstu3.model.Extension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.OBSERVATION_DESCRIPTION;
-import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.VALUE_STRING;
 
 public class Immunization {
 

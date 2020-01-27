@@ -15,13 +15,7 @@ import static org.endeavourhealth.recordviewer.common.constants.ResourceConstant
 public class Location {
     private static final Logger LOG = LoggerFactory.getLogger(Location.class);
 
-    private LocationFull locationFull;
-
-    public Location(LocationFull locationFull) {
-        this.locationFull = locationFull;
-    }
-
-    public org.hl7.fhir.dstu3.model.Location getLocationResource() {
+    public static org.hl7.fhir.dstu3.model.Location getLocationResource(LocationFull locationFull) {
         LOG.info("Entering getLocationResource() method");
         org.hl7.fhir.dstu3.model.Location location = new org.hl7.fhir.dstu3.model.Location();
 
@@ -41,15 +35,15 @@ public class Location {
         address.setPostalCode(locationFull.getPostCode());
         location.setAddress(address);
 
-        location.setPhysicalType(getCode());
+        location.setPhysicalType(getCode(locationFull.getCode()));
         return location;
     }
 
-    private CodeableConcept getCode() {
+    private static CodeableConcept getCode(String code) {
         CodeableConcept codeableConcept = new CodeableConcept();
         Coding coding = new Coding();
         coding.setSystem(LOCATION_SYSTEM);
-        coding.setCode(locationFull.getCode());
+        coding.setCode(code);
         return codeableConcept.addCoding(coding);
     }
 

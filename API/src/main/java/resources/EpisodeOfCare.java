@@ -19,13 +19,7 @@ import static org.endeavourhealth.recordviewer.common.constants.ResourceConstant
 public class EpisodeOfCare {
     private static final Logger LOG = LoggerFactory.getLogger(EpisodeOfCare.class);
 
-    private List<EpisodeOfCareFull> episodeOfCareFullList;
-
-    public EpisodeOfCare(List<EpisodeOfCareFull> episodeOfCareFullList) {
-        this.episodeOfCareFullList = episodeOfCareFullList;
-    }
-
-    public org.hl7.fhir.dstu3.model.EpisodeOfCare getEpisodeOfCareResource() {
+    public static org.hl7.fhir.dstu3.model.EpisodeOfCare getEpisodeOfCareResource(List<EpisodeOfCareFull> episodeOfCareFullList) {
         LOG.info("Entering getEpisodeOfCareResource() method");
         org.hl7.fhir.dstu3.model.EpisodeOfCare episodeOfCare = new org.hl7.fhir.dstu3.model.EpisodeOfCare();
 
@@ -56,14 +50,14 @@ public class EpisodeOfCare {
         return episodeOfCare;
     }
 
-    private Period getStartEndPeriod(EpisodeOfCareFull episodeOfCareFull) {
+    private static Period getStartEndPeriod(EpisodeOfCareFull episodeOfCareFull) {
         Period period = new Period();
          period.setStart(getDate(episodeOfCareFull.getDateRegistered()));
          period.setEnd(getDate(episodeOfCareFull.getDateRegisteredEnd()));
         return period;
     }
 
-    private Date getDate(String dateString) {
+    private static Date getDate(String dateString) {
         if(StringUtils.isNotEmpty(dateString)) {
             try {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -75,7 +69,7 @@ public class EpisodeOfCare {
         return null;
     }
 
-    private CodeableConcept getCode(EpisodeOfCareFull episodeOfCareFull) {
+    private static CodeableConcept getCode(EpisodeOfCareFull episodeOfCareFull) {
         CodeableConcept codeableConcept = new CodeableConcept();
         Coding coding = new Coding();
         coding.setSystem(EPISODE_OF_CARE_TYPE_CODING);
