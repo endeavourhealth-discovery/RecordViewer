@@ -1,12 +1,15 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AllergySummary {
+    private static final Logger LOG = LoggerFactory.getLogger(AllergySummary.class);
     private String date;
     private String status;
     private String name;
@@ -23,7 +26,7 @@ public class AllergySummary {
             this.date = simpleDateFormat.format(date);
         }
         catch (Exception e) {
-
+            LOG.error(e.getMessage());
         }
         return this;
     }

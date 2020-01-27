@@ -1,12 +1,14 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PatientSummary {
+    private static final Logger LOG = LoggerFactory.getLogger(PatientSummary.class);
     private String id;
     private String name;
     private String dob;
@@ -45,7 +47,7 @@ public class PatientSummary {
             this.dob = simpleDateFormat.format(dob);
         }
         catch (Exception e) {
-
+            LOG.error(e.getMessage());
         }
         return this;
     }
