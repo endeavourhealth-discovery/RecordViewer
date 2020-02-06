@@ -72,12 +72,16 @@ public class FhirApi {
         return null;
     }
 
+     RecordViewerJDBCDAL getRecordViewerObject(){
+        return new RecordViewerJDBCDAL();
+    }
+
     public JSONObject getFhirBundle(Integer id, String nhsNumber) throws Exception {
         organizationFhirMap = new HashMap<>();
         encounterFhirMap = new HashMap<>();
         //Practitioner and PractitionerRole Resource
         practitionerAndRoleResource = new HashedMap<>();
-        viewerDAL = new RecordViewerJDBCDAL();
+        viewerDAL = getRecordViewerObject();
 
         PatientFull patient = null;
         patient = viewerDAL.getPatientFull(id, nhsNumber);

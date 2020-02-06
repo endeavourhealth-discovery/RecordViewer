@@ -56,7 +56,7 @@ public class Observation {
     private Period getEffectiveDateTime(String date) {
         Period period = new Period();
         try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             period.setStart(format.parse(date));
         } catch (Exception e) {
             LOG.error(e.getMessage());
