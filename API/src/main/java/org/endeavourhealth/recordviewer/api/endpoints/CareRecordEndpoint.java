@@ -150,7 +150,6 @@ public class CareRecordEndpoint {
 
         FhirApi api = getFhirApi();
         JSONObject json = api.getFhirBundle(patientId, "0");
-         System.out.println("Callled Fhirapi");
         return Response
                 .ok()
                 .entity(json)
