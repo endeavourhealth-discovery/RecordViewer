@@ -22,24 +22,25 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 public class CareRecordEndpointTest {
-    private static SecurityContext securityContext;
-    private static CareRecordEndpoint careRecordEndpoint;
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private  static SecurityContext securityContext;
+    private  static CareRecordEndpoint careRecordEndpoint;
+    private  static RecordViewerJDBCDAL recordViewerJDBCDAL;
+    private  static FhirApi fhirApi;
+    private  static PatientFull patient;
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUp() throws ParseException {
         securityContext = Mockito.mock(SecurityContext.class);
         careRecordEndpoint = spy(new CareRecordEndpoint());
+        patient = getPatientFull();
+        fhirApi = spy(new FhirApi());
+        when(careRecordEndpoint.getFhirApi()).thenReturn(fhirApi);
+        recordViewerJDBCDAL = mock(RecordViewerJDBCDAL.class);
     }
 
     @Test
-    public void test_fhir_get() throws Exception {
-        PatientFull patient = getPatientFull();
-        FhirApi fhirApi = spy(new FhirApi());
-
-        when(careRecordEndpoint.getFhirApi()).thenReturn(fhirApi);
-        final RecordViewerJDBCDAL recordViewerJDBCDAL = mock(RecordViewerJDBCDAL.class);
-
+    public void testFhirForPatientAndObservation() throws Exception {
         //PatientFull mocked value
         when(recordViewerJDBCDAL.getPatientFull(9999, "0")).thenReturn(patient);
 
@@ -70,7 +71,7 @@ public class CareRecordEndpointTest {
         JSONAssert.assertEquals(expected, array.toJSONString(), true);
     }
 
-    public PatientFull getPatientFull() throws ParseException {
+    private static PatientFull getPatientFull() throws ParseException {
         return new PatientFull().setId("9999").setAdd1("18 Oxford Street").setAdd2("Hammersmith").setCity("London")
                 .setFirstname("Patrick").setGender("Male").setLastname("Laughton").setNhsNumber("123456").setStartdate(format.parse("12-10-2019 00:00:00")).setPostcode("IG2")
                 .setOrglocation("1001");

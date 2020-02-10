@@ -20,6 +20,8 @@ public class Part {
     private String name;
     @JsonProperty("valuePeriod")
     private ValuePeriod valuePeriod;
+    @JsonProperty("valueBoolean")
+    private boolean valueBoolean;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -42,6 +44,17 @@ public class Part {
     public void setValuePeriod(ValuePeriod valuePeriod) {
         this.valuePeriod = valuePeriod;
     }
+
+    @JsonProperty("valueBoolean")
+    public boolean getValueBoolean() {
+        return valueBoolean;
+    }
+
+    @JsonProperty("valueBoolean")
+    public void setValueBoolean(boolean valueBoolean) {
+        this.valueBoolean = valueBoolean;
+    }
+
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {

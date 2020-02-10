@@ -45,6 +45,14 @@ export class FhirComponent implements OnInit {
       );
   }
 
+  loadFilteredFhir(requestParams:string) {
+    this.carerecordService.getFilteredFhir(requestParams)
+      .subscribe(
+        (result) => this.displayFhir(result),
+        (error) => this.log.error(error)
+      );
+  }
+
   displayFhir(fhir: any) {
     this.fhir = JSON.stringify(fhir, null, 2);
 

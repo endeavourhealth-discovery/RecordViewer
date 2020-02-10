@@ -50,17 +50,23 @@ public class FhirApi {
                 List<Parameter> parameters = params.getParameter();
 
                 String nhsNumber = "0";
+                boolean includeAllergies = false;
 
                 for (Parameter param : parameters) {
                     String paramName = param.getName();
                     if (paramName.equals("patientNHSNumber")) {
-                        nhsNumber = param.getValueIdentifier().getValue();
-                        break;
+                        if(nhsNumber.equals("0")) {
+                            nhsNumber = param.getValueIdentifier().getValue();
+                        }
+                    } else if (paramName.equals("includeAllergies")) {
+                        if (param.getPart().get(0) != null && param.getPart().get(0).getValueBoolean()) {
+                            includeAllergies = true;
+                        }
                     }
                 }
 
                 try {
-                    json = getFhirBundle(0, nhsNumber);
+                    json = getFhirBundle(0, nhsNumber, includeAllergies);
                 } catch (Exception e) {
                     throw new ResourceNotFoundException("Resource error:" + e);
                 }
@@ -77,6 +83,10 @@ public class FhirApi {
     }
 
     public JSONObject getFhirBundle(Integer id, String nhsNumber) throws Exception {
+        return getFhirBundle(id, nhsNumber, false) ;
+    }
+
+    public JSONObject getFhirBundle(Integer id, String nhsNumber, boolean includeAllergies) throws Exception {
         organizationFhirMap = new HashMap<>();
         encounterFhirMap = new HashMap<>();
         //Practitioner and PractitionerRole Resource
@@ -104,7 +114,9 @@ public class FhirApi {
 
         addObservationToBundle(patientId);
 
-        addFhirAllergiesToBundle(patientId);
+        if (includeAllergies) {
+            addFhirAllergiesToBundle(patientId);
+        }
 
         addFhirEncountersToBundle(patientId);
 

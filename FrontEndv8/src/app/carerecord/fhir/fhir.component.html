@@ -24,21 +24,9 @@
             </textarea>
         <mat-icon matSuffix>language</mat-icon>
       </mat-form-field>
-      &nbsp;
-      <mat-form-field style="width: 500px !important;" appearance="outline">
-        <mat-label>Request Parameters (application/json)</mat-label>
-        <textarea
-                  matInput
-                  cdkTextareaAutosize
-                  #autosize="cdkTextareaAutosize"
-                  cdkAutosizeMinRows="1"
-                  cdkAutosizeMaxRows="4" [(ngModel)]="params">
-            </textarea>
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-      &nbsp;
-      <mat-form-field appearance="outline">
-        <mat-label>HTTP Status</mat-label>
+      &nbsp;&nbsp;
+      <mat-form-field style="width:200px" appearance="outline">
+       <mat-label>HTTP Status</mat-label>
         <textarea matInput
                   cdkTextareaAutosize
                   #autosize="cdkTextareaAutosize"
@@ -47,7 +35,23 @@
             </textarea>
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
-      <mat-form-field style="width:100%" appearance="outline">
+
+      <mat-form-field style="width: 500px !important;" appearance="outline">
+        <mat-label>Request Parameters (application/json)</mat-label>
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="4" [(ngModel)]="params">
+            </textarea>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <button type="button" (click) = 'loadFilteredFhir(params)' mat-raised-button >
+        Find Patient
+      </button>
+      <mat-form-field style="width:100%"  appearance="outline">
         <mat-label>Response Content (FHIR Resource Bundle)</mat-label>
         <textarea
                   matInput

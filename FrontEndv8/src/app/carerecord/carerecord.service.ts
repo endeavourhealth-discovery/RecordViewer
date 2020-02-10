@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -72,4 +72,17 @@ export class CareRecordService {
 
     return this.http.get('api/events/fhir', {params});
   }
+
+  getFilteredFhir(requestParams?: string): Observable<any> {
+    console.log('Inside getFilteredFHI')
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+      })
+    };
+    console.log('getRequestBody last===' + requestParams)
+    console.log('Before getFilteredFHIR call')
+    return this.http.post('api/events/fhir', requestParams, httpOptions);
+  }
+
 }
