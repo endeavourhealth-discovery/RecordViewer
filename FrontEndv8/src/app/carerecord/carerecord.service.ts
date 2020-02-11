@@ -80,8 +80,6 @@ export class CareRecordService {
         'Content-Type':  'application/json',
       })
     };
-    console.log('getRequestBody last===' + requestParams)
-    console.log('Before getFilteredFHIR call')
     return this.http.post('api/events/fhir', requestParams, httpOptions);
   }
 
