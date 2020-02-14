@@ -391,7 +391,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(c.description, '') as description," +
                 "coalesce(o.result_value_units,'') as resultValueUnits from observation o " +
                 "join concept c on o.non_core_concept_id = c.dbid " +
-                "where o.patient_id = ?";
+                "where o.patient_id = ? and c.name not like '%family history%' and c.name not like '%immunisation%'";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, id);
@@ -871,7 +871,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         List<AppointmentFull> result = null;
         String sql = "SELECT a.id, a.schedule_id as sId, a.practitioner_id as prId, a.organization_id as oId, " +
                 "a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type" +
-                " FROM appointment a join schedule s on a.schedule_id = s.id where a.patient_id = ?";
+                " FROM appointment a join schedule s on a.schedule_id = s.id where a.patient_id = ? and a.start_date > current_date()";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
