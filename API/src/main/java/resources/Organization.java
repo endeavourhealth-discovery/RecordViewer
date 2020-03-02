@@ -1,7 +1,7 @@
 package resources;
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.OrganizationFull;
-import org.endeavourhealth.recordviewer.common.models.OrganizationSummary;
 
 import java.util.UUID;
 
@@ -20,6 +20,10 @@ public class Organization {
 			organization.setName(organizationFull.getName());
 			//id is hardcoded now later we need to generate dynamically
             organization.setId(UUID.randomUUID().toString());
+
+			organization.addIdentifier()
+					.setValue(String.valueOf(organizationFull.getId()))
+			.setSystem(ResourceConstants.SYSTEM_ID);
 			organization.addAddress()
 					.setPostalCode(organizationFull.getPostCode());
 		}

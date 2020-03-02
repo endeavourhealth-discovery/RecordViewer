@@ -2,10 +2,20 @@ package org.endeavourhealth.recordviewer.common.models;
 
 public class LocationFull {
 
+    private int id;
     private String code;
     private String name;
     private String desc;
     private String postCode;
+
+    public int getId() {
+        return id;
+    }
+
+    public LocationFull setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public String getCode() {
         return code;

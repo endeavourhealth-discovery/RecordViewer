@@ -1,10 +1,9 @@
 package resources;
 
-import ca.uhn.fhir.context.FhirContext;
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.AllergyFull;
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
 
-import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 public class AllergyIntolerance {
@@ -17,6 +16,9 @@ public class AllergyIntolerance {
 		allergy.setVerificationStatus(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceVerificationStatus.CONFIRMED);
 		allergy.setType(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceType.ALLERGY);
 		allergy.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-AllergyIntolerance-1");
+		allergy.addIdentifier()
+				.setValue(String.valueOf(allergyfull.getId()))
+				.setSystem(ResourceConstants.SYSTEM_ID);
 
 		// manifestation or codeable concept?
 		CodeableConcept code = new CodeableConcept();

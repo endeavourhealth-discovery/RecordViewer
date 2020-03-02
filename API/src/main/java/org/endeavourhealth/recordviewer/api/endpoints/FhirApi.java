@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
 import org.endeavourhealth.recordviewer.common.models.*;
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -329,6 +330,10 @@ public class FhirApi {
                         medicationRequestResource.setSubject(new Reference(patientResource));
                         medicationRequestResource.setMedication(new Reference(medicationResource));
                         medicationRequestResource.setRecorder(new Reference(getPractitionerRoleResource(medicationOrderFull.getPractitionerId(), medicationOrderFull.getOrgId())));
+
+                        medicationRequestResource.addIdentifier()
+                                .setValue(String.valueOf(medicationOrderFull.getId()))
+                                .setSystem(ResourceConstants.SYSTEM_ID);
 
                         if (medicationRequestList.get(0).equals(medicationOrderFull)) {
                             primaryMedReqRefList.add(new Reference(medicationRequestResource));

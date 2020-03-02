@@ -1,15 +1,12 @@
 package resources;
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.AppointmentFull;
+import org.hl7.fhir.dstu3.model.Coding;
 
-import org.hl7.fhir.dstu3.model.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-
-import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.VALUE_STRING;
 
 public class Appointment {
 
@@ -30,8 +27,11 @@ public class Appointment {
 		Date startDt = formatter.parse(startdate);
 
 		org.hl7.fhir.dstu3.model.Appointment appointment = new org.hl7.fhir.dstu3.model.Appointment();
-
+		appointment.addIdentifier()
+				.setValue(String.valueOf(appointmentResult.getId()))
+				.setSystem(ResourceConstants.SYSTEM_ID);
 		appointment.setId(String.valueOf(id));
+
 		appointment.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Appointment-1");
 		appointment.setMinutesDuration(actualDuration);
 		appointment.setCreated(startDt);
@@ -94,7 +94,6 @@ public class Appointment {
 		Date startDt = formatter.parse(startdate);
 
 		org.hl7.fhir.dstu3.model.Schedule schedule = new org.hl7.fhir.dstu3.model.Schedule();
-
 		schedule.setId(String.valueOf(id));
 		schedule.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Schedule-1");
 

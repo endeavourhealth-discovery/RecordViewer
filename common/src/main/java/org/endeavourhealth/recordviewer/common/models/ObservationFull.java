@@ -1,6 +1,7 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 public class ObservationFull {
+    private int id;
     private String date;
     private String description;
     private double resultValue;
@@ -9,6 +10,15 @@ public class ObservationFull {
     private String name;
     private int organizationId;
     private int practitionerId;
+
+    public int getId() {
+        return id;
+    }
+
+    public ObservationFull setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public int getOrganizationId() {
         return organizationId;

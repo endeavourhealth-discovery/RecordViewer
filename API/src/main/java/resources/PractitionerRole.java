@@ -1,5 +1,6 @@
 package resources;
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.PractitionerFull;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.slf4j.Logger;
@@ -21,7 +22,9 @@ public class PractitionerRole {
         practitionerRole.setId(uuid.toString());
 
         practitionerRole.getMeta().addProfile(PRACTITIONER_ROLE_URL);
-
+        practitionerRole.addIdentifier()
+                .setValue(String.valueOf(practitionerResult.getId()))
+                .setSystem(ResourceConstants.SYSTEM_ID);
         CodeableConcept code = new CodeableConcept();
         code.addCoding()
                 .setCode(practitionerResult.getRoleCode())

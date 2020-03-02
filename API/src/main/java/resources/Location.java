@@ -1,5 +1,6 @@
 package resources;
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.LocationFull;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -25,6 +26,9 @@ public class Location {
         location.setName(locationFull.getName());
         location.setDescription(locationFull.getDesc());
         location.setMode(org.hl7.fhir.dstu3.model.Location.LocationMode.INSTANCE);
+        location.addIdentifier()
+                .setValue(String.valueOf(locationFull.getId()))
+                .setSystem(ResourceConstants.SYSTEM_ID);
 
         Narrative value = new Narrative();
         value.setStatus(Narrative.NarrativeStatus.GENERATED);

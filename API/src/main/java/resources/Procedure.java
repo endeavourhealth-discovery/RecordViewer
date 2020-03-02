@@ -1,5 +1,6 @@
 package resources;
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.ProcedureFull;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -25,6 +26,10 @@ public class Procedure {
         DateTimeType dateTimeType = new DateTimeType();
         dateTimeType.setValue(procedureFull.getDate());
         procedure.setPerformed(dateTimeType);
+
+        procedure.addIdentifier()
+                .setValue(String.valueOf(procedureFull.getId()))
+                .setSystem(ResourceConstants.SYSTEM_ID);
 
         Narrative narrative = new Narrative();
         narrative.setStatus(Narrative.NarrativeStatus.GENERATED);

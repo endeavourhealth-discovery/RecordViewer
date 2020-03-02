@@ -1,12 +1,22 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 public class EpisodeOfCareFull {
+    private int id;
     private String code;
     private String name;
     private String dateRegistered;
     private String dateRegisteredEnd;
     private int organizationId;
     private int practitionerId;
+
+    public int getId() {
+        return id;
+    }
+
+    public EpisodeOfCareFull setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public String getCode() {
         return code;

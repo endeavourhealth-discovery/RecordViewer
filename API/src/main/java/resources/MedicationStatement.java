@@ -1,14 +1,12 @@
 package resources;
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.MedicationOrderFull;
 import org.endeavourhealth.recordviewer.common.models.MedicationStatementFull;
 import org.hl7.fhir.dstu3.model.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.VALUE_STRING;
 
@@ -25,6 +23,10 @@ public class MedicationStatement {
 		Date clinicalEffDt = formatter.parse(clinicalEffDate);
 
 		org.hl7.fhir.dstu3.model.MedicationStatement medicationStatement = new org.hl7.fhir.dstu3.model.MedicationStatement();
+
+		medicationStatement.addIdentifier()
+				.setValue(String.valueOf(medicationStatementResult.getId()))
+				.setSystem(ResourceConstants.SYSTEM_ID);
 
 		medicationStatement.setId(String.valueOf(id));
 		medicationStatement.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-MedicationStatement-1");

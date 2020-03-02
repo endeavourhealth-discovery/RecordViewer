@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,6 +28,10 @@ public class Observation {
         observation.setIssued(new Date()); //observation.clinical_effective_date
         observation.setEffective(getEffectiveDateTime(observationFull.getDate())); //observation.clinical_effective_date
         observation.getMeta().addProfile(ResourceConstants.OBSERVATION_PROFILE);
+
+        observation.addIdentifier()
+                .setValue(String.valueOf(observationFull.getId()))
+                .setSystem(ResourceConstants.SYSTEM_ID);
 
         UUID uuid = UUID.randomUUID();
         observation.addIdentifier()

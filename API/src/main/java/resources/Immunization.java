@@ -1,6 +1,7 @@
 package resources;
 
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.ImmunizationFull;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -22,6 +23,9 @@ public class Immunization {
         immunization.setPrimarySource(true);
         immunization.setDate(immunizationFull.getClinicalEffectiveDate());
         immunization.getMeta().addProfile("https://fhir.nhs.uk/STU3/StructureDefinition/CareConnect-GPC-Immunization-1");
+        immunization.addIdentifier()
+                .setValue(String.valueOf(immunizationFull.getId()))
+                .setSystem(ResourceConstants.SYSTEM_ID);
 
         Extension extension = new Extension();
         extension.setUrl("https://fhir.nhs.uk/STU3/StructureDefinition/Extension-CareConnect-GPC-DateRecorded-1");

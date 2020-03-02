@@ -1,5 +1,6 @@
 package resources;
 
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.PatientFull;
 import org.hl7.fhir.dstu3.model.*;
 
@@ -39,6 +40,11 @@ public class Patient {
 				.setSystem("https://discoverydataservice.org");
 
 		patient.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Patient-1");
+
+		patient.addIdentifier()
+				.setValue(String.valueOf(patientResult.getId()))
+				.setSystem(ResourceConstants.SYSTEM_ID);
+
 
 		Identifier nhs = patient.addIdentifier()
 				.setSystem("https://fhir.hl7.org.uk/Id/nhs-number")

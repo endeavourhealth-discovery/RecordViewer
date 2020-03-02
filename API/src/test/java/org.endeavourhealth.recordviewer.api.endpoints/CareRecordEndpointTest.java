@@ -73,14 +73,8 @@ public class CareRecordEndpointTest {
                 removeDynamicAttributes((JSONObject) ((JSONArray) resource.get("contained")).get(0));
             }
         });
-        String expected  = null;
-        try {
-            URL url = Resources.getResource("Response.txt");
-            expected = Resources.toString(url, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage(), e);
-        }
 
+        String expected = "[{\"resource\":{\"identifier\":[{\"system\":\"https:\\/\\/discoverydataservice.org\"},{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/Id\\/dds\"},{\"extension\":[{\"valueCodeableConcept\":{\"coding\":[{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/CareConnect-NHSNumberVerificationStatus-1\",\"code\":\"01\",\"display\":\"Number present and verified\"}]},\"url\":\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/StructureDefinition\\/Extension-CareConnect-NHSNumberVerificationStatus-1\"}],\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/Id\\/nhs-number\"}],\"contained\":[{\"resourceType\":\"Organization\"}],\"extension\":[{\"extension\":[{\"valuePeriod\":{\"start\":\"0018-04-11T00:00:00+00:00\"},\"url\":\"registrationPeriod\"}],\"url\":\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/StructureDefinition\\/Extension-CareConnect-RegistrationDetails-1\"}],\"address\":[{\"city\":\"London\",\"line\":[\"18 Oxford Street\",\"Hammersmith\"],\"postalCode\":\"IG2\"}],\"managingOrganization\":{\"reference\":\"#1\"},\"gender\":\"male\",\"meta\":{\"profile\":[\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/StructureDefinition\\/CareConnect-Patient-1\"]},\"name\":[{\"given\":[\"Patrick\"],\"use\":\"official\",\"family\":\"Laughton\"}],\"resourceType\":\"Patient\"}},{\"resource\":{\"identifier\":[{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/Id\\/dds\"},{\"system\":\"https:\\/\\/fhir.nhs.uk\\/Id\\/cross-care-setting-identifier\"}],\"code\":{\"coding\":[{\"extension\":[{\"valueString\":\"ObservationName\",\"url\":\"descriptionDisplay\"}],\"system\":\"http:\\/\\/snomed.info\\/sct\",\"display\":\"Sample test\"}]},\"performer\":[{}],\"effectivePeriod\":{\"start\":\"0019-11-09T00:00:00+00:00\"},\"meta\":{\"profile\":[\"https:\\/\\/fhir.nhs.uk\\/STU3\\/StructureDefinition\\/CareConnect-GPC-Observation-1\"]},\"resourceType\":\"Observation\",\"status\":\"final\",\"valueQuantity\":{\"system\":\"http:\\/\\/unitsofmeasure.org\",\"value\":0.0}}},{\"resource\":{\"mode\":\"snapshot\",\"entry\":[{\"item\":{\"reference\":\"#1\"}}],\"contained\":[{\"identifier\":[{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/Id\\/dds\"},{\"system\":\"https:\\/\\/fhir.nhs.uk\\/Id\\/cross-care-setting-identifier\"}],\"code\":{\"coding\":[{\"extension\":[{\"valueString\":\"ObservationName\",\"url\":\"descriptionDisplay\"}],\"system\":\"http:\\/\\/snomed.info\\/sct\",\"display\":\"Sample test\"}]},\"performer\":[{}],\"effectivePeriod\":{\"start\":\"0019-11-09T00:00:00+00:00\"},\"meta\":{\"profile\":[\"https:\\/\\/fhir.nhs.uk\\/STU3\\/StructureDefinition\\/CareConnect-GPC-Observation-1\"]},\"resourceType\":\"Observation\",\"status\":\"final\",\"valueQuantity\":{\"system\":\"http:\\/\\/unitsofmeasure.org\",\"value\":0.0}}],\"orderedBy\":{\"coding\":[{\"system\":\"http:\\/\\/hl7.org\\/fhir\\/list-order\",\"code\":\"event-date\"}]},\"meta\":{\"profile\":[\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/StructureDefinition\\/CareConnect-List-1\"]},\"title\":\"Miscellaneous record\",\"resourceType\":\"List\",\"status\":\"current\"}},{\"resource\":{\"mode\":\"snapshot\",\"meta\":{\"profile\":[\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/StructureDefinition\\/CareConnect-List-1\"]},\"title\":\"Medication List\",\"resourceType\":\"List\",\"status\":\"current\"}},{\"resource\":{\"mode\":\"instance\",\"identifier\":[{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/Id\\/dds\"}],\"address\":{\"use\":\"work\"},\"managingOrganization\":{\"reference\":\"1001\"},\"physicalType\":{\"coding\":[{\"system\":\"http:\\/\\/terminology.hl7.org\\/CodeSystem\\/location-physical-type\"}]},\"text\":{\"status\":\"generated\"},\"resourceType\":\"Location\",\"status\":\"active\"}},{\"resource\":{\"identifier\":[{\"system\":\"https:\\/\\/fhir.nhs.uk\\/Id\\/sds-user-id\"},{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/Id\\/dds\"}],\"meta\":{\"profile\":[\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/StructureDefinition\\/CareConnect-Practitioner-1\"]},\"name\":[{\"given\":[\"Aro\"],\"use\":\"usual\",\"prefix\":[\"Mr\"],\"family\":\"Sebastine\"}],\"resourceType\":\"Practitioner\"}},{\"resource\":{\"identifier\":[{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/Id\\/dds\"}],\"contained\":[{\"resourceType\":\"Organization\"}],\"code\":[{\"coding\":[{\"system\":\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/CodeSystem\\/CareConnect-SDSJobRoleName-1\",\"code\":\"R0260\",\"display\":\"General Medical Practitioner\"}]}],\"meta\":{\"profile\":[\"https:\\/\\/fhir.hl7.org.uk\\/STU3\\/StructureDefinition\\/CareConnect-PractitionerRole-1\"]},\"organization\":{\"reference\":\"#1\"},\"resourceType\":\"PractitionerRole\"}}]";
         JSONAssert.assertEquals(expected, array.toJSONString(), true);
     }
 
@@ -116,7 +110,11 @@ public class CareRecordEndpointTest {
         if (jsonObject.get("identifier") != null) {
 
             JSONArray identifier = (JSONArray) jsonObject.get("identifier");
-            ((JSONObject) identifier.get(0)).remove("value");
+            for(Object o: identifier){
+                if ( o instanceof JSONObject ) {
+                    ((JSONObject) o).remove("value");
+                }
+            }
         }
         if (jsonObject.get("performer") != null) {
             JSONArray performer = (JSONArray) jsonObject.get("performer");

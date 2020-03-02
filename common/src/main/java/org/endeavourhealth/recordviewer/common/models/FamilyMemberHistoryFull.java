@@ -1,12 +1,20 @@
 package org.endeavourhealth.recordviewer.common.models;
 
-import java.util.Date;
-
 public class FamilyMemberHistoryFull {
+    private int id;
     private String date;
     private String status;
     private String name;
     private String code;
+
+    public int getId() {
+        return id;
+    }
+
+    public FamilyMemberHistoryFull setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public String getDate() {
         return date;

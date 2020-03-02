@@ -1,16 +1,25 @@
 package org.endeavourhealth.recordviewer.common.models;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AllergyFull {
 
+    private int id;
     private Date date;
     private String status;
     private String name;
     private int organizationId;
     private int practitionerId;
     private String code;
+
+    public int getId() {
+        return id;
+    }
+
+    public AllergyFull setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public int getOrganizationId() {
         return organizationId;

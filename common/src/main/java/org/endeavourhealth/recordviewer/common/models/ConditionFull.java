@@ -1,14 +1,24 @@
 package org.endeavourhealth.recordviewer.common.models;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ConditionFull {
 
+    private int id;
     private  String clinicalStatus;
     private Date date;
     private String code;
     private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public ConditionFull setId(int id) {
+        this.id = id;
+        return this;
+    }
+
     public Date getDate() {
         return date;
     }

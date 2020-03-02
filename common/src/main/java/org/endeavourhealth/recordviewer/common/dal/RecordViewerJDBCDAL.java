@@ -381,7 +381,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public List<ObservationFull> getObservationFullList(Integer id) throws Exception {
         List<ObservationFull> observationFullList = new ArrayList<>();
 
-        String sql = "SELECT o.clinical_effective_date as date," +
+        String sql = "SELECT o.id as id," +
+                "o.clinical_effective_date as date," +
                 "coalesce(o.practitioner_id, '') as practitionerId, " +
                 "coalesce(o.organization_id, '') as organizationId, " +
                 "coalesce(o.result_value, '') as resultValue, " +
@@ -452,7 +453,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public LocationFull getLocation(Integer organizationId) throws Exception {
         LocationFull locationFull = new LocationFull();
 
-        String sql = "SELECT coalesce(l.name, '') as name, " +
+        String sql = "SELECT l.id as id, coalesce(l.name, '') as name, " +
                 "coalesce(l.type_code, '') as code, " +
                 "coalesce(l.type_desc,'') as description, " +
                 "coalesce(l.postcode, '') as postcode " +
@@ -472,7 +473,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private LocationFull getLocation(ResultSet resultSet) throws SQLException {
         LocationFull locationFull = new LocationFull();
 
-        locationFull.setName(resultSet.getString("name"))
+        locationFull.setId(resultSet.getInt("id"))
+                .setName(resultSet.getString("name"))
                 .setCode(resultSet.getString("code"))
                 .setDesc(resultSet.getString("description"))
                 .setPostCode(resultSet.getString("postCode"));
@@ -483,7 +485,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public ObservationFull getObservationFull(ResultSet resultSet) throws SQLException {
         ObservationFull observationFull = new ObservationFull();
 
-        observationFull.setCode(resultSet.getString("code"))
+        observationFull.setId(resultSet.getInt("id"))
+                .setCode(resultSet.getString("code"))
                 .setDate(resultSet.getString("date"))
                 .setDescription(resultSet.getString("description"))
                 .setPractitionerId(resultSet.getInt("practitionerId"))
@@ -589,7 +592,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<AllergyFull> getAllergyFullList(Integer patientid) throws Exception {
         ArrayList<AllergyFull> allergiesFullList =null;
-        String sql = " SELECT a.clinical_effective_date as date, c.name ,c.code,a.organization_id,a.practitioner_id " +
+        String sql = " SELECT a.id as id, a.clinical_effective_date as date, c.name ,c.code,a.organization_id,a.practitioner_id " +
             " FROM allergy_intolerance a join concept c on c.dbid = a.non_core_concept_id where patient_id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -604,7 +607,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public OrganizationFull getOrganizationFull(Integer organizationId) throws Exception {
 
-        String sql = "select coalesce(ods_code,'') as ods_code," +
+        String sql = "select id as id," +
+                     "coalesce(ods_code,'') as ods_code," +
                      "coalesce(name,'') as name," +
                      "coalesce(postcode,'') as postcode  from organization where id= ?";
 
@@ -622,6 +626,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public static OrganizationFull getOrganizationFull(ResultSet resultSet) throws SQLException {
         OrganizationFull organizationFull = new OrganizationFull();
         organizationFull
+                .setId(resultSet.getInt("id"))
                 .setOdsCode(resultSet.getString("ods_code"))
                 .setName(resultSet.getString("name"))
                 .setPostCode(resultSet.getString("postcode"));
@@ -635,6 +640,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             while (resultSet.next()) {
                 AllergyFull allergyDtls = new AllergyFull();
                 allergyDtls
+                        .setId(resultSet.getInt("id"))
                         .setDate(resultSet.getDate("date"))
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
@@ -742,7 +748,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<ConditionFull>  getConditionFullList(Integer patientid) throws Exception {
         ArrayList<ConditionFull> conditionFullList =null;
-        String sql = " SELECT a.clinical_effective_date as date,IF(ISNULL(a.problem_end_date), 'active', 'resolved') AS ClinicalStatus," +
+        String sql = " SELECT a.id as id, a.clinical_effective_date as date,IF(ISNULL(a.problem_end_date), 'active', 'resolved') AS ClinicalStatus," +
                 " c.name ,c.code " +
                 " FROM observation a join concept c on c.dbid = a.non_core_concept_id where a.is_problem=1 and patient_id = ?";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -762,6 +768,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             while (resultSet.next()) {
                 ConditionFull conditionDtls = new ConditionFull();
                 conditionDtls
+                        .setId(resultSet.getInt("id"))
                         .setDate(resultSet.getDate("date"))
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
@@ -820,7 +827,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<ImmunizationFull> getImmunizationsFullList(Integer patientid) throws Exception {
         ArrayList<ImmunizationFull> immunizationFullList =null;
-        String sql = " SELECT o.clinical_effective_date as cfd, coalesce(o.encounter_id ,'') as encounterid ,coalesce(o.practitioner_id,''), c.name ,c.code  " +
+        String sql = " SELECT o.id as id, o.clinical_effective_date as cfd, coalesce(o.encounter_id ,'') as encounterid ,coalesce(o.practitioner_id,''), c.name ,c.code  " +
                      " FROM observation o  join concept c on c.dbid = o.non_core_concept_id " +
                      " where patient_id = ? and c.name like '%immunisation%' ";
 
@@ -846,6 +853,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             while (resultSet.next()) {
                 ImmunizationFull immunizationFull = new ImmunizationFull();
                 immunizationFull
+                        .setId(resultSet.getInt("id"))
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
                         .setClinicalEffectiveDate(resultSet.getDate("cfd"))
@@ -915,7 +923,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
      */
     public List<FamilyMemberHistoryFull> getFamilyMemberHistoryFullList(Integer patientId) throws Exception {
         List<FamilyMemberHistoryFull> result = null;
-        String sql = "SELECT o.clinical_effective_date as date," +
+        String sql = "SELECT o.id as id, o.clinical_effective_date as date," +
                 "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
                 "ELSE 'Past' END as status,c.name,c.code " +
                 "FROM observation o " +
@@ -942,6 +950,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         while (resultSet.next()) {
             FamilyMemberHistoryFull familyMemberHistory = new FamilyMemberHistoryFull();
             familyMemberHistory
+                    .setId(resultSet.getInt("id"))
                     .setDate(resultSet.getString("date"))
                     .setStatus(resultSet.getString("status"))
                     .setName(resultSet.getString("name"))
@@ -956,7 +965,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<ReferralRequestFull> getReferralRequestFullList(Integer patientid) throws Exception {
         ArrayList<ReferralRequestFull> referralRequestFullList =null;
-        String sql = "SELECT rr.practitioner_id ,rr.recipient_organization_id as recipent_orgid,rr.mode as intent,rr.clinical_effective_date as authored_on, "+
+        String sql = "SELECT rr.id as id, rr.practitioner_id ,rr.recipient_organization_id as recipent_orgid,rr.mode as intent,rr.clinical_effective_date as authored_on, "+
                 " priorityConcept.name as priority, "+
                 " refferalConcept.code as type_code, refferalConcept.name as type_display, "+
                 " specialityConcept.name as speciality_name, specialityConcept.code as speciality_code "+
@@ -991,6 +1000,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             while (resultSet.next()) {
                 ReferralRequestFull referralRequestFull = new ReferralRequestFull();
                 referralRequestFull
+                        .setId(resultSet.getString("id"))
                         .setPractitionerId(resultSet.getString("practitioner_id"))
                         .setRecipientOrganizationId(resultSet.getString("recipent_orgid"))
                         .setIntent(resultSet.getString("intent"))

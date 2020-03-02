@@ -1,6 +1,7 @@
 package resources;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.PractitionerFull;
 import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.StringType;
@@ -34,6 +35,10 @@ public class Practitioner {
         HumanName name = practitioner.addName();
         String[] nameList = splitName(practitionerResult.getName());
         name.setUse(HumanName.NameUse.USUAL);
+
+        practitioner.addIdentifier()
+                .setValue(String.valueOf(practitionerResult.getId()))
+                .setSystem(ResourceConstants.SYSTEM_ID);
 
         if (ArrayUtils.isNotEmpty(nameList) && nameList.length == 3) {
             name.setFamily(nameList[0]);

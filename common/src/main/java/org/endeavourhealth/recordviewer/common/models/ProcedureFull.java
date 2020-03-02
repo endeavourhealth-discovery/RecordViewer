@@ -3,10 +3,20 @@ package org.endeavourhealth.recordviewer.common.models;
 import java.util.Date;
 
 public class ProcedureFull {
+    private String id;
     private Date date;
     private String status;
     private String name;
     private String code;
+
+    public String getId() {
+        return id;
+    }
+
+    public ProcedureFull setId(String id) {
+        this.id = id;
+        return this;
+    }
 
     public Date getDate() {
         return date;

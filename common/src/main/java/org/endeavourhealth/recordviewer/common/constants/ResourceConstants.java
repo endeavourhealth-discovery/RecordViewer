@@ -2,6 +2,8 @@ package org.endeavourhealth.recordviewer.common.constants;
 
 public class ResourceConstants {
 
+    public static final String SYSTEM_ID = "https://fhir.hl7.org.uk/Id/dds";
+
     //Practitioner Role
     public static final String PRACTITIONER_ROLE_URL = "https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-PractitionerRole-1";
 

@@ -3,8 +3,18 @@ package org.endeavourhealth.recordviewer.common.models;
 import java.util.Date;
 
 public class ImmunizationFull {
+    private int id;
     private Date clinicalEffectiveDate;
     private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public ImmunizationFull setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public String getEncounterID() {
         return encounterID;

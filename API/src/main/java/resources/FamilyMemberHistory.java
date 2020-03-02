@@ -1,6 +1,6 @@
 package resources;
 
-import org.endeavourhealth.recordviewer.common.models.AppointmentFull;
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.FamilyMemberHistoryFull;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Narrative;
@@ -24,6 +24,10 @@ public class FamilyMemberHistory {
 		org.hl7.fhir.dstu3.model.FamilyMemberHistory familyMemberHistory = new org.hl7.fhir.dstu3.model.FamilyMemberHistory();
 
 		familyMemberHistory.setId(String.valueOf(id));
+		familyMemberHistory.addIdentifier()
+				.setValue(String.valueOf(familyMemberHistoryResult.getId()))
+				.setSystem(ResourceConstants.SYSTEM_ID);
+
 
 		if("Active".equalsIgnoreCase(status))
 			familyMemberHistory.setStatus(org.hl7.fhir.dstu3.model.FamilyMemberHistory.FamilyHistoryStatus.COMPLETED);
