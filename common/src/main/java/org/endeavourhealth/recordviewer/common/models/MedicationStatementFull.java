@@ -8,6 +8,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedicationStatementFull {
     private int id;
+    private int patientId;
     private String nhsNumber;
     private String name;
     private String code;
@@ -22,6 +23,15 @@ public class MedicationStatementFull {
 
     public MedicationStatementFull setId(int id) {
         this.id = id;
+        return this;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public MedicationStatementFull setPatientId(int patientId) {
+        this.patientId = patientId;
         return this;
     }
 

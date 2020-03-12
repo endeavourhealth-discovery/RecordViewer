@@ -1,7 +1,9 @@
 package resources;
 
+import ca.uhn.fhir.model.api.Tag;
 import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.EncounterFull;
+import org.hl7.fhir.dstu3.model.Meta;
 
 import java.util.UUID;
 
@@ -21,7 +23,6 @@ public class Encounter {
         } else {
             encounter.setStatus(org.hl7.fhir.dstu3.model.Encounter.EncounterStatus.FINISHED);
         }
-
         encounter.addIdentifier()
                 .setValue(String.valueOf(encounterFull.getEncounterid()))
                 .setSystem(ResourceConstants.SYSTEM_ID);

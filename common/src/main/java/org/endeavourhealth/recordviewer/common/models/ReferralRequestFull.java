@@ -5,6 +5,7 @@ import java.util.Date;
 public class ReferralRequestFull {
 
     private String id;
+    private int patientId;
     private String practitionerId;
     private String recipientOrganizationId;
     private String intent;
@@ -21,6 +22,15 @@ public class ReferralRequestFull {
 
     public ReferralRequestFull setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public ReferralRequestFull setPatientId(int patientId) {
+        this.patientId = patientId;
         return this;
     }
 

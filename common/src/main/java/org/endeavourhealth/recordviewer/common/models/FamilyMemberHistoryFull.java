@@ -2,6 +2,7 @@ package org.endeavourhealth.recordviewer.common.models;
 
 public class FamilyMemberHistoryFull {
     private int id;
+    private int patientId;
     private String date;
     private String status;
     private String name;
@@ -29,6 +30,15 @@ public class FamilyMemberHistoryFull {
 
     public FamilyMemberHistoryFull setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public FamilyMemberHistoryFull setPatientId(int patientId) {
+        this.patientId = patientId;
         return this;
     }
 

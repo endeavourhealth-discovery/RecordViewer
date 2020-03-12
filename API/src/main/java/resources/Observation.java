@@ -1,5 +1,6 @@
 package resources;
 
+import org.apache.commons.lang3.StringUtils;
 import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.ObservationFull;
 import org.hl7.fhir.dstu3.model.*;
@@ -34,20 +35,19 @@ public class Observation {
                 .setSystem(ResourceConstants.SYSTEM_ID);
 
         UUID uuid = UUID.randomUUID();
-        observation.addIdentifier()
-                .setSystem(OBSERVATION_IDENTIFIER).setValue(uuid.toString());
-
+        observation.setId(String.valueOf(uuid));
        // List<Extension> extensionList = new ArrayList<>();
         Extension extension = new Extension();
         extension.setUrl(OBSERVATION_DESCRIPTION);
         StringType stringType = (StringType) extension.addChild(VALUE_STRING);
         stringType.setValue(observationFull.getName());
 
-        Quantity typeQuantity = (Quantity) observation.addChild(VALUE_QUANTITY);
-        typeQuantity.setValue(observationFull.getResultValue());
-
-        typeQuantity.setSystem(OBSERVATION_QUANTITY_VALUE);
-        typeQuantity.setUnit(observationFull.getResultValueUnits());
+        if(observationFull.getResultValue() > 0.0) {
+            Quantity typeQuantity = (Quantity) observation.addChild(VALUE_QUANTITY);
+            typeQuantity.setValue(observationFull.getResultValue());
+            typeQuantity.setSystem(OBSERVATION_QUANTITY_VALUE);
+            typeQuantity.setUnit(observationFull.getResultValueUnits());
+        }
 
         CodeableConcept codeConcept = addCodeableConcept(observationFull.getCode(), observationFull.getDescription(), ResourceConstants.OBSERVATION_SYSTEM,
                 "",extension);

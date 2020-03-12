@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppointmentFull {
     private int id;
+    private int patientId;
     private int scheduleId;
     private int orgId;
     private int practitionerId;
@@ -17,6 +18,15 @@ public class AppointmentFull {
 
     public AppointmentFull setId(int id) {
         this.id = id;
+        return this;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public AppointmentFull setPatientId(int patientId) {
+        this.patientId = patientId;
         return this;
     }
 

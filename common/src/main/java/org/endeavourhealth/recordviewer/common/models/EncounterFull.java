@@ -37,8 +37,19 @@ public class EncounterFull {
         return this;
     }
 
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public EncounterFull setPatientId(int patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
     private String status;
     private String name;
     private String code;
     private int encounterid;
+    private int patientId;
+
 }

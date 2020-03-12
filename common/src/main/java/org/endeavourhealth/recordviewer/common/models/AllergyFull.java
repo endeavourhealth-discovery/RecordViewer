@@ -5,6 +5,7 @@ import java.util.Date;
 public class AllergyFull {
 
     private int id;
+    private int patientId;
     private Date date;
     private String status;
     private String name;
@@ -18,6 +19,15 @@ public class AllergyFull {
 
     public AllergyFull setId(int id) {
         this.id = id;
+        return this;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public AllergyFull setPatientId(int patientId) {
+        this.patientId = patientId;
         return this;
     }
 

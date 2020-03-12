@@ -5,6 +5,7 @@ import java.util.Date;
 public class ConditionFull {
 
     private int id;
+    private int patientId;
     private  String clinicalStatus;
     private Date date;
     private String code;
@@ -16,6 +17,15 @@ public class ConditionFull {
 
     public ConditionFull setId(int id) {
         this.id = id;
+        return this;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public ConditionFull setPatientId(int patientId) {
+        this.patientId = patientId;
         return this;
     }
 

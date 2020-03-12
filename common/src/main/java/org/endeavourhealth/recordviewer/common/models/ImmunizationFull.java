@@ -37,6 +37,7 @@ public class ImmunizationFull {
     private String code;
     private String encounterID;
     private String practitionerID;
+    private int patientId;
 
     public Date getClinicalEffectiveDate() {
         return clinicalEffectiveDate;
@@ -53,6 +54,15 @@ public class ImmunizationFull {
 
     public ImmunizationFull setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public ImmunizationFull setPatientId(int patientId) {
+        this.patientId = patientId;
         return this;
     }
 

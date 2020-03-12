@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class ProcedureFull {
     private String id;
+    private int patientId;
     private Date date;
     private String status;
     private String name;
@@ -17,6 +18,16 @@ public class ProcedureFull {
         this.id = id;
         return this;
     }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public ProcedureFull setPatientId(int patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
 
     public Date getDate() {
         return date;

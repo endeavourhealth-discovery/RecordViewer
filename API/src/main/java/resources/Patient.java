@@ -36,9 +36,6 @@ public class Patient {
 
 		patient.setId(UUID.randomUUID().toString());
 
-		patient.addIdentifier()
-				.setSystem("https://discoverydataservice.org");
-
 		patient.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Patient-1");
 
 		patient.addIdentifier()
