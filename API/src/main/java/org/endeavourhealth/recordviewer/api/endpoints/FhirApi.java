@@ -5,9 +5,6 @@ import models.Parameter;
 import models.Params;
 import models.Request;
 import models.ResourceNotFoundException;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
@@ -107,7 +104,7 @@ public class FhirApi {
         encounterFhirMap = new HashMap<>();
         patientCodingMap = new HashMap<>();
         //Practitioner and PractitionerRole Resource
-        practitionerAndRoleResource = new HashedMap<>();
+        practitionerAndRoleResource = new HashMap<>();
         viewerDAL = getRecordViewerObject();
 
         PatientFull patient = null;
@@ -168,7 +165,7 @@ public class FhirApi {
 
         addToBundle("organizations");
 
-        if (MapUtils.isNotEmpty(practitionerAndRoleResource)) {
+        if (!practitionerAndRoleResource.isEmpty()) {
             for (Map.Entry entry : practitionerAndRoleResource.entrySet()) {
                 List<Resource> resourceList = (List) entry.getValue();
                 resourceList.forEach(resource -> bundle.addEntry().setResource(resource));
@@ -237,7 +234,7 @@ public class FhirApi {
         List<EpisodeOfCareFull> episodeOfCareFullList = viewerDAL.getEpisodeOfCareFull(patientIds);
 
         Map<Integer, List<EpisodeOfCareFull>> episodeOfCareOrganizationMap = getOrganizationList(episodeOfCareFullList);
-        if (MapUtils.isNotEmpty(episodeOfCareOrganizationMap)) {
+        if (!episodeOfCareOrganizationMap.isEmpty()) {
             for (Map.Entry<Integer, List<EpisodeOfCareFull>> episodeOfCareList : episodeOfCareOrganizationMap.entrySet()) {
                 org.hl7.fhir.dstu3.model.EpisodeOfCare episodeOfCare = EpisodeOfCare.getEpisodeOfCareResource(episodeOfCareList.getValue());
                 episodeOfCare.getMeta().addTag(patientCodingMap.get(((episodeOfCareList.getValue()).get(0).getPatientId())));
@@ -264,7 +261,7 @@ public class FhirApi {
     }
 
     private Map<Integer,List<EpisodeOfCareFull>> getOrganizationList(List<EpisodeOfCareFull> episodeOfCareFullList){
-        Map<Integer,List<EpisodeOfCareFull>> episodeOfCareOrganizationList = new HashedMap<>();
+        Map<Integer,List<EpisodeOfCareFull>> episodeOfCareOrganizationList = new HashMap<>();
         episodeOfCareFullList.forEach(episodeOfCareFull -> {
             if(episodeOfCareOrganizationList.containsKey(episodeOfCareFull.getOrganizationId())){
                 episodeOfCareOrganizationList.get(episodeOfCareFull.getOrganizationId()).add(episodeOfCareFull);
@@ -309,7 +306,7 @@ public class FhirApi {
         if (observationFullList.size() > 0) {
             org.hl7.fhir.dstu3.model.ListResource observationListResource = ObservationList.getObservationResource();
             observationListResource.setSubject(new Reference(patientResource));
-            if (CollectionUtils.isNotEmpty(observationFullList)) {
+            if (!observationFullList.isEmpty()) {
                 for (ObservationFull observationFull : observationFullList) {
                     Observation observationFhir = new Observation(observationFull);
                     org.hl7.fhir.dstu3.model.Observation observationResource = observationFhir.getObservationResource();
@@ -456,7 +453,7 @@ public class FhirApi {
     private void addProcedureToBundle(List<Integer> patientIds) throws Exception {
         List<ProcedureFull> procedureFullList= viewerDAL.getProcedureFull(patientIds);
 
-        if (CollectionUtils.isNotEmpty(procedureFullList)) {
+        if (!procedureFullList.isEmpty()) {
 
             for (ProcedureFull procedureFull : procedureFullList) {
                 org.hl7.fhir.dstu3.model.Procedure procedureResource = Procedure.getProcedureResource(procedureFull);
