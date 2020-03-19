@@ -46,10 +46,21 @@ public class EncounterFull {
         return this;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public EncounterFull setDate(String date) {
+        this.date = date;
+        return this;
+    }
+
+
     private String status;
     private String name;
     private String code;
     private int encounterid;
     private int patientId;
+    private String date;
 
 }

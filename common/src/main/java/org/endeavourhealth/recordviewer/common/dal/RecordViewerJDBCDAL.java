@@ -817,7 +817,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<EncounterFull> getEncounterFullList(List<Integer> patientIds, Integer encounterId, boolean isPatient) throws Exception {
         ArrayList<EncounterFull> encounterFullList =null;
-        String sql = " SELECT  e.patient_id as patientId, e.id,coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
+        String sql = " SELECT  e.patient_id as patientId, e.clinical_effective_date as date, e.id,coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
                      " FROM encounter e LEFT JOIN concept c on c.dbid = e.non_core_concept_id ";
         String where_clause="";
         if (isPatient) {
@@ -843,6 +843,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 EncounterFull encounterFull = new EncounterFull();
                 encounterFull
                         .setPatientId(resultSet.getInt("patientId"))
+                        .setDate(resultSet.getString("date"))
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
                         .setEncounterid(resultSet.getInt("id"))

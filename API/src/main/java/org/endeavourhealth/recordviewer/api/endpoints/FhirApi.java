@@ -253,10 +253,12 @@ public class FhirApi {
     private void addLocationToBundle(String organizationId) throws Exception {
         if (StringUtils.isNotEmpty(organizationId)) {
             LocationFull locationFull = viewerDAL.getLocation(Integer.parseInt(organizationId));
-            org.hl7.fhir.dstu3.model.Location locationModel = Location.getLocationResource(locationFull);
+            if(locationFull.getId() != 0) {
+                org.hl7.fhir.dstu3.model.Location locationModel = Location.getLocationResource(locationFull);
 
-            locationModel.setManagingOrganization(new Reference(organizationId));
-            bundle.addEntry().setResource(locationModel);
+                locationModel.setManagingOrganization(new Reference(organizationId));
+                bundle.addEntry().setResource(locationModel);
+            }
         }
     }
 
@@ -586,7 +588,11 @@ public class FhirApi {
             for (ReferralRequestFull referralRequestFull : referralRequestFullList) {
                 org.hl7.fhir.dstu3.model.ReferralRequest referralRequest = ReferralRequest.getReferralRequestResource(referralRequestFull);
                 referralRequest.getMeta().addTag(patientCodingMap.get((referralRequestFull.getPatientId())));
+
                 referralRequest.setSubject(new Reference(patientResource));
+                referralRequest.addIdentifier()
+                        .setValue(String.valueOf(referralRequestFull.getId()))
+                        .setSystem(ResourceConstants.SYSTEM_ID);
                 if(referralRequestFull.getRecipientOrganizationId()!=null) {
                     List<Reference> recipients=new ArrayList<>();
                     recipients.add(new Reference(getOrganizationFhirObj(Integer.parseInt(referralRequestFull.getRecipientOrganizationId()))));
