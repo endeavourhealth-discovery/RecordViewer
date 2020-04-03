@@ -358,7 +358,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         Map<Integer, String> results = new HashMap();
         String sql = "SELECT p.id, " +
                 "o.ods_code as code, " +
-                "o.type_desc as display " +
+                "o.name as display " +
                 "from patient p join organization o where " +
                 "(p.nhs_number = ? or p.id = ?)  and p.organization_id = o.id";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
