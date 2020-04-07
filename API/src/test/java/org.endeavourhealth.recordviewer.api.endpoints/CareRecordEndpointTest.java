@@ -47,7 +47,7 @@ public class CareRecordEndpointTest {
         when(recordViewerJDBCDAL.getPatientIds("0", 9999)).thenReturn(patientIds);
 
         //PatientFull mocked value
-        when(recordViewerJDBCDAL.getPatientFull(9999, "0")).thenReturn(patient);
+        when(recordViewerJDBCDAL.getPatientFull(9999, "0", null)).thenReturn(patient);
 
         //ObservationFull mocked value
         when(recordViewerJDBCDAL.getObservationFullList(Arrays.asList(9999))).thenReturn(getObservationFullList());
@@ -59,7 +59,7 @@ public class CareRecordEndpointTest {
         when(recordViewerJDBCDAL.getLocation(anyInt())).thenReturn(new LocationFull());
 
         doReturn(recordViewerJDBCDAL).when(fhirApi).getRecordViewerObject();
-        Response response = careRecordEndpoint.getFhir(securityContext, 9999);
+        Response response = careRecordEndpoint.getFhir(securityContext, 9999, null);
         JSONObject object = (JSONObject) response.getEntity();
         JSONArray array = (JSONArray) object.get("entry");
 

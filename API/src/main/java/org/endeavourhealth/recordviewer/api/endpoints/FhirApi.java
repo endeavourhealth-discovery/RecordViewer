@@ -53,7 +53,7 @@ public class FhirApi {
         switch (request.getHttpMethod()) {
             case "GET":
                 try {
-                    json = getFhirBundle(request.getId(), "0");
+                    json = getFhirBundle(request.getId(), "0", "");
                 } catch (Exception e) {
                     throw new ResourceNotFoundException("Resource error:" + e);
                 }
@@ -63,6 +63,7 @@ public class FhirApi {
                 List<Parameter> parameters = params.getParameter();
 
                 String nhsNumber = "0";
+                String dateOfBirth = null;
                 boolean includeAllergies = false;
 
                 for (Parameter param : parameters) {
@@ -71,6 +72,8 @@ public class FhirApi {
                         if(nhsNumber.equals("0")) {
                             nhsNumber = param.getValueIdentifier().getValue();
                         }
+                    }  if (paramName.equals("patientDOB")) {
+                            dateOfBirth = param.getValueIdentifier().getValue();
                     } else if (paramName.equals("includeAllergies")) {
                         if (param.getPart().get(0) != null && param.getPart().get(0).getValueBoolean()) {
                             includeAllergies = true;
@@ -79,7 +82,7 @@ public class FhirApi {
                 }
 
                 try {
-                    json = getFhirBundle(0, nhsNumber, includeAllergies);
+                    json = getFhirBundle(0, nhsNumber, dateOfBirth, includeAllergies);
                 } catch (Exception e) {
                     throw new ResourceNotFoundException("Resource error:" + e);
                 }
@@ -95,11 +98,11 @@ public class FhirApi {
         return new RecordViewerJDBCDAL();
     }
 
-    public JSONObject getFhirBundle(Integer id, String nhsNumber) throws Exception {
-        return getFhirBundle(id, nhsNumber, false) ;
+    public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth) throws Exception {
+        return getFhirBundle(id, nhsNumber, dateOfBirth, false) ;
     }
 
-    public JSONObject getFhirBundle(Integer id, String nhsNumber, boolean includeAllergies) throws Exception {
+    public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth, boolean includeAllergies) throws Exception {
         organizationFhirMap = new HashMap<>();
         encounterFhirMap = new HashMap<>();
         patientCodingMap = new HashMap<>();
@@ -108,7 +111,7 @@ public class FhirApi {
         viewerDAL = getRecordViewerObject();
 
         PatientFull patient = null;
-        patient = viewerDAL.getPatientFull(id, nhsNumber);
+        patient = viewerDAL.getPatientFull(id, nhsNumber, dateOfBirth);
         if (patient == null)
             throw new ResourceNotFoundException("Patient resource with id = '" + nhsNumber + "' not found");
         patientResource = Patient.getPatientResource(patient);

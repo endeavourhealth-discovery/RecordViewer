@@ -310,7 +310,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return patientSummary;
     }
 
-    public PatientFull getPatientFull(Integer id, String nhsNumber) throws Exception {
+    public PatientFull getPatientFull(Integer id, String nhsNumber, String dateOfBirth) throws Exception {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
@@ -340,11 +340,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "where c2.code = 'R' "+
                 "and p.date_of_death IS NULL "+
                 "and e.date_registered <= now() "+
-                "and (e.date_registered_end > now() or e.date_registered_end IS NULL) and (p.id = ? or p.nhs_number = ?)";
+                "and (e.date_registered_end > now() or e.date_registered_end IS NULL) and (p.id = ? or (p.nhs_number = ? and p.date_of_birth = ?))";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, id);
             statement.setString(2, nhsNumber);
+            statement.setString(3, dateOfBirth);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
                     result = getPatientFull(resultSet);
