@@ -47,7 +47,7 @@ public class CareRecordEndpointTest {
         when(recordViewerJDBCDAL.getPatientIds("0", 9999)).thenReturn(patientIds);
 
         //PatientFull mocked value
-        when(recordViewerJDBCDAL.getPatientFull(9999, "0", null)).thenReturn(patient);
+        when(recordViewerJDBCDAL.getPatientFull(9999, "0", "0")).thenReturn(patient);
 
         //ObservationFull mocked value
         when(recordViewerJDBCDAL.getObservationFullList(Arrays.asList(9999))).thenReturn(getObservationFullList());
