@@ -59,7 +59,7 @@ public class CareRecordEndpointTest {
         when(recordViewerJDBCDAL.getLocation(anyInt())).thenReturn(new LocationFull());
 
         doReturn(recordViewerJDBCDAL).when(fhirApi).getRecordViewerObject();
-        Response response = careRecordEndpoint.getFhir(securityContext, 9999, null);
+        Response response = careRecordEndpoint.getFhir(securityContext, 9999);
         JSONObject object = (JSONObject) response.getEntity();
         JSONArray array = (JSONArray) object.get("entry");
 

@@ -35,6 +35,8 @@ import {Globals} from "./globals";
 import {ObservationComponent} from "./observation/observation.component";
 import {ValuesComponent} from "./values/values.component";
 import {AllergyComponent} from "./allergy/allergy.component";
+import {DashboardComponent} from "./dashboard/dashboard.component";
+import {BarChartModule} from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import {AllergyComponent} from "./allergy/allergy.component";
     CareSummaryComponent,
     MedicationComponent,
     ValuesComponent,
+    DashboardComponent,
     ObservationComponent,
     AllergyComponent,
     FhirComponent],
@@ -72,7 +75,8 @@ import {AllergyComponent} from "./allergy/allergy.component";
     MatProgressBarModule,
     MatGridListModule,
     MatNativeDateModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    BarChartModule
   ],
   entryComponents: [
     PatientComponent

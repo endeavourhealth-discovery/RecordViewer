@@ -5,6 +5,7 @@ import {RouterModule} from '@angular/router';
 import {CareRecordModule} from './carerecord/carerecord.module';
 import {HttpClientModule} from '@angular/common/http';
 import {AbstractMenuProvider, LayoutComponent, LayoutModule, LoggerModule, SecurityModule, UserManagerModule} from 'dds-angular8';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 const keycloakService = new KeycloakService();
 
@@ -17,6 +18,7 @@ const keycloakService = new KeycloakService();
     LoggerModule,
     UserManagerModule,
     CareRecordModule,
+    NgxChartsModule,
     RouterModule.forRoot(AppMenuService.getRoutes(), {useHash: true}),
   ],
   providers: [

@@ -51,19 +51,12 @@ public class FhirApi {
         JSONObject json = null;
 
         switch (request.getHttpMethod()) {
-            case "GET":
-                try {
-                    json = getFhirBundle(request.getId(), "0", "");
-                } catch (Exception e) {
-                    throw new ResourceNotFoundException("Resource error:" + e);
-                }
-                return json;
             case "POST":
                 Params params = request.getParams();
                 List<Parameter> parameters = params.getParameter();
 
                 String nhsNumber = "0";
-                String dateOfBirth = null;
+                String dateOfBirth = "0";
                 boolean includeAllergies = false;
 
                 for (Parameter param : parameters) {
@@ -72,7 +65,7 @@ public class FhirApi {
                         if(nhsNumber.equals("0")) {
                             nhsNumber = param.getValueIdentifier().getValue();
                         }
-                    }  if (paramName.equals("patientDOB")) {
+                    } else if (paramName.equals("patientDOB")) {
                             dateOfBirth = param.getValueIdentifier().getValue();
                     } else if (paramName.equals("includeAllergies")) {
                         if (param.getPart().get(0) != null && param.getPart().get(0).getValueBoolean()) {
