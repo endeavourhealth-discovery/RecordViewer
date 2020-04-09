@@ -355,6 +355,49 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
+    public PatientFull getPatientFull(String nhsNumber) throws Exception {
+        PatientFull result = null;
+
+        String sql = "SELECT p.id,"+
+                "coalesce(p.organization_id,'') as orglocation,"+
+                "coalesce(p.date_of_birth,'') as dob,"+
+                "p.date_of_death as dod,"+
+                "coalesce(c.name,'') as gender,"+
+                "coalesce(p.nhs_number,'') as nhsNumber,"+
+                "coalesce(p.last_name,'') as lastname,"+
+                "coalesce(p.first_names,'') as firstname,"+
+                "coalesce(p.title,'') as title,"+
+                "coalesce(a.address_line_1,'') as add1,"+
+                "coalesce(a.address_line_2,'') as add2,"+
+                "coalesce(a.address_line_3,'') as add3,"+
+                "coalesce(a.address_line_4,'') as add4,"+
+                "coalesce(a.city,'') as city,"+
+                "coalesce(a.postcode,'') as postcode," +
+                "coalesce(e.date_registered,'') as startdate,"+
+                "'HOME' as adduse,"+
+                "'' as telecom,"+
+                "'' as otheraddresses "+
+                "FROM patient p " +
+                "join patient_address a on a.id = p.current_address_id " +
+                "join concept c on c.dbid = p.gender_concept_id " +
+                "join episode_of_care e on e.patient_id = p.id "+
+                "join concept c2 on c2.dbid = e.registration_type_concept_id "+
+                "where c2.code = 'R' "+
+                "and p.date_of_death IS NULL "+
+                "and e.date_registered <= now() "+
+                "and (e.date_registered_end > now() or e.date_registered_end IS NULL) and (p.nhs_number = ?)";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, nhsNumber);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    result = getPatientFull(resultSet);
+            }
+        }
+
+        return result;
+    }
+
     public Map<Integer, String> getPatientIds(String nhsNumber, int id) throws Exception {
         Map<Integer, String> results = new HashMap();
         String sql = "SELECT p.id, " +

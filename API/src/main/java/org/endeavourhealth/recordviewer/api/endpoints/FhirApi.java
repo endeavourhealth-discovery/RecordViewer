@@ -104,7 +104,11 @@ public class FhirApi {
         viewerDAL = getRecordViewerObject();
 
         PatientFull patient = null;
-        patient = viewerDAL.getPatientFull(id, nhsNumber, dateOfBirth);
+        if (id>0 || !dateOfBirth.equals("0"))
+            patient = viewerDAL.getPatientFull(id, nhsNumber, dateOfBirth);
+        else
+            patient = viewerDAL.getPatientFull(nhsNumber);
+
         if (patient == null)
             throw new ResourceNotFoundException("Patient resource with id = '" + nhsNumber + "' not found");
         patientResource = Patient.getPatientResource(patient);
