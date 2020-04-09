@@ -127,12 +127,11 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDemographic(@Context SecurityContext sc,
-                                   @QueryParam("patientId") Integer patientId,
-                                   @QueryParam("dateOfBorth") String dateOfBirth) throws Exception {
+                                   @QueryParam("patientId") Integer patientId) throws Exception {
         LOG.debug("getDemographic");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            PatientFull result = viewerDAL.getPatientFull(patientId, dateOfBirth, "0");
+            PatientFull result = viewerDAL.getPatientFull(patientId, "0", "0");
 
             return Response
                     .ok()
@@ -146,13 +145,12 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFhir(@Context SecurityContext sc,
-                               @QueryParam("patientId") Integer patientId,
-                            @QueryParam("dateOfBirth") String dateOfBirth
+                               @QueryParam("patientId") Integer patientId
     ) throws Exception {
         LOG.debug("getFhir");
 
         FhirApi api = getFhirApi();
-        JSONObject json = api.getFhirBundle(patientId,"0", dateOfBirth);
+        JSONObject json = api.getFhirBundle(patientId,"0", "0");
         return Response
                 .ok()
                 .entity(json)
