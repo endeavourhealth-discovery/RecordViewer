@@ -26,7 +26,6 @@ public class Observation {
         org.hl7.fhir.dstu3.model.Observation observation = new org.hl7.fhir.dstu3.model.Observation();
 
         observation.setStatus(org.hl7.fhir.dstu3.model.Observation.ObservationStatus.FINAL);
-        observation.setIssued(new Date()); //observation.clinical_effective_date
         observation.setEffective(getEffectiveDateTime(observationFull.getDate())); //observation.clinical_effective_date
         observation.getMeta().addProfile(ResourceConstants.OBSERVATION_PROFILE);
 
