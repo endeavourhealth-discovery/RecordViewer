@@ -57,7 +57,7 @@ public class FhirApi {
 
                 String nhsNumber = "0";
                 String dateOfBirth = "0";
-                boolean includeAllergies = false;
+                boolean includeAllergies = true;
 
                 for (Parameter param : parameters) {
                     String paramName = param.getName();
@@ -67,11 +67,11 @@ public class FhirApi {
                         }
                     } else if (paramName.equals("patientDOB")) {
                             dateOfBirth = param.getValueIdentifier().getValue();
-                    } else if (paramName.equals("includeAllergies")) {
+                    } /*else if (paramName.equals("includeAllergies")) {
                         if (param.getPart().get(0) != null && param.getPart().get(0).getValueBoolean()) {
                             includeAllergies = true;
                         }
-                    }
+                    }*/
                 }
 
                 try {
