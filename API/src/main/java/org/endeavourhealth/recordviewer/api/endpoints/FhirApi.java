@@ -92,7 +92,7 @@ public class FhirApi {
     }
 
     public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth) throws Exception {
-        return getFhirBundle(id, nhsNumber, dateOfBirth, false) ;
+        return getFhirBundle(id, nhsNumber, dateOfBirth, true) ;
     }
 
     public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth, boolean includeAllergies) throws Exception {
