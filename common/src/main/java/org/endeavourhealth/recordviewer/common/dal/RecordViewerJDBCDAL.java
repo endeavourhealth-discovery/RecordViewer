@@ -469,7 +469,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(c.description, '') as description," +
                 "coalesce(o.result_value_units,'') as resultValueUnits from observation o " +
                 "join concept c on o.non_core_concept_id = c.dbid " +
-                "where o.patient_id in (" + StringUtils.join(id, ',') + ") " + "and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%(procedure)'" +
+                "where o.patient_id in (" + StringUtils.join(id, ',') + ") " + "and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%procedure%'" +
                 " and c.name not like '%vaccination%' and o.is_problem = 0";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
