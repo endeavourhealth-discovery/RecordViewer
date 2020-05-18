@@ -25,6 +25,12 @@ public class ResourceConstants {
     public static final String VALUE_STRING = "valueString";
     public static final String VALUE_QUANTITY = "valueQuantity";
 
+    //Referrel Request
+    public static final String REFERREL_REQUEST_PROFILE = "https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-ReferralRequest-1";
+
+    //Family History
+    public static final String FAMILY_HISTORY_PROFILE = "https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-ReferralRequest-1";
+
     //Episode Of Care
     public static final String EPISODE_OF_CARE_TYPE_CODING = "http://terminology.hl7.org/CodeSystem/episodeofcare-type";
 

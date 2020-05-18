@@ -17,7 +17,6 @@ public class PatientFull {
     private String firstname;
     private String dob;
     private String dod;
-    private String telecom;
     private String adduse;
     private String add1;
     private String add2;
@@ -28,6 +27,10 @@ public class PatientFull {
     private String otheraddresses;
     private String orglocation;
     private String startdate;
+    private String ethnicCode;
+    private int practitionerId;
+    private String registrationType;
+    private String registrationEndDate;
 
     public String getId() {
         return id;
@@ -46,6 +49,43 @@ public class PatientFull {
         this.lastname = lastname;
         return this;
     }
+
+    public String getEthnicCode() {
+       return  ethnicCode;
+    }
+
+    public PatientFull setEthnicCode(String ethnicCode) {
+        this.ethnicCode = ethnicCode;
+        return this;
+    }
+
+    public int getPractitionerId() {
+        return practitionerId;
+    }
+
+    public PatientFull setPractitionerId(int practitionerId) {
+        this.practitionerId = practitionerId;
+        return this;
+    }
+
+    public String getRegistrationType() {
+        return registrationType;
+    }
+
+    public PatientFull setRegistrationType(String registrationType) {
+        this.registrationType = registrationType;
+        return this;
+    }
+
+    public String getRegistrationEndDate() {
+        return registrationEndDate;
+    }
+
+    public PatientFull setRegistrationEndDate(String registrationEndDate) {
+        this.registrationEndDate = registrationEndDate;
+        return this;
+    }
+
 
     public String getFirstname() {
         return firstname;
@@ -122,15 +162,6 @@ public class PatientFull {
 
     public PatientFull setNhsNumber(String nhsNumber) {
         this.nhsNumber = nhsNumber;
-        return this;
-    }
-
-    public String getTelecom() {
-        return telecom;
-    }
-
-    public PatientFull setTelecom(String telecom) {
-        this.telecom = telecom;
         return this;
     }
 

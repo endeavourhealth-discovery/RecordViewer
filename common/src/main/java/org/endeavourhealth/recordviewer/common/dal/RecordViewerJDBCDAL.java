@@ -327,30 +327,34 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(a.address_line_3,'') as add3,"+
                 "coalesce(a.address_line_4,'') as add4,"+
                 "coalesce(a.city,'') as city,"+
+                "coalesce(e.usual_gp_practitioner_id,'') as practitionerId,"+
                 "coalesce(a.postcode,'') as postcode," +
+                "coalesce(pe.ethnic_code_concept_id,'') as ethniccode," +
+                "coalesce(e.registration_type_concept_id,'') as registrationType,"+
+                "coalesce(e.date_registered_end,'') as registeredEndDate,"+
                 "coalesce(e.date_registered,'') as startdate,"+
                 "'HOME' as adduse,"+
-                "'' as telecom,"+
                 "'' as otheraddresses "+
                 "FROM patient p " +
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id "+
+                "join person pe on pe.nhs_number = p.nhs_number "+
                 "join concept c2 on c2.dbid = e.registration_type_concept_id "+
                 "where c2.code = 'R' "+
                 "and p.date_of_death IS NULL "+
                 "and e.date_registered <= now() "+
                 "and (e.date_registered_end > now() or e.date_registered_end IS NULL) and (p.id = ? or (p.nhs_number = ? and p.date_of_birth = ?))";
 
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            statement.setString(2, nhsNumber);
-            statement.setString(3, dateOfBirth);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next())
-                    result = getPatientFull(resultSet);
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, id);
+                statement.setString(2, nhsNumber);
+                statement.setString(3, dateOfBirth);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next())
+                        result = getPatientFull(resultSet);
+                }
             }
-        }
 
         return result;
     }
@@ -372,15 +376,19 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(a.address_line_3,'') as add3,"+
                 "coalesce(a.address_line_4,'') as add4,"+
                 "coalesce(a.city,'') as city,"+
+                "coalesce(pe.ethnic_code_concept_id,'') as ethniccode," +
+                "coalesce(e.usual_gp_practitioner_id,'') as practitionerId,"+
+                "coalesce(e.registration_type_concept_id,'') as registrationType,"+
+                "coalesce(e.date_registered_end,'') as registeredEndDate,"+
                 "coalesce(a.postcode,'') as postcode," +
                 "coalesce(e.date_registered,'') as startdate,"+
                 "'HOME' as adduse,"+
-                "'' as telecom,"+
                 "'' as otheraddresses "+
                 "FROM patient p " +
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id "+
+                "join person pe on pe.nhs_number = p.nhs_number "+
                 "join concept c2 on c2.dbid = e.registration_type_concept_id "+
                 "where c2.code = 'R' "+
                 "and p.date_of_death IS NULL "+
@@ -517,6 +525,34 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return procedureList;
     }
 
+    public TelecomFull getTelecomFull(Integer patientId) throws Exception {
+        TelecomFull telecomFull = new TelecomFull();
+
+        String sql = "select ctype.description as description1, cuse.description as description2, pc.value as value, pc.patient_id as id from patient_contact pc " +
+        "join concept cuse on cuse.dbid = pc.use_concept_id " +
+        "join concept ctype on ctype.dbid = pc.type_concept_id " +
+                "where patient_id = " + patientId;
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next())
+                    telecomFull = getTelecom(resultSet);
+            }
+        }
+        return telecomFull;
+    }
+
+    private TelecomFull getTelecom(ResultSet resultSet) throws SQLException {
+        TelecomFull telecomFull = new TelecomFull();
+
+        telecomFull.setDescription1(resultSet.getString("description1"))
+                .setDescription1(resultSet.getString("description2"))
+                .setValue(resultSet.getString("value"))
+                .setId(resultSet.getString("id"));
+        return telecomFull;
+    }
+
+
     private ProcedureFull getProcedure(ResultSet resultSet) throws SQLException {
         ProcedureFull procedureFull = new ProcedureFull();
 
@@ -588,7 +624,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setFirstname(resultSet.getString("firstname"))
                 .setDob(resultSet.getDate("dob"))
                 .setDod(resultSet.getDate("dod"))
-                .setTelecom(resultSet.getString("telecom"))
                 .setAdduse(resultSet.getString("adduse"))
                 .setAdd1(resultSet.getString("add1"))
                 .setAdd2(resultSet.getString("add2"))
@@ -598,6 +633,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setCity(resultSet.getString("city"))
                 .setOtheraddresses(resultSet.getString("otheraddresses"))
                 .setOrglocation(resultSet.getString("orglocation"))
+                .setPractitionerId(resultSet.getInt("practitionerId"))
+                .setRegistrationEndDate(resultSet.getString("registeredEndDate"))
+                .setRegistrationType(resultSet.getString("registrationType"))
                 .setStartdate(resultSet.getDate("startdate"));
 
         return patient;
@@ -862,7 +900,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<EncounterFull> getEncounterFullList(List<Integer> patientIds, Integer encounterId, boolean isPatient) throws Exception {
         ArrayList<EncounterFull> encounterFullList =null;
-        String sql = " SELECT  e.patient_id as patientId, e.clinical_effective_date as date, e.id,coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
+        String sql = " SELECT  e.patient_id as patientId, e.clinical_effective_date as date, e.end_date as endDate, e.id,coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
                      " FROM encounter e LEFT JOIN concept c on c.dbid = e.non_core_concept_id ";
         String where_clause="";
         if (isPatient) {
@@ -889,6 +927,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 encounterFull
                         .setPatientId(resultSet.getInt("patientId"))
                         .setDate(resultSet.getString("date"))
+                        .setEndDate(resultSet.getString("endDate"))
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
                         .setEncounterid(resultSet.getInt("id"))

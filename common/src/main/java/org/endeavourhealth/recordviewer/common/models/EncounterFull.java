@@ -55,6 +55,15 @@ public class EncounterFull {
         return this;
     }
 
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public EncounterFull setEndDate(String endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
 
     private String status;
     private String name;
@@ -62,5 +71,6 @@ public class EncounterFull {
     private int encounterid;
     private int patientId;
     private String date;
+    private String endDate;
 
 }

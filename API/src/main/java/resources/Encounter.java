@@ -32,7 +32,13 @@ public class Encounter {
         Date clinicalEffDt = formatter.parse(encounterFull.getDate());
 
         if(clinicalEffDt != null) {
-            encounter.setPeriod(new Period().setStart(clinicalEffDt));
+            Period period = new Period();
+            period.setStart(clinicalEffDt);
+            if(encounterFull.getEndDate() != null){
+                Date endDate = formatter.parse(encounterFull.getEndDate());
+                period.setEnd(endDate);
+            }
+            encounter.setPeriod(period);
         }
 
         encounter.addIdentifier()

@@ -23,6 +23,7 @@ public class FamilyMemberHistory {
 
 		org.hl7.fhir.dstu3.model.FamilyMemberHistory familyMemberHistory = new org.hl7.fhir.dstu3.model.FamilyMemberHistory();
 
+		familyMemberHistory.getMeta().addProfile(ResourceConstants.FAMILY_HISTORY_PROFILE);
 		familyMemberHistory.setId(String.valueOf(id));
 		familyMemberHistory.addIdentifier()
 				.setValue(String.valueOf(familyMemberHistoryResult.getId()))

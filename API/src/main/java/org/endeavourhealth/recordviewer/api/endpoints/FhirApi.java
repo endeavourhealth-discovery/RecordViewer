@@ -10,11 +10,10 @@ import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
 import org.endeavourhealth.recordviewer.common.models.*;
 import org.hl7.fhir.dstu3.model.*;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import resources.*;
 import resources.AllergyIntolerance;
 import resources.Appointment;
 import resources.Condition;
@@ -31,7 +30,7 @@ import resources.Practitioner;
 import resources.PractitionerRole;
 import resources.Procedure;
 import resources.ReferralRequest;
-
+import resources.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -111,7 +110,7 @@ public class FhirApi {
 
         if (patient == null)
             throw new ResourceNotFoundException("Patient resource with id = '" + nhsNumber + "' not found");
-        patientResource = Patient.getPatientResource(patient);
+        patientResource = Patient.getPatientResource(patient, viewerDAL);
 
         bundle = new Bundle();
         bundle.setType(Bundle.BundleType.COLLECTION);
@@ -121,6 +120,9 @@ public class FhirApi {
 
         if (patient.getOrglocation().trim().length() > 0) {
             patientResource.setManagingOrganization(new Reference(getOrganizationFhirObj(Integer.parseInt(patient.getOrglocation()))));
+        }
+        if (patient.getPractitionerId() != 0) {
+            patientResource.setGeneralPractitioner(Arrays.asList(new Reference(getPractitionerResource(patient.getPractitionerId()))));
         }
         bundle.addEntry().setResource(patientResource);
 

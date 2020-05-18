@@ -1,19 +1,13 @@
 package resources;
 
-import org.endeavourhealth.recordviewer.common.models.ImmunizationFull;
+import org.endeavourhealth.recordviewer.common.constants.ResourceConstants;
 import org.endeavourhealth.recordviewer.common.models.ReferralRequestFull;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-
-import static org.endeavourhealth.recordviewer.common.constants.ResourceConstants.PROCEDURE_SYSTEM;
 
 public class ReferralRequest {
     private static final Logger LOG = LoggerFactory.getLogger(Observation.class);
@@ -22,6 +16,8 @@ public class ReferralRequest {
         org.hl7.fhir.dstu3.model.ReferralRequest referralRequest = new org.hl7.fhir.dstu3.model.ReferralRequest();
         referralRequest.setId(UUID.randomUUID().toString());
         referralRequest.setStatus(org.hl7.fhir.dstu3.model.ReferralRequest.ReferralRequestStatus.ACTIVE);
+
+        referralRequest.getMeta().addProfile(ResourceConstants.REFERREL_REQUEST_PROFILE);
 
         if(null!=referralRequestFull.getPriority())
         {
