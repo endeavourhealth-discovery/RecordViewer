@@ -103,7 +103,8 @@ public class FhirApi {
         viewerDAL = getRecordViewerObject();
 
         PatientFull patient = null;
-        if (id>0 || dateOfBirth != null)
+
+        if (id>0 || !dateOfBirth.equals("0"))
             patient = viewerDAL.getPatientFull(id, nhsNumber, dateOfBirth);
         else
             patient = viewerDAL.getPatientFull(nhsNumber);
