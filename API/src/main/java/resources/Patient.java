@@ -15,7 +15,7 @@ public class Patient {
 
 	public static org.hl7.fhir.dstu3.model.Patient getPatientResource(PatientFull patientResult, RecordViewerJDBCDAL recordViewerJDBCDAL) throws Exception {
 		String id = replaceNull(patientResult.getId());
-		TelecomFull telecomFull = recordViewerJDBCDAL.getTelecomFull(Integer.parseInt(id));
+		List<TelecomFull> telecomFullList = recordViewerJDBCDAL.getTelecomFull(Integer.parseInt(id));
 		String nhsNumber = replaceNull(patientResult.getNhsNumber());
 		String gender = replaceNull(patientResult.getGender());
 		String lastname = replaceNull(patientResult.getLastname());
@@ -23,7 +23,6 @@ public class Patient {
 		String firstname = replaceNull(patientResult.getFirstname());
 		String dob = replaceNull(patientResult.getDob());
 		String dod = replaceNull(patientResult.getDod());
-		String telecom = replaceNull(telecomFull.getValue());
 		String adduse = replaceNull(patientResult.getAdduse());
 		String add1 = replaceNull(patientResult.getAdd1());
 		String add2 = replaceNull(patientResult.getAdd2());
@@ -35,8 +34,6 @@ public class Patient {
 		String orglocation = replaceNull(patientResult.getOrglocation());
 		String startdate = replaceNull(patientResult.getStartdate());
 		String endDate = replaceNull(patientResult.getRegistrationEndDate());
-		String desc1 = replaceNull(telecomFull.getDescription1());
-		String desc2 = replaceNull(telecomFull.getDescription2());
 
 		org.hl7.fhir.dstu3.model.Patient patient = new org.hl7.fhir.dstu3.model.Patient();
 
@@ -85,21 +82,27 @@ public class Patient {
 				.setUse(HumanName.NameUse.OFFICIAL);
 
 		//TODO: Ethnic group
-		if (telecom.length() > 0) {
-			ContactPoint t = new ContactPoint();
-			t.setValue(telecom);
-			if (desc1.equalsIgnoreCase("Phone")) {
-				t.setSystem(ContactPoint.ContactPointSystem.PHONE);
-				if (desc2.equalsIgnoreCase("Mobile")) {
-					t.setUse(ContactPoint.ContactPointUse.MOBILE);
-				} else {
-					t.setUse(ContactPoint.ContactPointUse.HOME);
-				}
-			} else if (desc2.equalsIgnoreCase("Email")) {
-				t.setSystem(ContactPoint.ContactPointSystem.EMAIL);
-			}
+		if (telecomFullList.size() > 0) {
+			for(TelecomFull telecomFull : telecomFullList) {
+				String telecom = replaceNull(telecomFull.getValue());
+				String desc1 = replaceNull(telecomFull.getDescription1());
+				String desc2 = replaceNull(telecomFull.getDescription2());
 
-			patient.addTelecom(t);
+				ContactPoint t = new ContactPoint();
+				t.setValue(telecom);
+				if (desc1.equalsIgnoreCase("Phone")) {
+					t.setSystem(ContactPoint.ContactPointSystem.PHONE);
+					if (desc2.equalsIgnoreCase("Mobile")) {
+						t.setUse(ContactPoint.ContactPointUse.MOBILE);
+					} else {
+						t.setUse(ContactPoint.ContactPointUse.HOME);
+					}
+				} else if (desc1.equalsIgnoreCase("Email")) {
+					t.setSystem(ContactPoint.ContactPointSystem.EMAIL);
+				}
+
+				patient.addTelecom(t);
+			}
 		}
 
 		if (!dob.isEmpty()) {

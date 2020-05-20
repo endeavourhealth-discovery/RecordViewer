@@ -525,8 +525,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return procedureList;
     }
 
-    public TelecomFull getTelecomFull(Integer patientId) throws Exception {
-        TelecomFull telecomFull = new TelecomFull();
+    public List<TelecomFull> getTelecomFull(Integer patientId) throws Exception {
+        List<TelecomFull> telecomFullList = new ArrayList<>();
 
         String sql = "select ctype.description as description1, cuse.description as description2, pc.value as value, pc.patient_id as id from patient_contact pc " +
         "join concept cuse on cuse.dbid = pc.use_concept_id " +
@@ -536,17 +536,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next())
-                    telecomFull = getTelecom(resultSet);
+                    telecomFullList.add(getTelecom(resultSet));
             }
         }
-        return telecomFull;
+        return telecomFullList;
     }
 
     private TelecomFull getTelecom(ResultSet resultSet) throws SQLException {
         TelecomFull telecomFull = new TelecomFull();
 
         telecomFull.setDescription1(resultSet.getString("description1"))
-                .setDescription1(resultSet.getString("description2"))
+                .setDescription2(resultSet.getString("description2"))
                 .setValue(resultSet.getString("value"))
                 .setId(resultSet.getString("id"));
         return telecomFull;
@@ -944,7 +944,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<ImmunizationFull> getImmunizationsFullList(List<Integer> patientIds) throws Exception {
         ArrayList<ImmunizationFull> immunizationFullList =null;
-        String sql = " SELECT o.id as id, o.patient_id as id, o.clinical_effective_date as cfd, coalesce(o.encounter_id ,'') as encounterid ,coalesce(o.practitioner_id,''), c.name ,c.code  " +
+        String sql = " SELECT o.id as id, o.patient_id as patientId, o.clinical_effective_date as cfd, coalesce(o.encounter_id ,'') as encounterid ,coalesce(o.practitioner_id,'') as practitionerid, c.name ,c.code  " +
                      " FROM observation o  join concept c on c.dbid = o.non_core_concept_id " +
                      " where patient_id in (" + StringUtils.join(patientIds, ',') + ") " +  "and c.name like '%immunisation%' ";
 
