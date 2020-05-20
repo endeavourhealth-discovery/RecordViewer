@@ -6,6 +6,8 @@ import models.Request;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
 import org.endeavourhealth.recordviewer.common.models.*;
 import org.json.simple.JSONObject;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,7 +152,7 @@ public class CareRecordEndpoint {
         LOG.debug("getFhir");
 
         FhirApi api = getFhirApi();
-        JSONObject json = api.getFhirBundle(patientId,"0", null);
+        JSONObject json = api.getFhirBundle(patientId,"0", "0");
         return Response
                 .ok()
                 .entity(json)
