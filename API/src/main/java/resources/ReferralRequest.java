@@ -7,6 +7,7 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class ReferralRequest {
@@ -56,7 +57,7 @@ public class ReferralRequest {
             coding.setSystem("http://snomed.info/sct");
             coding.setCode(referralRequestFull.getTypeCode());
             coding.setDisplay(referralRequestFull.getTypeDisplay());
-            referralRequest.setType( codeableConcept.addCoding(coding));
+            referralRequest.setReasonCode(Arrays.asList(codeableConcept.addCoding(coding)));
         }
 
         if(null!=referralRequestFull.getSpecialityCode())

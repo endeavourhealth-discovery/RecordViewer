@@ -349,7 +349,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, id);
                 statement.setString(2, nhsNumber);
-                statement.setString(3, dateOfBirth);
+                statement.setString(3, (dateOfBirth.equals("0") ? null : dateOfBirth));
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next())
                         result = getPatientFull(resultSet);
@@ -994,7 +994,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
      */
     public List<AppointmentFull> getAppointmentFullList(List<Integer> patientIds) throws Exception {
         List<AppointmentFull> result = null;
-        String sql = "SELECT a.id, a.patient_id, a.schedule_id as sId, a.practitioner_id as prId, a.organization_id as oId, " +
+        String sql = "SELECT a.id, a.patient_id as patientId, a.schedule_id as sId, a.practitioner_id as prId, a.organization_id as oId, " +
                 "a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type" +
                 " FROM appointment a join schedule s on a.schedule_id = s.id where a.patient_id in (" + StringUtils.join(patientIds, ',') + ") ";
 
