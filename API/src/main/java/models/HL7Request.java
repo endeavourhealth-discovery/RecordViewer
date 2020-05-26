@@ -1,9 +1,9 @@
 package models;
 
-public class Request {
+public class HL7Request {
     private String httpMethod;
 
-    private Params params;
+    private HL7Params params;
 
     public String getHttpMethod() {
         return httpMethod;
@@ -13,11 +13,11 @@ public class Request {
         this.httpMethod = httpMethod;
     }
 
-    public Params getParams() {
+    public HL7Params getParams() {
         return params;
     }
 
-    public void setParams(Params params) {
+    public void setParams(HL7Params params) {
         this.params = params;
     }
 }

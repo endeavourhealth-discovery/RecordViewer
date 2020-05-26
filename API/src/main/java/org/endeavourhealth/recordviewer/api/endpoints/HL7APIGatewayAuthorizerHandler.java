@@ -6,7 +6,6 @@ import org.apache.http.HttpStatus;
 import org.endeavourhealth.core.database.dal.usermanager.caching.ApplicationPolicyCache;
 import org.endeavourhealth.core.database.dal.usermanager.caching.UserCache;
 import org.endeavourhealth.core.database.dal.usermanager.models.JsonApplicationPolicyAttribute;
-import org.keycloak.KeycloakPrincipal;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,7 +14,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
-public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthorizerContext, AuthPolicy> {
+public class HL7APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthorizerContext, AuthPolicy> {
 
     @Override
     public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
