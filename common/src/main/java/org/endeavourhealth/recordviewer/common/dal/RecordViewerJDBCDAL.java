@@ -1134,4 +1134,25 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return referralRequestFullList;
     }
 
+    public Boolean applicationAccessProfile(String userId, String applicationAccessProfile) throws Exception {
+        Boolean found = false;
+
+        String sql = "select aap.name from user_manager.user_application_policy ua "+
+        "join user_manager.application_policy_attribute apa on apa.application_policy_id = ua.application_policy_id "+
+        "join user_manager.application_access_profile aap on aap.id = apa.application_access_profile_id "+
+        "where ua.user_id = ? "+
+        "and aap.name = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, userId);
+            statement.setString(2, applicationAccessProfile);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next())
+                    found = true;
+            }
+        }
+
+        return found;
+    }
+
 }

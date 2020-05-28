@@ -3,28 +3,47 @@ package org.endeavourhealth.recordviewer.api.endpoints;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.http.HttpStatus;
-import org.endeavourhealth.core.database.dal.usermanager.caching.ApplicationPolicyCache;
-import org.endeavourhealth.core.database.dal.usermanager.caching.UserCache;
-import org.endeavourhealth.core.database.dal.usermanager.models.JsonApplicationPolicyAttribute;
-import org.keycloak.KeycloakPrincipal;
-
+import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Map;
 
 public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthorizerContext, AuthPolicy> {
+
+    RecordViewerJDBCDAL viewerDAL;
+
+    public AuthPolicy handleRequestByPass(TokenAuthorizerContext input, Context context) {
+
+        // bypass auth for test, will use method below once keycloak login available for client caller
+
+        String methodArn = input.getMethodArn();
+        String[] arnPartials = methodArn.split(":");
+        String region = arnPartials[3];
+        String awsAccountId = arnPartials[4];
+        String[] apiGatewayArnPartials = arnPartials[5].split("/");
+        String restApiId = apiGatewayArnPartials[0];
+        String stage = apiGatewayArnPartials[1];
+        String httpMethod = apiGatewayArnPartials[2];
+        String resource = ""; // root resource
+        if (apiGatewayArnPartials.length == 4) {
+            resource = apiGatewayArnPartials[3];
+        }
+
+        return new AuthPolicy("XXX", AuthPolicy.PolicyDocument.getAllowAllPolicy(region, awsAccountId, restApiId, stage));
+    }
+
+    RecordViewerJDBCDAL getRecordViewerObject(){
+        return new RecordViewerJDBCDAL();
+    }
 
     @Override
     public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
 
         String headerAuthToken = input.getAuthorizationToken();
         String userID = "";
-
-        /*KeycloakPrincipal kp = (KeycloakPrincipal)sc.getUserPrincipal();
-        String headerAuthToken = kp.getKeycloakSecurityContext().getTokenString();*/
 
         // validate the incoming authorization token by calling dev keycloak and produce the principal user identifier associated with the token
         Client client = ClientBuilder.newClient();
@@ -42,26 +61,14 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
                     .get();
 
             if (response.getStatus() == HttpStatus.SC_OK) { // user is authorized in keycloak, so get the user record and ID associated with the token
-                Map<String, String> users = response.readEntity(Map.class);
+                String entityResponse = response.readEntity(String.class);
+                JSONParser parser = new JSONParser();
+                JSONObject users = (JSONObject) parser.parse(entityResponse);
+                userID = users.get("sub").toString();
 
-                for (Map.Entry<String, String> user: users.entrySet()) {
-                    if (user.getKey().equals("sub")) {
-                        userID = user.getValue();
-                        break;
-                    }
-                }
-
-                // call user manager with the user ID to get the user's authorized applications and policies
-                String applicationPolicyId = UserCache.getUserApplicationPolicyId(userID);
-                List<JsonApplicationPolicyAttribute> jsonApplicationPolicyAttributes = ApplicationPolicyCache.getApplicationPolicyAttributes(applicationPolicyId);
-
-                for (JsonApplicationPolicyAttribute policyAttribute: jsonApplicationPolicyAttributes) {
-                    String accessProfileName = policyAttribute.getApplicationAccessProfileName();
-                    if (accessProfileName.equals("record-viewer:fhir")) { // check that the user has an application policy for accessing FHIR records
-                        foundFHIRPolicy = true;
-                        break;
-                    }
-                }
+                // query user manager with the user ID to check the user's authorized applications and policies match
+                viewerDAL = getRecordViewerObject();
+                foundFHIRPolicy = viewerDAL.applicationAccessProfile(userID, "record-viewer:fhir");
 
             } else { // user is not authorized with this token
                 throw new RuntimeException("Unauthorized"); // Not authorized so send 401/403 Unauthorized response to the client
@@ -75,7 +82,7 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
             throw new RuntimeException("Unauthorized"); // Not authorized so send 401 Unauthorized response to the client
         }
 
-        // if the token is valid, a policy is generated which will allow or deny access to the client
+        // if the token is valid, and there is a user policy for this application, a policy is generated which will allow or deny access to the client
         // if access is allowed, API Gateway will proceed with the back-end integration configured on the method that was called
 
         String methodArn = input.getMethodArn();
@@ -92,7 +99,6 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
         }
 
         return new AuthPolicy(userID, AuthPolicy.PolicyDocument.getAllowAllPolicy(region, awsAccountId, restApiId, stage));
-        // return new AuthPolicy(userID, AuthPolicy.PolicyDocument.getDenyAllPolicy(region, awsAccountId, restApiId, stage));
     }
 
 }

@@ -121,10 +121,7 @@
       <groupId>org.openpseudonymiser</groupId>
       <artifactId>cryptolib</artifactId>
     </dependency>
-
-
   </dependencies>
-
 
   <build>
     <finalName>api</finalName>
