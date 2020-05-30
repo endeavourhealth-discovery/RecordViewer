@@ -31,11 +31,20 @@ public class AuthenticateUser {
                     WebTarget target = client.target(url).path(path);
 
                     try {
-                        Form form = new Form()
-                                .param("grant_type", userAuth.getGrantType())
-                                .param("client_id", userAuth.getClientId())
-                                .param("username", userAuth.getUserName())
-                                .param("password", userAuth.getPassword());
+                        Form form = null;
+
+                        if (userAuth.getGrantType().equals("password")) {
+                            form = new Form()
+                                    .param("grant_type", userAuth.getGrantType())
+                                    .param("client_id", userAuth.getClientId())
+                                    .param("username", userAuth.getUserName())
+                                    .param("password", userAuth.getPassword());
+                        } else if (userAuth.getGrantType().equals("refresh_token")) {
+                            form = new Form()
+                                    .param("grant_type", userAuth.getGrantType())
+                                    .param("client_id", userAuth.getClientId())
+                                    .param("refresh_token", userAuth.getPassword());
+                        }
 
                         Response response = target
                                 .request()
