@@ -57,7 +57,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
       {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
       {icon: 'fas fa-calendar-alt', caption: 'Appointments', state: 'observation'},
-      {icon: 'fas fa-chart-bar', caption: 'Dashboard', state: 'dashboard'}
+      {icon: 'fas fa-analytics', caption: 'Dashboard', state: 'dashboard'}
     ];
   }
 }

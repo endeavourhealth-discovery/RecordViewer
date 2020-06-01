@@ -1,3 +1,4 @@
+
 package models;
 
 import java.util.HashMap;
@@ -12,9 +13,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "meta",
-        "resourceType",
-        "body"
+    "meta",
+    "resourceType",
+    "messageType",
+    "id",
+    "identifier",
+    "creationTime",
+    "messageEventType",
+    "body"
 })
 public class HL7Params {
 
@@ -22,6 +28,16 @@ public class HL7Params {
     private Meta meta;
     @JsonProperty("resourceType")
     private String resourceType;
+    @JsonProperty("messageType")
+    private String messageType;
+    @JsonProperty("id")
+    private String id;
+    @JsonProperty("identifier")
+    private List<Identifier> identifier = null;
+    @JsonProperty("creationTime")
+    private String creationTime;
+    @JsonProperty("messageEventType")
+    private List<MessageEventType> messageEventType = null;
     @JsonProperty("body")
     private String body;
     @JsonIgnore
@@ -45,6 +61,56 @@ public class HL7Params {
     @JsonProperty("resourceType")
     public void setResourceType(String resourceType) {
         this.resourceType = resourceType;
+    }
+
+    @JsonProperty("messageType")
+    public String getMessageType() {
+        return messageType;
+    }
+
+    @JsonProperty("messageType")
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    @JsonProperty("id")
+    public String getId() {
+        return id;
+    }
+
+    @JsonProperty("id")
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @JsonProperty("identifier")
+    public List<Identifier> getIdentifier() {
+        return identifier;
+    }
+
+    @JsonProperty("identifier")
+    public void setIdentifier(List<Identifier> identifier) {
+        this.identifier = identifier;
+    }
+
+    @JsonProperty("creationTime")
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    @JsonProperty("creationTime")
+    public void setCreationTime(String creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    @JsonProperty("messageEventType")
+    public List<MessageEventType> getMessageEventType() {
+        return messageEventType;
+    }
+
+    @JsonProperty("messageEventType")
+    public void setMessageEventType(List<MessageEventType> messageEventType) {
+        this.messageEventType = messageEventType;
     }
 
     @JsonProperty("body")

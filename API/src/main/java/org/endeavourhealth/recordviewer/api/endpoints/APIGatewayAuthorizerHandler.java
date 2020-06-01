@@ -15,7 +15,8 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
 
     RecordViewerJDBCDAL viewerDAL;
 
-    public AuthPolicy handleRequestByPass(TokenAuthorizerContext input, Context context) {
+    @Override
+    public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
 
         // bypass auth for test, will use method below once keycloak login available for client caller
 
@@ -39,8 +40,8 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
         return new RecordViewerJDBCDAL();
     }
 
-    @Override
-    public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
+
+    public AuthPolicy handleRequestLive(TokenAuthorizerContext input, Context context) {
 
         String headerAuthToken = input.getAuthorizationToken();
         String userID = "";

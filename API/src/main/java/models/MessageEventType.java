@@ -2,7 +2,6 @@
 package models;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -13,36 +12,36 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "profile",
-    "tag"
+    "valueCodeableConcept",
+    "url"
 })
-public class Meta {
+public class MessageEventType {
 
-    @JsonProperty("profile")
-    private List<String> profile = null;
-    @JsonProperty("tag")
-    private List<Tag> tag = null;
+    @JsonProperty("valueCodeableConcept")
+    private ValueCodeableConcept valueCodeableConcept;
+    @JsonProperty("url")
+    private String url;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("profile")
-    public List<String> getProfile() {
-        return profile;
+    @JsonProperty("valueCodeableConcept")
+    public ValueCodeableConcept getValueCodeableConcept() {
+        return valueCodeableConcept;
     }
 
-    @JsonProperty("profile")
-    public void setProfile(List<String> profile) {
-        this.profile = profile;
+    @JsonProperty("valueCodeableConcept")
+    public void setValueCodeableConcept(ValueCodeableConcept valueCodeableConcept) {
+        this.valueCodeableConcept = valueCodeableConcept;
     }
 
-    @JsonProperty("tag")
-    public List<Tag> getTag() {
-        return tag;
+    @JsonProperty("url")
+    public String getUrl() {
+        return url;
     }
 
-    @JsonProperty("tag")
-    public void setTag(List<Tag> tag) {
-        this.tag = tag;
+    @JsonProperty("url")
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @JsonAnyGetter

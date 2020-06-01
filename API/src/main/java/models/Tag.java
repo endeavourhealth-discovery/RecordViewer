@@ -2,7 +2,6 @@
 package models;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -13,36 +12,49 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "profile",
-    "tag"
+    "system",
+    "code",
+    "display"
 })
-public class Meta {
+public class Tag {
 
-    @JsonProperty("profile")
-    private List<String> profile = null;
-    @JsonProperty("tag")
-    private List<Tag> tag = null;
+    @JsonProperty("system")
+    private String system;
+    @JsonProperty("code")
+    private String code;
+    @JsonProperty("display")
+    private String display;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("profile")
-    public List<String> getProfile() {
-        return profile;
+    @JsonProperty("system")
+    public String getSystem() {
+        return system;
     }
 
-    @JsonProperty("profile")
-    public void setProfile(List<String> profile) {
-        this.profile = profile;
+    @JsonProperty("system")
+    public void setSystem(String system) {
+        this.system = system;
     }
 
-    @JsonProperty("tag")
-    public List<Tag> getTag() {
-        return tag;
+    @JsonProperty("code")
+    public String getCode() {
+        return code;
     }
 
-    @JsonProperty("tag")
-    public void setTag(List<Tag> tag) {
-        this.tag = tag;
+    @JsonProperty("code")
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    @JsonProperty("display")
+    public String getDisplay() {
+        return display;
+    }
+
+    @JsonProperty("display")
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
     @JsonAnyGetter

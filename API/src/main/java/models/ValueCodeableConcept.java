@@ -13,36 +13,23 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "profile",
-    "tag"
+    "coding"
 })
-public class Meta {
+public class ValueCodeableConcept {
 
-    @JsonProperty("profile")
-    private List<String> profile = null;
-    @JsonProperty("tag")
-    private List<Tag> tag = null;
+    @JsonProperty("coding")
+    private List<Coding> coding = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("profile")
-    public List<String> getProfile() {
-        return profile;
+    @JsonProperty("coding")
+    public List<Coding> getCoding() {
+        return coding;
     }
 
-    @JsonProperty("profile")
-    public void setProfile(List<String> profile) {
-        this.profile = profile;
-    }
-
-    @JsonProperty("tag")
-    public List<Tag> getTag() {
-        return tag;
-    }
-
-    @JsonProperty("tag")
-    public void setTag(List<Tag> tag) {
-        this.tag = tag;
+    @JsonProperty("coding")
+    public void setCoding(List<Coding> coding) {
+        this.coding = coding;
     }
 
     @JsonAnyGetter
