@@ -92,14 +92,10 @@ public class Patient {
 				t.setValue(telecom);
 				if (desc1.equalsIgnoreCase("Phone")) {
 					t.setSystem(ContactPoint.ContactPointSystem.PHONE);
-					if (desc2.equalsIgnoreCase("Mobile")) {
-						t.setUse(ContactPoint.ContactPointUse.MOBILE);
-					} else {
-						t.setUse(ContactPoint.ContactPointUse.HOME);
-					}
 				} else if (desc1.equalsIgnoreCase("Email")) {
 					t.setSystem(ContactPoint.ContactPointSystem.EMAIL);
 				}
+				setPhoneData(desc2, t);
 
 				patient.addTelecom(t);
 			}
@@ -178,6 +174,26 @@ public class Patient {
 
 	public static String replaceNull(String input) {
 		return input == null ? "" : input;
+	}
+
+
+	private static void setPhoneData(String desc, ContactPoint contactPoint){
+		switch (desc.toUpperCase()) {
+			case "MOBILE":
+				contactPoint.setUse(ContactPoint.ContactPointUse.MOBILE);
+				break;
+			case "WORK":
+				contactPoint.setUse(ContactPoint.ContactPointUse.WORK);
+				break;
+			case "TEMPORARY":
+				contactPoint.setUse(ContactPoint.ContactPointUse.TEMP);
+				break;
+			case "OLD":
+				contactPoint.setUse(ContactPoint.ContactPointUse.OLD);
+				break;
+			default:
+				contactPoint.setUse(ContactPoint.ContactPointUse.HOME);
+		}
 	}
 
 }
