@@ -53,12 +53,12 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     if (this.eventType==1) {
       this.eventTypeTitle = "Conditions";
       this.subTitle = "conditions (problems)";
-      this.icon = 'fa-lungs';
+      this.icon = 'fa-diagnoses';
     }
     else if (this.eventType==2) {
       this.eventTypeTitle = "Observations";
       this.subTitle = "general clinical observations";
-      this.icon = 'fa-book-medical';
+      this.icon = 'fa-monitor-heart-rate';
     }
     else if (this.eventType==3) {
       this.eventTypeTitle = "Procedures";
@@ -68,7 +68,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     else if (this.eventType==4) {
       this.eventTypeTitle = "Family history";
       this.subTitle = "family history";
-      this.icon = 'fa-users';
+      this.icon = 'fa-user-friends';
     }
     else if (this.eventType==5) {
       this.eventTypeTitle = "Immunisations";
