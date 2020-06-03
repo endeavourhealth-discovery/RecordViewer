@@ -6,7 +6,7 @@ import java.util.List;
 public class AppointmentResult {
     private int page = 1;
     private int length = 0;
-    private List<MedicationSummary> results = new ArrayList<>();
+    private List<AppointmentSummary> results = new ArrayList<>();
 
     public int getPage() {
         return page;
@@ -26,11 +26,11 @@ public class AppointmentResult {
         return this;
     }
 
-    public List<MedicationSummary> getResults() {
+    public List<AppointmentSummary> getResults() {
         return results;
     }
 
-    public AppointmentResult setResults(List<MedicationSummary> results) {
+    public AppointmentResult setResults(List<AppointmentSummary> results) {
         this.results = results;
         return this;
     }

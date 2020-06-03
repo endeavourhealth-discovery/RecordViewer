@@ -61,7 +61,7 @@ public class CareRecordEndpoint {
         LOG.debug("getAppointment");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            MedicationResult result = viewerDAL.getMedicationResult(page, size, patientId);
+            AppointmentResult result = viewerDAL.getAppointmentResult(page, size, patientId);
 
             return Response
                     .ok()

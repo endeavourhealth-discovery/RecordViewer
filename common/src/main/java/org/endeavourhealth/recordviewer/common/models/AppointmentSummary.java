@@ -12,9 +12,6 @@ import java.util.Date;
 public class AppointmentSummary {
     private static final Logger LOG = LoggerFactory.getLogger(AppointmentSummary.class);
     private String date;
-    private String dose;
-    private String name;
-    private String quantity;
 
     public String getDate() {
         return date;
@@ -30,35 +27,6 @@ public class AppointmentSummary {
         catch (Exception e) {
             LOG.error(e.getMessage());
         }
-        return this;
-    }
-
-    public String getDose() {
-        return dose;
-    }
-
-    public AppointmentSummary setDose(String dose) {
-        this.dose = dose;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public AppointmentSummary setName(String name) {
-        this.name = name.replaceAll("Product containing precisely ","");
-        this.name = this.name.replaceAll("Product containing ","");
-        this.name = toTitleCase(this.name);
-        return this;
-    }
-
-    public String getQuantity() {
-        return quantity;
-    }
-
-    public AppointmentSummary setQuantity(String quantity) {
-        this.quantity = quantity;
         return this;
     }
 

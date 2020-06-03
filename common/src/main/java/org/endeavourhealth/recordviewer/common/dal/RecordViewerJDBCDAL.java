@@ -17,30 +17,30 @@ import java.util.Map;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-    public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId) throws Exception {
-        MedicationResult result = new MedicationResult();
 
-        String sql = "SELECT m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity \n" +
-            "FROM medication_statement m \n" +
-            "join concept c on c.dbid = m.non_core_concept_id \n"+
-            "where patient_id = ? order by m.clinical_effective_date DESC LIMIT ?,?";
+
+    public AppointmentResult getAppointmentResult(Integer page, Integer size, Integer patientId) throws Exception {
+        AppointmentResult result = new AppointmentResult();
+
+        String sql = "SELECT start_date " +
+                "FROM subscriber_pi.appointment " +
+                "where patient_id = ? order by m.clinical_effective_date DESC LIMIT ?,?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
             statement.setInt(2, page*15);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
-                result.setResults(getMedicationSummaryList(resultSet));
+                result.setResults(getAppointmentSummaryList(resultSet));
             }
         }
 
-        sql = "SELECT count(1) \n" +
-                "FROM medication_statement m \n" +
-                "join concept c on c.dbid = m.non_core_concept_id \n"+
+        sql = "SELECT count(1) " +
+                "FROM appointment m " +
                 "where patient_id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-             statement.setInt(1, patientId);
+            statement.setInt(1, patientId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 result.setLength(resultSet.getInt(1));
@@ -50,7 +50,23 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    public MedicationResult getAppointmentResult(Integer page, Integer size, Integer patientId) throws Exception {
+    private List<AppointmentSummary> getAppointmentSummaryList(ResultSet resultSet) throws SQLException {
+        List<AppointmentSummary> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(getAppointmentSummary(resultSet));
+        }
+
+        return result;
+    }
+
+    public static AppointmentSummary getAppointmentSummary(ResultSet resultSet) throws SQLException {
+        AppointmentSummary appointmentSummary = new AppointmentSummary();
+        appointmentSummary
+                .setDate(resultSet.getDate("date"));
+        return appointmentSummary;
+    }
+
+    public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId) throws Exception {
         MedicationResult result = new MedicationResult();
 
         String sql = "SELECT m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity \n" +
@@ -81,25 +97,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         return result;
-    }
-
-    private List<MedicationSummary> getAppointmentSummaryList(ResultSet resultSet) throws SQLException {
-        List<MedicationSummary> result = new ArrayList<>();
-        while (resultSet.next()) {
-            result.add(getMedicationSummary(resultSet));
-        }
-
-        return result;
-    }
-
-    public static MedicationSummary getAppointmentSummary(ResultSet resultSet) throws SQLException {
-        MedicationSummary medicationSummary = new MedicationSummary();
-        medicationSummary
-                .setDate(resultSet.getDate("date"))
-                .setDose(resultSet.getString("dose"))
-                .setQuantity(resultSet.getString("quantity"))
-                .setName(resultSet.getString("name"));
-        return medicationSummary;
     }
 
     private List<MedicationSummary> getMedicationSummaryList(ResultSet resultSet) throws SQLException {
