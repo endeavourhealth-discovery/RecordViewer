@@ -1,0 +1,50 @@
+<mat-card>
+  <app-precis>
+  </app-precis>
+  <mat-card-header class="header2">
+    <div mat-card-avatar>
+      <i class="fad fa-pills"></i>
+    </div>
+    <mat-card-title>Medication</mat-card-title>
+    <mat-card-subtitle>A record of acute and repeat medication that is being consumed by the patient. Also includes a list of previous medication.</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Current medication</th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="dose">
+          <th mat-header-cell *matHeaderCellDef>Dose</th>
+          <td mat-cell *matCellDef="let element"> {{element.dose}} </td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef>Quantity</th>
+          <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date prescribed</th>
+          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="'/events/' + row.dose"></tr>
+      </table>
+    <div>
+    </div>
+      <mat-paginator [length]="events?.length"
+                     [pageSize]="size"
+                     [pageIndex]="page"
+                     [pageSizeOptions]="[10, 50, 100]"
+                     [showFirstLastButtons]="true"
+                     (page)="onPage($event)"
+                     fxFlex="100"
+                     fxFill>
+      </mat-paginator>
+    </div>
+
+  </mat-card-content>
+
+</mat-card>
+
