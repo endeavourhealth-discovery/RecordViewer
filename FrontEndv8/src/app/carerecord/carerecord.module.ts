@@ -37,6 +37,7 @@ import {ValuesComponent} from "./values/values.component";
 import {AllergyComponent} from "./allergy/allergy.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {BarChartModule} from "@swimlane/ngx-charts";
+import {AppointmentComponent} from "./appointment/appointment.component";
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import {BarChartModule} from "@swimlane/ngx-charts";
     ValuesComponent,
     DashboardComponent,
     ObservationComponent,
+    AppointmentComponent,
     AllergyComponent,
     FhirComponent],
   imports: [

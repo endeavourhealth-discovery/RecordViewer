@@ -51,6 +51,26 @@ public class CareRecordEndpoint {
     }
 
     @GET
+    @Path("/appointment")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAppointment(@Context SecurityContext sc,
+                                  @QueryParam("page") Integer page,
+                                  @QueryParam("size") Integer size,
+                                  @QueryParam("patientId") Integer patientId) throws Exception {
+        LOG.debug("getAppointment");
+
+        try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
+            MedicationResult result = viewerDAL.getMedicationResult(page, size, patientId);
+
+            return Response
+                    .ok()
+                    .entity(result)
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/observation")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

@@ -9,6 +9,7 @@ import {ObservationComponent} from "./carerecord/observation/observation.compone
 import {ValuesComponent} from "./carerecord/values/values.component";
 import {AllergyComponent} from "./carerecord/allergy/allergy.component";
 import {DashboardComponent} from "./carerecord/dashboard/dashboard.component";
+import {AppointmentComponent} from "./carerecord/appointment/appointment.component";
 
 @Injectable()
 export class AppMenuService implements  AbstractMenuProvider {
@@ -21,6 +22,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {path: 'summary', component: CareSummaryComponent, data: {role: 'record-viewer'}},
       {path: 'medication', component: MedicationComponent, data: {role: 'record-viewer'}},
       {path: 'values', component: ValuesComponent, data: {role: 'record-viewer'}},
+      {path: 'appointment', component: AppointmentComponent, data: {role: 'record-viewer'}},
       {path: 'condition', component: ObservationComponent, data: {role: 'record-viewer', eventType: '1'}},
       {path: 'procedure', component: ObservationComponent, data: {role: 'record-viewer', eventType: '3'}},
       {path: 'observation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '2'}},
@@ -56,7 +58,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-x-ray', caption: 'Diagnostic reports', state: 'observation'},
       {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
       {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
-      {icon: 'fas fa-calendar-alt', caption: 'Appointments', state: 'observation'},
+      {icon: 'fas fa-calendar-alt', caption: 'Appointments', state: 'appointment'},
       {icon: 'fas fa-analytics', caption: 'Dashboard', state: 'dashboard'}
     ];
   }
