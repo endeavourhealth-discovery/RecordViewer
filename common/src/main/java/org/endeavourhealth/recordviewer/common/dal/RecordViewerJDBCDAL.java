@@ -17,14 +17,12 @@ import java.util.Map;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-
-
     public AppointmentResult getAppointmentResult(Integer page, Integer size, Integer patientId) throws Exception {
         AppointmentResult result = new AppointmentResult();
 
         String sql = "SELECT start_date " +
-                "FROM subscriber_pi.appointment " +
-                "where patient_id = ? order by m.clinical_effective_date DESC LIMIT ?,?";
+                "FROM appointment " +
+                "where patient_id = ? order by start_date DESC LIMIT ?,?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
@@ -36,7 +34,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         sql = "SELECT count(1) " +
-                "FROM appointment m " +
+                "FROM appointment " +
                 "where patient_id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -62,7 +60,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public static AppointmentSummary getAppointmentSummary(ResultSet resultSet) throws SQLException {
         AppointmentSummary appointmentSummary = new AppointmentSummary();
         appointmentSummary
-                .setDate(resultSet.getDate("date"));
+                .setDate(resultSet.getDate("start_date"));
         return appointmentSummary;
     }
 
