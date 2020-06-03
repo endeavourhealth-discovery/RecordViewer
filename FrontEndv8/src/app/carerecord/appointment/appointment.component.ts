@@ -6,11 +6,11 @@ import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
 
 @Component({
-  selector: 'app-medication',
-  templateUrl: './medication.component.html',
-  styleUrls: ['./medication.component.scss']
+  selector: 'app-appointment',
+  templateUrl: './appointment.component.html',
+  styleUrls: ['./appointment.component.scss']
 })
-export class MedicationComponent implements OnInit, AfterViewInit {
+export class AppointmentComponent implements OnInit, AfterViewInit {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
 
@@ -42,7 +42,7 @@ export class MedicationComponent implements OnInit, AfterViewInit {
   loadEvents() {
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getMedication(this.page, this.size, this.patientId)
+    this.carerecordService.getAppointment(this.page, this.size, this.patientId)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
