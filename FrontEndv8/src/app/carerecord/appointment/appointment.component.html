@@ -12,9 +12,29 @@
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
 
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Schedule Type</th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>Location</th>
+          <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+        </ng-container>
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef>Date of Appointment</th>
           <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+        </ng-container>
+        <ng-container matColumnDef="duration">
+          <th mat-header-cell *matHeaderCellDef>Appointment Duration</th>
+          <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+        </ng-container>
+        <ng-container matColumnDef="delay">
+          <th mat-header-cell *matHeaderCellDef>Delay Time</th>
+          <td mat-cell *matCellDef="let element"> {{element.delay}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Appointment Status</th>
+          <td mat-cell *matCellDef="let element"> {{element.status}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

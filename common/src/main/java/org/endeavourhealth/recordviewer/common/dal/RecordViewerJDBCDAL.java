@@ -20,9 +20,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public AppointmentResult getAppointmentResult(Integer page, Integer size, Integer patientId) throws Exception {
         AppointmentResult result = new AppointmentResult();
 
-        String sql = "SELECT start_date " +
-                "FROM appointment " +
-                "where patient_id = ? order by start_date DESC LIMIT ?,?";
+        String sql = "SELECT s.type as schedule_type, s.location, a.start_date, planned_duration, patient_delay, c.name as appointment_status " +
+                "FROM appointment a " +
+                "join schedule s on s.id = a.schedule_id " +
+                "join concept c on c.dbid = a.appointment_status_concept_id " +
+                "where patient_id = ? " +
+                "order by start_date desc, location, schedule_type, a.id " +
+                "limit ?,?";
+
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
@@ -34,7 +39,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         sql = "SELECT count(1) " +
-                "FROM appointment " +
+                "FROM appointment a " +
+                "join schedule s on s.id = a.schedule_id " +
+                "join concept c on c.dbid = a.appointment_status_concept_id " +
                 "where patient_id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -60,7 +67,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public static AppointmentSummary getAppointmentSummary(ResultSet resultSet) throws SQLException {
         AppointmentSummary appointmentSummary = new AppointmentSummary();
         appointmentSummary
-                .setDate(resultSet.getDate("start_date"));
+                .setType(resultSet.getString("schedule_type"))
+                .setLocation(resultSet.getString("s.location"))
+                .setDate(resultSet.getDate("start_date"))
+                .setDuration(resultSet.getInt("planned_duration"))
+                .setDelay(resultSet.getInt("patient_delay"))
+                .setStatus(resultSet.getString("appointment_status"));
         return appointmentSummary;
     }
 

@@ -20,7 +20,7 @@ export class AppointmentComponent implements OnInit, AfterViewInit {
   size: number = 15;
   patientId: number;
 
-  displayedColumns: string[] = ['date'];
+  displayedColumns: string[] = ['type', 'location', 'date', 'duration', 'delay', 'status'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
