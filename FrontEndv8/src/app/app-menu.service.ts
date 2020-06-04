@@ -10,6 +10,7 @@ import {ValuesComponent} from "./carerecord/values/values.component";
 import {AllergyComponent} from "./carerecord/allergy/allergy.component";
 import {DashboardComponent} from "./carerecord/dashboard/dashboard.component";
 import {AppointmentComponent} from "./carerecord/appointment/appointment.component";
+import {ReferralsComponent} from "./carerecord/referrals/referrals.component";
 
 @Injectable()
 export class AppMenuService implements  AbstractMenuProvider {
@@ -23,6 +24,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {path: 'medication', component: MedicationComponent, data: {role: 'record-viewer'}},
       {path: 'values', component: ValuesComponent, data: {role: 'record-viewer'}},
       {path: 'appointment', component: AppointmentComponent, data: {role: 'record-viewer'}},
+      {path: 'referrals', component: ReferralsComponent, data: {role: 'record-viewer'}},
       {path: 'condition', component: ObservationComponent, data: {role: 'record-viewer', eventType: '1'}},
       {path: 'procedure', component: ObservationComponent, data: {role: 'record-viewer', eventType: '3'}},
       {path: 'observation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '2'}},
@@ -54,7 +56,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'observation'},
       {icon: 'fas fa-procedures', caption: 'Procedures', state: 'procedure'},
       {icon: 'fas fa-user-md-chat', caption: 'Procedure requests', state: 'observation'},
-      {icon: 'fas fa-hospital-user', caption: 'Referrals', state: 'observation'},
+      {icon: 'fas fa-hospital-user', caption: 'Referrals', state: 'referrals'},
       {icon: 'fas fa-x-ray', caption: 'Diagnostic reports', state: 'observation'},
       {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
       {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
