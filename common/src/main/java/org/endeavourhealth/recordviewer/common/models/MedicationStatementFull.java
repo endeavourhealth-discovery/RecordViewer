@@ -17,6 +17,8 @@ public class MedicationStatementFull {
     private String date;
     private String dose;
 
+    private String cancellationDate;
+
     public int getId() {
         return id;
     }
@@ -59,6 +61,15 @@ public class MedicationStatementFull {
 
     public MedicationStatementFull setCode(String code) {
         this.code = code;
+        return this;
+    }
+
+    public String getCancellationDate() {
+        return cancellationDate;
+    }
+
+    public MedicationStatementFull setCancellationDate(String cancellationDate) {
+        this.cancellationDate = cancellationDate;
         return this;
     }
 
