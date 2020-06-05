@@ -70,8 +70,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public static ReferralsSummary getReferralsSummary(ResultSet resultSet) throws SQLException {
         ReferralsSummary referralsSummary = new ReferralsSummary();
         referralsSummary
-                .setDate(resultSet.getDate("date"));
-
+                .setDate(resultSet.getDate("date"))
+                .setRecipient(resultSet.getString("recipient"))
+                .setPriority(resultSet.getString("priority"))
+                .setType(resultSet.getString("type"))
+                .setMode(resultSet.getString("mode"))
+                .setSpeciality(resultSet.getString("speciality"));
         return referralsSummary;
     }
 

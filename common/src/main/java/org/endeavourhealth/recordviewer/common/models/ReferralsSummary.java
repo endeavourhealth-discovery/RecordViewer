@@ -13,6 +13,11 @@ public class ReferralsSummary {
     private static final Logger LOG = LoggerFactory.getLogger(ReferralsSummary.class);
 
     private String date;
+    private String recipient;
+    private String priority;
+    private String type;
+    private String mode;
+    private String speciality;
 
     public String getDate() { return date; }
     public ReferralsSummary setDate(Date date) {
@@ -25,6 +30,46 @@ public class ReferralsSummary {
         catch (Exception e) {
             LOG.error(e.getMessage());
         }
+        return this;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+    public ReferralsSummary setRecipient(String recipient) {
+        this.recipient = recipient;
+        return this;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+    public ReferralsSummary setPriority(String priority) {
+        this.priority = priority;
+        return this;
+    }
+
+    public String getType() {
+        return type;
+    }
+    public ReferralsSummary setType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+    public ReferralsSummary setMode(String mode) {
+        this.mode = mode;
+        return this;
+    }
+
+    public String getSpeciality() {
+        return speciality;
+    }
+    public ReferralsSummary setSpeciality(String speciality) {
+        this.speciality = speciality;
         return this;
     }
 
