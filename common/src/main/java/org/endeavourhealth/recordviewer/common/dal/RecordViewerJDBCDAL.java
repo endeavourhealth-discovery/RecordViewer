@@ -17,6 +17,64 @@ import java.util.Map;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
+    public ReferralsResult getReferralsResult(Integer page, Integer size, Integer patientId) throws Exception {
+        ReferralsResult result = new ReferralsResult();
+
+        String sql = "SELECT clinical_effective_date as date, o.name as recipient, c1.name as priority, c2.name as type,mode, c3.name as speciality " +
+                "FROM referral_request r " +
+                "join organization o on o.id = r.recipient_organization_id " +
+                "join concept c1 on c1.dbid = r.referral_request_priority_concept_id " +
+                "join concept c2 on c2.dbid = r.referral_request_type_concept_id " +
+                "join concept c3 on c3.dbid = r.non_core_concept_id " +
+                "where patient_id = ? " +
+                "order by clinical_effective_date desc " +
+                "limit ?,?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            statement.setInt(2, page*15);
+            statement.setInt(3, size);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result.setResults(getReferralsSummaryList(resultSet));
+            }
+        }
+
+        sql = "SELECT count(1) " +
+                "FROM referral_request r " +
+                "join organization o on o.id = r.recipient_organization_id " +
+                "join concept c1 on c1.dbid = r.referral_request_priority_concept_id " +
+                "join concept c2 on c2.dbid = r.referral_request_type_concept_id " +
+                "join concept c3 on c3.dbid = r.non_core_concept_id " +
+                "where patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                result.setLength(resultSet.getInt(1));
+            }
+        }
+
+        return result;
+    }
+
+    private List<ReferralsSummary> getReferralsSummaryList(ResultSet resultSet) throws SQLException {
+        List<ReferralsSummary> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(getReferralsSummary(resultSet));
+        }
+
+        return result;
+    }
+
+    public static ReferralsSummary getReferralsSummary(ResultSet resultSet) throws SQLException {
+        ReferralsSummary referralsSummary = new ReferralsSummary();
+        referralsSummary
+                .setDate(resultSet.getDate("date"));
+
+        return referralsSummary;
+    }
+
     public AppointmentResult getAppointmentResult(Integer page, Integer size, Integer patientId) throws Exception {
         AppointmentResult result = new AppointmentResult();
 

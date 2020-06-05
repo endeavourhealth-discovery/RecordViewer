@@ -20,7 +20,7 @@ export class ReferralsComponent implements OnInit, AfterViewInit {
   size: number = 15;
   patientId: number;
 
-  displayedColumns: string[] = ['type', 'location', 'date', 'duration', 'delay', 'status'];
+  displayedColumns: string[] = ['date'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
