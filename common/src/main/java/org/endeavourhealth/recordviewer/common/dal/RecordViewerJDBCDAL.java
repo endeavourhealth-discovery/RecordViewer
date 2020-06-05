@@ -901,6 +901,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(ms.is_active,'') as status, " +
                 "coalesce(ms.dose,'') as dose, " +
                 "coalesce(ms.quantity_value,'') as qValue, " +
+                "coalesce(ms.cancellation_date,'') as cancellation_date, " +
                 "coalesce(ms.quantity_unit,'') as qUnit, \n" +
                 "max(coalesce(mo.clinical_effective_date,'')) as valueDtTime, " +
                 "ms.authorisation_type_concept_id as atCid " +
@@ -933,6 +934,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     .setDate(resultSet.getString("clinicalEffDt"))
                     .setStatus(resultSet.getInt("status"))
                     .setDose(resultSet.getString("dose"))
+                    .setCancellationDate(resultSet.getString("cancellation_date"))
                     .setValueDateTime(resultSet.getString("valueDtTime"));
             medicationStatementList.add(medicationStatement);
         }

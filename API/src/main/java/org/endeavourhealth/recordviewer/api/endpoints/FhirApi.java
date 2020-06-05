@@ -42,6 +42,7 @@ public class FhirApi {
     HashMap<Integer, Resource> encounterFhirMap;
     Map<Integer, List<Resource>> practitionerAndRoleResource;
     Map<Integer, Coding> patientCodingMap;
+    Map<Integer, Resource> episodeOfCareResourceMap;
     RecordViewerJDBCDAL viewerDAL;
     Bundle bundle;
     org.hl7.fhir.dstu3.model.Patient patientResource;
@@ -100,6 +101,7 @@ public class FhirApi {
         patientCodingMap = new HashMap<>();
         //Practitioner and PractitionerRole Resource
         practitionerAndRoleResource = new HashMap<>();
+        episodeOfCareResourceMap= new HashMap<>();
         viewerDAL = getRecordViewerObject();
 
         PatientFull patient = null;

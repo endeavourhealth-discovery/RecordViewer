@@ -28,6 +28,8 @@ public class MedicationStatement {
 				.setValue(String.valueOf(medicationStatementResult.getId()))
 				.setSystem(ResourceConstants.SYSTEM_ID);
 
+		medicationStatement.setStatus(medicationStatementResult.getCancellationDate() == null ? org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.ACTIVE :
+				org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.COMPLETED);
 		medicationStatement.setId(String.valueOf(id));
 		medicationStatement.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-MedicationStatement-1");
 		medicationStatement.setTaken(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementTaken.UNK);
@@ -58,7 +60,6 @@ public class MedicationStatement {
 
 		List<Dosage> dosageList = new ArrayList<Dosage>();
 		Dosage dosage = new Dosage();
-		dosage.setPatientInstruction("INSTRUCTIONS FOR PATIENT");
 		dosage.setText(dose);
         dosageList.add(dosage);
 		medicationStatement.setDosage(dosageList);
@@ -87,7 +88,6 @@ public class MedicationStatement {
 
 		List<Dosage> dosageList = new ArrayList<Dosage>();
 		Dosage dosage = new Dosage();
-		dosage.setPatientInstruction("INSTRUCTIONS FOR PATIENT");
 		dosage.setText(dose);
 		dosageList.add(dosage);
 		medicationRequest.setDosageInstruction(dosageList);
