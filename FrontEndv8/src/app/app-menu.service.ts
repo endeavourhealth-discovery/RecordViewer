@@ -32,6 +32,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {path: 'observation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '2'}},
       {path: 'family', component: ObservationComponent, data: {role: 'record-viewer', eventType: '4'}},
       {path: 'immunisation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '5'}},
+      {path: 'procedure requests', component: ObservationComponent, data: {role: 'record-viewer', eventType: '6'}},
       {path: 'dashboard', component: DashboardComponent, data: {role: 'record-viewer'}}
     ];
   }
@@ -57,7 +58,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-allergies', caption: 'Allergies', state: 'allergy'},
       {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'encounters'},
       {icon: 'fas fa-procedures', caption: 'Procedures', state: 'procedure'},
-      {icon: 'fas fa-user-md-chat', caption: 'Procedure requests', state: 'observation'},
+      {icon: 'fas fa-user-md-chat', caption: 'Procedure requests', state: 'procedure requests'},
       {icon: 'fas fa-hospital-user', caption: 'Referrals', state: 'referrals'},
       {icon: 'fas fa-x-ray', caption: 'Diagnostic reports', state: 'observation'},
       {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},

@@ -327,6 +327,20 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%')"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
                 break;
+            case 6: // procedure requests
+                sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status " +
+                        "FROM procedure_request p " +
+                        "join concept c on c.dbid = p.non_core_concept_id " +
+                        "join concept c2 on c2.dbid = p.status_concept_id " +
+                        "where patient_id = ? order by clinical_effective_date DESC LIMIT ?,?";
+
+
+                sqlCount = "SELECT count(1) " +
+                        "FROM procedure_request p " +
+                        "join concept c on c.dbid = p.non_core_concept_id " +
+                        "join concept c2 on c2.dbid = p.status_concept_id " +
+                        "where patient_id = ?"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                break;
             default:
                 // code block
         }
