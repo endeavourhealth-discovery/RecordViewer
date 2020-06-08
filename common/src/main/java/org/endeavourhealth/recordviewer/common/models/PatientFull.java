@@ -27,7 +27,7 @@ public class PatientFull {
     private String otheraddresses;
     private String orglocation;
     private String startdate;
-    private String ethnicCode;
+    private String ethnicDescription;
     private int practitionerId;
     private String registrationType;
     private String registrationEndDate;
@@ -50,12 +50,12 @@ public class PatientFull {
         return this;
     }
 
-    public String getEthnicCode() {
-       return  ethnicCode;
+    public String getEthnicDescription() {
+       return  ethnicDescription;
     }
 
-    public PatientFull setEthnicCode(String ethnicCode) {
-        this.ethnicCode = ethnicCode;
+    public PatientFull setEthnicDescription(String ethnicDescription) {
+        this.ethnicDescription = ethnicDescription;
         return this;
     }
 

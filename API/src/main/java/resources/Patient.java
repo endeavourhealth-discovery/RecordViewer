@@ -33,6 +33,7 @@ public class Patient {
 		String otheraddresses = replaceNull(patientResult.getOtheraddresses());
 		String orglocation = replaceNull(patientResult.getOrglocation());
 		String startdate = replaceNull(patientResult.getStartdate());
+		String ethnicDescription = replaceNull(patientResult.getEthnicDescription());
 		String endDate = replaceNull(patientResult.getRegistrationEndDate());
 
 		org.hl7.fhir.dstu3.model.Patient patient = new org.hl7.fhir.dstu3.model.Patient();
@@ -81,7 +82,12 @@ public class Patient {
 				.addGiven(firstname)
 				.setUse(HumanName.NameUse.OFFICIAL);
 
-		//TODO: Ethnic group
+		CodeableConcept codeEthnic = new CodeableConcept();
+		codeEthnic.addCoding()
+				.setDisplay(ethnicDescription);
+		patient.addExtension().setUrl("https://fhir.hl7.org.uk/STU3/CodeSystem/CareConnect-EthnicCategory-1")
+				.setValue(codeEthnic);
+
 		if (telecomFullList.size() > 0) {
 			for(TelecomFull telecomFull : telecomFullList) {
 				String telecom = replaceNull(telecomFull.getValue());
@@ -194,6 +200,17 @@ public class Patient {
 			default:
 				contactPoint.setUse(ContactPoint.ContactPointUse.HOME);
 		}
+	}
+
+	private static CodeableConcept addCodeableConcept(String codeValue, String displayValue, String systemValue, String idValue) {
+		CodeableConcept code = new CodeableConcept();
+		code.addCoding()
+				.setCode(codeValue)
+				.setDisplay(displayValue)
+				.setSystem(systemValue)
+				.setId(idValue);
+
+		return code;
 	}
 
 }
