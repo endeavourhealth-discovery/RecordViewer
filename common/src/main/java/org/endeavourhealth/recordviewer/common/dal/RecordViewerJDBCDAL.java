@@ -17,6 +17,69 @@ import java.util.Map;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
+    public EncountersResult getEncountersResult(Integer page, Integer size, Integer patientId) throws Exception {
+        EncountersResult result = new EncountersResult();
+
+        String sql = "SELECT clinical_effective_date as date, ct.encounter_type, o.name as location, p.name as practitioner " +
+                "FROM encounter e " +
+                "join concept c on c.dbid = e.non_core_concept_id " +
+                "join consultation_types ct on ct.original_code = c.id " +
+                "join practitioner p on p.id = e.practitioner_id " +
+                "join organization o on o.id = e.service_provider_organization_id " +
+                "where patient_id = ? " +
+                "order by clinical_effective_date desc " +
+                "limit ?,?";
+
+
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            statement.setInt(2, page*15);
+            statement.setInt(3, size);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result.setResults(getEncountersSummaryList(resultSet));
+            }
+        }
+
+        sql = "SELECT count(1) " +
+                "FROM encounter e " +
+                "join concept c on c.dbid = e.non_core_concept_id " +
+                "join consultation_types ct on ct.original_code = c.id " +
+                "join practitioner p on p.id = e.practitioner_id " +
+                "join organization o on o.id = e.service_provider_organization_id " +
+                "where patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                result.setLength(resultSet.getInt(1));
+            }
+        }
+
+        return result;
+    }
+
+    private List<EncountersSummary> getEncountersSummaryList(ResultSet resultSet) throws SQLException {
+        List<EncountersSummary> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(getEncountersSummary(resultSet));
+        }
+
+        return result;
+    }
+
+    public static EncountersSummary getEncountersSummary(ResultSet resultSet) throws SQLException {
+        EncountersSummary encountersSummary = new EncountersSummary();
+        encountersSummary
+                .setDate(resultSet.getDate("date"))
+                .setType(resultSet.getString("ct.encounter_type"))
+                .setLocation(resultSet.getString("location"))
+                .setPractitioner(resultSet.getString("practitioner"));
+
+        return encountersSummary;
+    }
+
     public ReferralsResult getReferralsResult(Integer page, Integer size, Integer patientId) throws Exception {
         ReferralsResult result = new ReferralsResult();
 

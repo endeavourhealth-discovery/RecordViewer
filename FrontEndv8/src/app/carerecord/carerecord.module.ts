@@ -39,6 +39,7 @@ import {DashboardComponent} from "./dashboard/dashboard.component";
 import {BarChartModule, LineChartModule} from "@swimlane/ngx-charts";
 import {AppointmentComponent} from "./appointment/appointment.component";
 import {ReferralsComponent} from "./referrals/referrals.component";
+import {EncountersComponent} from "./encounters/encounters.component";
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import {ReferralsComponent} from "./referrals/referrals.component";
     ObservationComponent,
     AppointmentComponent,
     ReferralsComponent,
+    EncountersComponent,
     AllergyComponent,
     FhirComponent],
   imports: [
