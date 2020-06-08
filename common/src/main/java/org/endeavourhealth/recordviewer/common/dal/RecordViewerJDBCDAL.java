@@ -341,6 +341,19 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c2 on c2.dbid = p.status_concept_id " +
                         "where patient_id = ?"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
                 break;
+            case 7: // diagnostics order
+                sql = "SELECT clinical_effective_date as date, c.name as name, " +
+                        "CASE WHEN problem_end_date IS NULL THEN 'Active' " +
+                        "ELSE 'Past' END as status " +
+                        "FROM diagnostic_order p " +
+                        "join concept c on c.dbid = p.non_core_concept_id " +
+                        "where patient_id = ? order by clinical_effective_date DESC LIMIT ?,?";
+
+                sqlCount = "SELECT count(1) \n" +
+                        "FROM diagnostic_order p \n" +
+                        "join concept c on c.dbid = p.non_core_concept_id "+
+                        "where patient_id = ?"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                break;
             default:
                 // code block
         }
