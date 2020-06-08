@@ -36,7 +36,7 @@ import {ObservationComponent} from "./observation/observation.component";
 import {ValuesComponent} from "./values/values.component";
 import {AllergyComponent} from "./allergy/allergy.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
-import {BarChartModule} from "@swimlane/ngx-charts";
+import {BarChartModule, LineChartModule} from "@swimlane/ngx-charts";
 import {AppointmentComponent} from "./appointment/appointment.component";
 import {ReferralsComponent} from "./referrals/referrals.component";
 
@@ -80,7 +80,8 @@ import {ReferralsComponent} from "./referrals/referrals.component";
     MatGridListModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    BarChartModule
+    BarChartModule,
+    LineChartModule
   ],
   entryComponents: [
     PatientComponent

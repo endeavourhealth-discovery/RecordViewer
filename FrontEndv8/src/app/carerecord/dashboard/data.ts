@@ -1,73 +1,108 @@
-export var single = [
-  {
-    "name": "Tower Hamlets CCG",
-    "value": 1024
-  },
-  {
-    "name": "Newham CCG",
-    "value": 3400
-  },
-  {
-    "name": "City and Hackney CCG",
-    "value": 960
-  },
-  {
-    "name": "Waltham Forest CCG",
-    "value": 2800
-  },
-  {
-    "name": "Barking & Dagenham CCG",
-    "value": 1700
-  },
-  {
-    "name": "Havering CCG",
-    "value": 1100
-  },
-  {
-    "name": "Redbridge CCG",
-    "value": 2300
-  }
-];
-
 export var multi = [
   {
-    "name": "Germany",
+    "name": "Fever",
     "series": [
       {
-        "name": "2010",
-        "value": 7300000
+        "name": "2020-01-01",
+        "value": 120
       },
       {
-        "name": "2011",
-        "value": 8940000
+        "name": "2020-01-15",
+        "value": 140
+      },
+      {
+        "name": "2020-01-30",
+        "value": 150
+      },
+      {
+        "name": "2020-02-01",
+        "value": 180
+      },
+      {
+        "name": "2020-02-15",
+        "value": 230
+      },
+      {
+        "name": "2020-02-30",
+        "value": 180
+      },
+      {
+        "name": "2020-03-01",
+        "value": 120
+      },
+      {
+        "name": "2020-03-15",
+        "value": 80
+      },
+      {
+        "name": "2020-03-30",
+        "value": 70
+      },
+      {
+        "name": "2020-04-01",
+        "value": 65
+      },
+      {
+        "name": "2020-04-15",
+        "value": 20
+      },
+      {
+        "name": "2020-04-30",
+        "value": 15
       }
     ]
   },
 
   {
-    "name": "USA",
+    "name": "Cough",
     "series": [
       {
-        "name": "2010",
-        "value": 7870000
+        "name": "2020-01-01",
+        "value": 80
       },
       {
-        "name": "2011",
-        "value": 8270000
-      }
-    ]
-  },
-
-  {
-    "name": "France",
-    "series": [
-      {
-        "name": "2010",
-        "value": 5000002
+        "name": "2020-01-15",
+        "value": 95
       },
       {
-        "name": "2011",
-        "value": 5800000
+        "name": "2020-01-30",
+        "value": 110
+      },
+      {
+        "name": "2020-02-01",
+        "value": 130
+      },
+      {
+        "name": "2020-02-15",
+        "value": 110
+      },
+      {
+        "name": "2020-02-30",
+        "value": 80
+      },
+      {
+        "name": "2020-03-01",
+        "value": 80
+      },
+      {
+        "name": "2020-03-15",
+        "value": 76
+      },
+      {
+        "name": "2020-03-30",
+        "value": 65
+      },
+      {
+        "name": "2020-04-01",
+        "value": 30
+      },
+      {
+        "name": "2020-04-15",
+        "value": 25
+      },
+      {
+        "name": "2020-04-30",
+        "value": 15
       }
     ]
   }

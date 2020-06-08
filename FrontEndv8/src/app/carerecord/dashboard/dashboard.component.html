@@ -9,20 +9,23 @@
   <mat-card-content>
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
 
-      <ngx-charts-bar-vertical
+      <ngx-charts-line-chart
         [view]="view"
         [scheme]="colorScheme"
-        [results]="single"
-        [gradient]="gradient"
-        [xAxis]="showXAxis"
-        [yAxis]="showYAxis"
-        [legend]="showLegend"
+        [legend]="legend"
         [showXAxisLabel]="showXAxisLabel"
         [showYAxisLabel]="showYAxisLabel"
+        [xAxis]="xAxis"
+        [yAxis]="yAxis"
         [xAxisLabel]="xAxisLabel"
         [yAxisLabel]="yAxisLabel"
-        (select)="onSelect($event)">
-      </ngx-charts-bar-vertical>
+        [timeline]="timeline"
+        [results]="multi"
+        (select)="onSelect($event)"
+        (activate)="onActivate($event)"
+        (deactivate)="onDeactivate($event)"
+      >
+      </ngx-charts-line-chart>
 
     </div>
 
