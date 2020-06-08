@@ -28,7 +28,6 @@ public class Observation {
         observation.setStatus(org.hl7.fhir.dstu3.model.Observation.ObservationStatus.FINAL);
         observation.setEffective(getEffectiveDateTime(observationFull.getDate())); //observation.clinical_effective_date
         observation.getMeta().addProfile(ResourceConstants.OBSERVATION_PROFILE);
-
         observation.addIdentifier()
                 .setValue(String.valueOf(observationFull.getId()))
                 .setSystem(ResourceConstants.SYSTEM_ID);

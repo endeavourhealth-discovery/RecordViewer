@@ -42,7 +42,7 @@ public class FhirApi {
     HashMap<Integer, Resource> encounterFhirMap;
     Map<Integer, List<Resource>> practitionerAndRoleResource;
     Map<Integer, Coding> patientCodingMap;
-    Map<Integer, Resource> episodeOfCareResourceMap;
+    Map<String, Resource> episodeOfCareResourceMap;
     RecordViewerJDBCDAL viewerDAL;
     Bundle bundle;
     org.hl7.fhir.dstu3.model.Patient patientResource;
@@ -147,8 +147,6 @@ public class FhirApi {
             addFhirAllergiesToBundle(patientIds);
         }
 
-        addFhirEncountersToBundle(patientIds);
-
         // Adding MedicationStatement, MedicationRequest, Medication & MedicationStatementList to bundle
         addFhirMedicationStatementToBundle(patientIds);
 
@@ -159,6 +157,8 @@ public class FhirApi {
         addFhirConditionsToBundle(patientIds);
 
         addEpisodeOfCareToBundle(patientIds);
+
+        addFhirEncountersToBundle(patientIds);
 
         addProcedureToBundle(patientIds);
 
@@ -250,9 +250,16 @@ public class FhirApi {
                 if (episodeOfCareFullList.get(0).getPractitionerId() != 0) {
                     episodeOfCare.setCareManager(new Reference(getPractitionerResource(episodeOfCareFullList.get(0).getPractitionerId())));
                 }
+                episodeOfCareResourceMap.put(getEpisodeOfCareResource(episodeOfCareFullList), episodeOfCare);
                 bundle.addEntry().setResource(episodeOfCare);
             }
         }
+    }
+
+    private String getEpisodeOfCareResource(List<EpisodeOfCareFull> episodeOfCareFullList){
+        return episodeOfCareFullList.stream().map(p -> String.valueOf(p.getId()))
+                .collect(Collectors.joining(","));
+
     }
 
     private void addLocationToBundle(String organizationId) throws Exception {
@@ -429,6 +436,7 @@ public class FhirApi {
                 org.hl7.fhir.dstu3.model.Encounter encounterObj = Encounter.getEncounterResource(encounterFull);
                 encounterObj.getMeta().addTag(patientCodingMap.get((encounterFull.getPatientId())));
                 encounterObj.setSubject(new Reference(patientResource));
+                encounterObj.setEpisodeOfCare(getEpisodeOfCareReference(encounterFull.getEpisode_of_care_id()));
                 Integer encounterID=new Integer(encounterFull.getEncounterid());
                 if (!encounterFhirMap.containsKey(encounterID)) {
                     encounterFhirMap.put(encounterID, encounterObj);
@@ -438,6 +446,16 @@ public class FhirApi {
             }
 
         }
+
+    private List<Reference> getEpisodeOfCareReference(String episode_of_care_id) {
+        List<Reference> references = new ArrayList<>();
+        for (Map.Entry<String, Resource> entry : episodeOfCareResourceMap.entrySet()) {
+            if (Arrays.asList(entry.getKey().split(",")).contains(episode_of_care_id)) {
+                references.add(new Reference(entry.getValue()));
+            }
+        }
+        return (references.isEmpty()) ?  null : references;
+    }
 
 
     /*

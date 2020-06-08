@@ -553,7 +553,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join episode_of_care e on e.patient_id = p.id "+
                 "join person pe on pe.nhs_number = p.nhs_number "+
                 "join concept c2 on c2.dbid = e.registration_type_concept_id "+
-                "join concept c3 on c3.dbid = p.ethnic_code_concept_id "+
+                "left join concept c3 on c3.dbid = p.ethnic_code_concept_id "+
                 "where c2.code = 'R' "+
                 "and p.date_of_death IS NULL "+
                 "and e.date_registered <= now() "+
@@ -643,6 +643,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         List<EpisodeOfCareFull> episodeOfCareFullResult = new ArrayList<>();;
 
         String sql = "SELECT coalesce(e.date_registered, '') as dateRegistered," +
+                "coalesce(e.id, '') as id, " +
                 "coalesce(e.patient_id, '') as patientId, " +
                 "coalesce(e.date_registered_end, '') as dateRegisteredEnd, " +
                 "coalesce(e.organization_id, '') as organizationId, " +
@@ -665,6 +666,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         EpisodeOfCareFull episodeOfCareFull = new EpisodeOfCareFull();
 
         episodeOfCareFull.setCode(resultSet.getString("code"))
+                .setId(resultSet.getInt("id"))
                 .setPatientId(resultSet.getInt("patientId"))
                 .setOrganizationId(resultSet.getInt("organizationId"))
                 .setPractitionerId(resultSet.getInt("practitionerId"))
@@ -847,7 +849,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setOtheraddresses(resultSet.getString("otheraddresses"))
                 .setOrglocation(resultSet.getString("orglocation"))
                 .setPractitionerId(resultSet.getInt("practitionerId"))
-                .setEthnicDescription(resultSet.getString("ethnicDescription"))
                 .setRegistrationEndDate(resultSet.getString("registeredEndDate"))
                 .setRegistrationType(resultSet.getString("registrationType"))
                 .setStartdate(resultSet.getDate("startdate"));
@@ -1116,7 +1117,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
     public List<EncounterFull> getEncounterFullList(List<Integer> patientIds, Integer encounterId, boolean isPatient) throws Exception {
         ArrayList<EncounterFull> encounterFullList =null;
-        String sql = " SELECT  e.patient_id as patientId, e.clinical_effective_date as date, e.end_date as endDate, e.id,coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
+        String sql = " SELECT  e.patient_id as patientId, e.clinical_effective_date as date, e.episode_of_care_id as episode_of_care_id, e.end_date as endDate, e.id,coalesce(c.name,'') as name ,coalesce(c.code,'') as code,  CASE WHEN e.end_date IS NULL THEN 'Active' ELSE 'Past' END as status " +
                      " FROM encounter e LEFT JOIN concept c on c.dbid = e.non_core_concept_id ";
         String where_clause="";
         if (isPatient) {
@@ -1147,7 +1148,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         .setName(resultSet.getString("name"))
                         .setCode(resultSet.getString("code"))
                         .setEncounterid(resultSet.getInt("id"))
-                        .setStatus(resultSet.getString("status"));
+                        .setStatus(resultSet.getString("status"))
+                        .setEpisode_of_care_id(resultSet.getString("episode_of_care_id"));
 
                 encounterFullList.add(encounterFull);
             }

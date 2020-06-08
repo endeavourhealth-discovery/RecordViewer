@@ -64,6 +64,16 @@ public class EncounterFull {
         return this;
     }
 
+    public String getEpisode_of_care_id() {
+        return episode_of_care_id;
+    }
+
+    public EncounterFull setEpisode_of_care_id(String episode_of_care_id) {
+        this.episode_of_care_id = episode_of_care_id;
+        return this;
+    }
+
+
 
     private String status;
     private String name;
@@ -72,5 +82,6 @@ public class EncounterFull {
     private int patientId;
     private String date;
     private String endDate;
+    private String episode_of_care_id;
 
 }
