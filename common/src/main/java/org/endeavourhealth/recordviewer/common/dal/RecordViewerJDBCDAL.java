@@ -547,7 +547,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
-                "coalesce(p.organization_id,'') as orglocation,"+
+                "coalesce(o.name,'') as orgname,"+
                 "coalesce(p.date_of_birth,'') as dob,"+
                 "p.date_of_death as dod,"+
                 "coalesce(c.name,'') as gender,"+
@@ -569,6 +569,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "'HOME' as adduse,"+
                 "'' as otheraddresses "+
                 "FROM patient p " +
+                "join organization o on o.id = p.organization_id " +
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id "+
@@ -597,7 +598,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
-                "coalesce(p.organization_id,'') as orglocation,"+
+                "coalesce(o.name,'') as orgname,"+
                 "coalesce(p.date_of_birth,'') as dob,"+
                 "p.date_of_death as dod,"+
                 "coalesce(c.name,'') as gender,"+
@@ -619,6 +620,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "'HOME' as adduse,"+
                 "'' as otheraddresses "+
                 "FROM patient p " +
+                "join organization o on o.id = p.organization_id " +
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id "+
@@ -869,7 +871,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setPostcode(resultSet.getString("postcode"))
                 .setCity(resultSet.getString("city"))
                 .setOtheraddresses(resultSet.getString("otheraddresses"))
-                .setOrglocation(resultSet.getString("orglocation"))
+                .setOrgname(resultSet.getString("orgname"))
                 .setPractitionerId(resultSet.getInt("practitionerId"))
                 .setRegistrationEndDate(resultSet.getString("registeredEndDate"))
                 .setRegistrationType(resultSet.getString("registrationType"))

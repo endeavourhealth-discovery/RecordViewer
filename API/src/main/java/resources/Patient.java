@@ -31,7 +31,7 @@ public class Patient {
 		String postcode = replaceNull(patientResult.getPostcode());
 		String city = replaceNull(patientResult.getCity());
 		String otheraddresses = replaceNull(patientResult.getOtheraddresses());
-		String orglocation = replaceNull(patientResult.getOrglocation());
+		String orgname = replaceNull(patientResult.getOrgname());
 		String startdate = replaceNull(patientResult.getStartdate());
 		String ethnicDescription = replaceNull(patientResult.getEthnicDescription());
 		String endDate = replaceNull(patientResult.getRegistrationEndDate());

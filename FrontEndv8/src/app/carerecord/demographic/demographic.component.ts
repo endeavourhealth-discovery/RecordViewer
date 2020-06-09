@@ -27,7 +27,7 @@ export class DemographicComponent implements OnInit, AfterViewInit {
   postcode : string;
   city : string;
   otheraddresses : string;
-  orglocation : string;
+  orgname : string;
   startdate : string;
 
   ngAfterViewInit(): void {
@@ -69,7 +69,7 @@ export class DemographicComponent implements OnInit, AfterViewInit {
     this.postcode = patient.postcode;
     this.city = patient.city;
     this.otheraddresses = patient.otheraddresses;
-    this.orglocation = patient.orglocation;
+    this.orgname = patient.orgname;
     this.startdate = patient.startdate;
 
 
