@@ -589,11 +589,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(a.address_line_3,'') as add3,"+
                 "coalesce(a.address_line_4,'') as add4,"+
                 "coalesce(a.city,'') as city,"+
-                "coalesce(pe.ethnic_code_concept_id,'') as ethniccode," +
                 "coalesce(e.usual_gp_practitioner_id,'') as practitionerId,"+
                 "coalesce(e.registration_type_concept_id,'') as registrationType,"+
                 "coalesce(e.date_registered_end,'') as registeredEndDate,"+
                 "coalesce(a.postcode,'') as postcode," +
+                "coalesce(c3.description, '') as ethnicDescription," +
                 "coalesce(e.date_registered,'') as startdate,"+
                 "'HOME' as adduse,"+
                 "'' as otheraddresses "+
@@ -602,6 +602,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id "+
                 "join person pe on pe.nhs_number = p.nhs_number "+
+                "left join concept c3 on c3.dbid = p.ethnic_code_concept_id "+
                 "join concept c2 on c2.dbid = e.registration_type_concept_id "+
                 "where c2.code = 'R' "+
                 "and p.date_of_death IS NULL "+
@@ -851,7 +852,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setPractitionerId(resultSet.getInt("practitionerId"))
                 .setRegistrationEndDate(resultSet.getString("registeredEndDate"))
                 .setRegistrationType(resultSet.getString("registrationType"))
-                .setStartdate(resultSet.getDate("startdate"));
+                .setStartdate(resultSet.getDate("startdate"))
+                .setEthnicDescription(resultSet.getString("ethnicDescription"));
 
         return patient;
     }
