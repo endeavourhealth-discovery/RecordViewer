@@ -26,15 +26,8 @@
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
-          <mat-label>Title</mat-label>
-          <input matInput placeholder="Title" [(ngModel)]="title">
-          <mat-icon matSuffix>account_circle</mat-icon>
-        </mat-form-field>
-      </div>
-      <div class="demographics">
-        <mat-form-field appearance="outline">
           <mat-label>Name</mat-label>
-          <input matInput placeholder="Last name" [(ngModel)]="name">
+          <input matInput placeholder="Name" [(ngModel)]="name">
           <mat-icon matSuffix>account_circle</mat-icon>
         </mat-form-field>
       </div>
@@ -63,7 +56,7 @@
       <br/>
       <div class="demographics">
         <mat-form-field appearance="outline">
-          <mat-label>Address ({{adduse}})</mat-label>
+          <mat-label>Current Address</mat-label>
           <textarea matInput
                     cdkTextareaAutosize
                     #autosize="cdkTextareaAutosize"
@@ -73,25 +66,11 @@
           <mat-icon matSuffix>house</mat-icon>
         </mat-form-field>
       </div>
-      <div class="demographics">
-        <mat-form-field appearance="outline">
-          <mat-label>City</mat-label>
-          <input matInput placeholder="City" [(ngModel)]="city">
-          <mat-icon matSuffix>apartment</mat-icon>
-        </mat-form-field>
-      </div>
-      <div class="demographics">
-        <mat-form-field appearance="outline">
-          <mat-label>Post code</mat-label>
-          <input matInput placeholder="Post code" [(ngModel)]="postcode">
-          <mat-icon matSuffix>mail_outline</mat-icon>
-        </mat-form-field>
-      </div>
       <br/>
       <div class="demographics">
         <mat-form-field appearance="outline">
-          <mat-label>Telephone</mat-label>
-          <input matInput placeholder="Telephone" [(ngModel)]="telecom">
+          <mat-label>Mobile</mat-label>
+          <input matInput placeholder="Mobile" [(ngModel)]="mobile">
           <mat-icon matSuffix>phone</mat-icon>
         </mat-form-field>
       </div>
@@ -111,11 +90,19 @@
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
-          <mat-label>Other addresses</mat-label>
-          <input matInput placeholder="Other addresses" [(ngModel)]="otheraddresses">
-          <mat-icon matSuffix>house</mat-icon>
+          <mat-label>Usual GP</mat-label>
+          <input matInput placeholder="Usual GP" [(ngModel)]="usualgp">
+          <mat-icon matSuffix>person</mat-icon>
         </mat-form-field>
       </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Registration status</mat-label>
+          <input matInput placeholder="Registration status" [(ngModel)]="regtype">
+          <mat-icon matSuffix>today</mat-icon>
+        </mat-form-field>
+      </div>
+
     </div>
 
   </mat-card-content>

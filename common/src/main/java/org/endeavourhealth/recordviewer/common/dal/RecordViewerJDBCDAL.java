@@ -421,7 +421,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
-                    "pr.name as usual_gp,o.name as orgname, con.name as reg_type " +
+                    "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
                     "FROM patient p " +
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
@@ -465,7 +465,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
-                    "pr.name as usual_gp,o.name as orgname, con.name as reg_type " +
+                    "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
                     "FROM patient p " +
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
@@ -528,7 +528,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                 "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                 "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
-                "pr.name as usual_gp,o.name as orgname, con.name as reg_type " +
+                "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, pc.value as mobile " +
                 "FROM patient p " +
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
@@ -536,6 +536,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                 "join organization o on o.id = p.organization_id " +
                 "join concept con on con.dbid = e.registration_type_concept_id " +
+                "left join patient_contact pc on pc.patient_id = p.id and pc.type_concept_id = 1335362 and pc.use_concept_id = 1335371 "+
                 "where p.id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -561,6 +562,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setAddress(resultSet.getString("address"))
                 .setUsual_gp(resultSet.getString("usual_gp"))
                 .setOrganisation(resultSet.getString("orgname"))
+                .setStart_date(resultSet.getString("startdate"))
+                .setDate_of_death(resultSet.getString("date_of_death"))
+                .setMobile(resultSet.getString("mobile"))
                 .setRegistration(resultSet.getString("reg_type"));
 
         return patientSummary;

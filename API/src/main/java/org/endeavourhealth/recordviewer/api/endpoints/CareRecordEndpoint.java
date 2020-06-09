@@ -191,24 +191,6 @@ public class CareRecordEndpoint {
     }
 
     @GET
-    @Path("/demographic")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getDemographic(@Context SecurityContext sc,
-                                   @QueryParam("patientId") Integer patientId) throws Exception {
-        LOG.debug("getDemographic");
-
-        try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            PatientFull result = viewerDAL.getPatientFull(patientId, "0", "0");
-
-            return Response
-                    .ok()
-                    .entity(result)
-                    .build();
-        }
-    }
-
-    @GET
     @Path("/fhir")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -216,87 +198,6 @@ public class CareRecordEndpoint {
                                @QueryParam("patientId") Integer patientId
     ) throws Exception {
         LOG.debug("getFhir");
-
-        Client client = ClientBuilder.newClient();
-        String url = "https://devauth.discoverydataservice.net/";
-        String path = "auth/realms/endeavour2/protocol/openid-connect/token";
-
-        WebTarget target = client.target(url).path(path);
-
-        String accessToken = "";
-        String userID = "";
-
-        try {
-            Form form = new Form()
-                    .param("grant_type", "password")
-                    .param("client_id", "information-manager")
-                    .param("username", "Professional")
-                    .param("password", "Pro1234");
-
-            Response response = target
-                    .request()
-                    .post(form(form));
-
-            if (response.getStatus() == HttpStatus.SC_OK) { // user is authenticated in keycloak, so get the user's access token
-                Map<String, String> loginResponse = response.readEntity(Map.class);
-
-                for (Map.Entry<String, String> token: loginResponse.entrySet()) {
-                    if (token.getKey().equals("access_token")) {
-                        accessToken = token.getValue();
-                        break;
-                    }
-                }
-            } else { // user is not authenticated in Keycloak
-                throw new RuntimeException("Unauthorized"); // Not authenticated so send 401/403 Unauthorized response to the client
-            }
-
-        } catch (Exception ex) {
-            throw new RuntimeException("Unauthorized"); // Not authenticated so send 401/403 Unauthorized response to the client
-        }
-
-        // validate the authorization access token by calling keycloak and produce the principal user identifier associated with the token
-        url = "https://devauth.discoverydataservice.net/";
-        path = "auth/realms/endeavour2/protocol/openid-connect/userinfo";
-
-        target = client.target(url).path(path);
-
-        Boolean foundFHIRPolicy = false;
-
-        try {
-            Response response = target
-                    .request()
-                    .header("Authorization", "Bearer "+accessToken)
-                    .get();
-
-            if (response.getStatus() == HttpStatus.SC_OK) { // user is authorized in keycloak, so get the user record and ID associated with the token
-                String entityResponse = response.readEntity(String.class);
-                JSONParser parser = new JSONParser();
-                JSONObject users = (JSONObject) parser.parse(entityResponse);
-                userID = users.get("sub").toString();
-
-                // call user manager with the user ID to get the user's authorized applications and policies
-                String applicationPolicyId = UserCache.getUserApplicationPolicyId(userID);
-                List<JsonApplicationPolicyAttribute> jsonApplicationPolicyAttributes = ApplicationPolicyCache.getApplicationPolicyAttributes(applicationPolicyId);
-
-                for (JsonApplicationPolicyAttribute policyAttribute: jsonApplicationPolicyAttributes) {
-                    String accessProfileName = policyAttribute.getApplicationAccessProfileName();
-                    if (accessProfileName.equals("record-viewer:fhir")) { // check that the user has an application policy for accessing FHIR records
-                        foundFHIRPolicy = true;
-                        break;
-                    }
-                }
-
-            } else { // user is not authorized with this token
-                throw new RuntimeException("Unauthorized"); // Not authorized so send 401/403 Unauthorized response to the client
-            }
-
-        } catch (Exception ex) {
-            throw new RuntimeException("Unauthorized"); // Not authorized so send 401/403 Unauthorized response to the client
-        }
-
-        if (!foundFHIRPolicy) {
-            throw new RuntimeException("Unauthorized"); // Not authorized so send 401 Unauthorized response to the client
-        }
 
         FhirApi api = getFhirApi();
         JSONObject json = api.getFhirBundle(patientId,"0", "0");

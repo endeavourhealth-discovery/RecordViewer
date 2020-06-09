@@ -43,19 +43,19 @@
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
         <ng-container matColumnDef="name/address">
-          <th mat-header-cell *matHeaderCellDef>Name/Address</th>
+          <th mat-header-cell *matHeaderCellDef>Name / Address</th>
           <td mat-cell *matCellDef="let element"> <b>{{element.name}}</b><br/>{{element.address}}</td>
         </ng-container>
         <ng-container matColumnDef="dob/nhsNumber">
-          <th mat-header-cell *matHeaderCellDef>Date of birth/NHS number</th>
+          <th mat-header-cell *matHeaderCellDef>Date of birth / <br/>NHS number</th>
           <td mat-cell *matCellDef="let element"> {{element.dob}}<br/>{{element.nhsNumber}} </td>
         </ng-container>
         <ng-container matColumnDef="age/gender">
-          <th mat-header-cell *matHeaderCellDef>Age/Gender</th>
+          <th mat-header-cell *matHeaderCellDef>Age /<br/>Gender</th>
           <td mat-cell *matCellDef="let element"> {{element.age}}<br/>{{element.gender}} </td>
         </ng-container>
         <ng-container matColumnDef="usual_gp/organisation">
-          <th mat-header-cell *matHeaderCellDef>Usual GP/Organisation</th>
+          <th mat-header-cell *matHeaderCellDef>Usual GP / Organisation</th>
           <td mat-cell *matCellDef="let element"> {{element.usual_gp}}<br/>{{element.organisation}}</td>
         </ng-container>
         <ng-container matColumnDef="registration">

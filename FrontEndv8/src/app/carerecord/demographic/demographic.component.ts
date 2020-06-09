@@ -21,14 +21,12 @@ export class DemographicComponent implements OnInit, AfterViewInit {
   dob : string;
   dod : string;
   nhsNumber : string;
-  telecom : string;
-  adduse : string;
+  mobile : string;
   address : string;
-  postcode : string;
-  city : string;
-  otheraddresses : string;
   orgname : string;
   startdate : string;
+  usualgp: string;
+  regtype: string;
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -48,7 +46,7 @@ export class DemographicComponent implements OnInit, AfterViewInit {
   }
 
   loadPatient() {
-    this.carerecordService.getDemographic(this.patientId)
+    this.carerecordService.getPatientSummary(this.patientId)
       .subscribe(
         (result) => this.setPatient(result),
         (error) => this.log.error(error)
@@ -56,21 +54,19 @@ export class DemographicComponent implements OnInit, AfterViewInit {
   }
 
   setPatient(patient: any) {
+    console.log(patient);
     this.id = patient.id;
-    this.title = patient.title;
-    this.name = patient.lastname+", "+patient.firstname;
+    this.name = patient.name;
     this.gender = patient.gender;
     this.dob = patient.dob;
-    this.dod = patient.dod;
+    this.dod = patient.date_of_death;
     this.nhsNumber = patient.nhsNumber;
-    this.telecom = patient.telecom;
-    this.adduse = patient.adduse;
-    this.address = patient.add1+"\n"+patient.add2+"\n"+patient.add3+"\n"+patient.add4;
-    this.postcode = patient.postcode;
-    this.city = patient.city;
-    this.otheraddresses = patient.otheraddresses;
-    this.orgname = patient.orgname;
-    this.startdate = patient.startdate;
+    this.mobile = patient.mobile;
+    this.address = patient.address;
+    this.orgname = patient.organisation;
+    this.startdate = patient.start_date;
+    this.usualgp = patient.usual_gp;
+    this.regtype = patient.registration;
 
 
   }

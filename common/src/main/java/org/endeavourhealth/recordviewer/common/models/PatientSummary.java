@@ -19,6 +19,9 @@ public class PatientSummary {
     private String usual_gp;
     private String organisation;
     private String registration;
+    private String start_date;
+    private String date_of_death;
+    private String mobile;
 
     public String getId() {
         return id;
@@ -113,6 +116,27 @@ public class PatientSummary {
 
     public PatientSummary setRegistration(String registration) {
         this.registration = registration;
+        return this;
+    }
+
+    public String getStart_date() { return start_date; }
+
+    public PatientSummary setStart_date(String start_date) {
+        this.start_date = start_date;
+        return this;
+    }
+
+    public String getDate_of_death() { return date_of_death; }
+
+    public PatientSummary setDate_of_death(String date_of_death) {
+        this.date_of_death = date_of_death;
+        return this;
+    }
+
+    public String getMobile() { return mobile; }
+
+    public PatientSummary setMobile(String mobile) {
+        this.mobile = mobile;
         return this;
     }
 

@@ -21,6 +21,8 @@ export class PrecisComponent implements OnInit {
   gender: string;
   age: string = "";
   usual_gp: string = "";
+  organisation: string = "";
+  registration: string = "";
 
   @Output() patientChange: EventEmitter<number> = new EventEmitter();
 
@@ -72,6 +74,8 @@ export class PrecisComponent implements OnInit {
     this.gender = patient.gender;
     this.age = patient.age;
     this.usual_gp = patient.usual_gp;
+    this.organisation = patient.organisation;
+    this.registration = patient.registration;
 
     this.patientChange.emit(this.patientId);
 

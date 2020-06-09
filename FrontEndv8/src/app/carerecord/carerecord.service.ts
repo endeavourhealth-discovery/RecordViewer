@@ -89,13 +89,6 @@ export class CareRecordService {
     return this.http.get('api/events/patientsummary', {params});
   }
 
-  getDemographic(patientId?: number): Observable<any> {
-    let params = new HttpParams();
-    if (patientId) params = params.append('patientId', patientId.toString());
-
-    return this.http.get('api/events/demographic', {params});
-  }
-
   getFhir(patientId?: number): Observable<any> {
     let params = new HttpParams();
     if (patientId) params = params.append('patientId', patientId.toString());

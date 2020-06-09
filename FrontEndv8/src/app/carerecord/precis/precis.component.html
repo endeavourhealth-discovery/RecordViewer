@@ -3,15 +3,20 @@
     <div mat-card-avatar>
       <i style="margin-right: 20px" class="fad fa-user-injured"></i>
     </div>
-    <mat-card-title>{{name}}</mat-card-title>
+    <mat-card-title>
+      <div>{{name}}
+      <span class="precis">Age: {{age}}</span>
+      <span class="precis">Gender: {{gender}}</span>
+      <span class="precis">NHS: {{nhsNumber}}</span>
+      <span class="precis">Born: {{dob}}</span>
+      </div>
+    </mat-card-title>
     <mat-card-subtitle>
       <div class="patient-row">
-        <div class="patient-column">Born: <b>{{dob}}</b></div>
-        <div class="patient-column">Age: <b>{{age}}</b></div>
-        <div class="patient-column">Gender: <b>{{gender}}</b></div>
-        <div class="patient-column">NHS: <b>{{nhsNumber}}</b></div>
-        <div class="patient-column" style="width:400px">Address: <b>{{address}}</b></div>
+        <div class="patient-column" style="width:383px">Address: <b>{{address}}</b></div>
         <div class="patient-column">Usual GP: <b>{{usual_gp}}</b></div>
+        <div class="patient-column">Organisation: <b>{{organisation}}</b></div>
+        <div class="patient-column">Registration status: <b>{{registration}}</b></div>
       </div>
     </mat-card-subtitle>
     <mat-card-actions>
