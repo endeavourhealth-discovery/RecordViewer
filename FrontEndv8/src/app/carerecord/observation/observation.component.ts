@@ -52,42 +52,37 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   loadEvents() {
     if (this.eventType==1) {
       this.eventTypeTitle = "Conditions";
-      this.subTitle = "conditions (problems)";
+      this.subTitle = "A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern";
       this.icon = 'fa-diagnoses';
     }
     else if (this.eventType==2) {
       this.eventTypeTitle = "Observations";
-      this.subTitle = "general clinical observations";
+      this.subTitle = "Measurements and simple assertions made about a patient";
       this.icon = 'fa-monitor-heart-rate';
     }
     else if (this.eventType==3) {
       this.eventTypeTitle = "Procedures";
-      this.subTitle = "procedures";
+      this.subTitle = "Details of procedures performed on a patient";
       this.icon = 'fa-procedures';
     }
     else if (this.eventType==4) {
       this.eventTypeTitle = "Family history";
-      this.subTitle = "family history";
+      this.subTitle = "Significant health conditions for a person related to the patient relevant in the context of care for the patient";
       this.icon = 'fa-user-friends';
     }
     else if (this.eventType==5) {
       this.eventTypeTitle = "Immunisations";
-      this.subTitle = "immunisations";
-      this.icon = 'fa-syringe';
-    }
-    else if (this.eventType==5) {
-      this.eventTypeTitle = "Immunisations";
-      this.subTitle = "immunisations";
+      this.subTitle = "Current and historical administration of vaccines";
       this.icon = 'fa-syringe';
     }
     else if (this.eventType==6) {
-      this.eventTypeTitle = "Procedure Requests";
-      this.subTitle = "procedure requests";
+      this.eventTypeTitle = "Procedure requests";
+      this.subTitle = "A record of a request for a procedure to be performed";
       this.icon = 'fa-user-md-chat';
     }
     else if (this.eventType==7) {
-      this.eventTypeTitle = "Diagnostic Orders";
-      this.subTitle = "diagnostic orders";
+      this.eventTypeTitle = "Diagnostic orders";
+      this.subTitle = "A record of a request for a diagnostic investigation service to be performed";
       this.icon = 'fa-x-ray';
     }
 

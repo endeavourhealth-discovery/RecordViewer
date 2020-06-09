@@ -6,18 +6,18 @@
       <i class="fad fa-users-medical"></i>
     </div>
     <mat-card-title>Encounters</mat-card-title>
-    <mat-card-subtitle>List of patient encounters.</mat-card-subtitle>
+    <mat-card-subtitle>An interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
 
         <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date of Encounter</th>
+          <th mat-header-cell *matHeaderCellDef>Date of encounter</th>
           <td mat-cell *matCellDef="let element"> {{element.date}} </td>
         </ng-container>
         <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Encounter Type</th>
+          <th mat-header-cell *matHeaderCellDef>Encounter type</th>
           <td mat-cell *matCellDef="let element"> {{element.type}} </td>
         </ng-container>
         <ng-container matColumnDef="location">

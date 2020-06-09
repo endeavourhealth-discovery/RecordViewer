@@ -37,7 +37,6 @@ export class PatientComponent {
       {id: "0", name: "no results"},{id: "0", name: "no results"},
       {id: "0", name: "no results"},{id: "0", name: "no results"},
       {id: "0", name: "no results"},{id: "0", name: "no results"},
-      {id: "0", name: "no results"},{id: "0", name: "no results"},
       {id: "0", name: "no results"},{id: "0", name: "no results"}
     ];
     this.dataSource = new MatTableDataSource(this.events);

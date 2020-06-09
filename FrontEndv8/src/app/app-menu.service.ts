@@ -60,7 +60,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'encounters'},
       {icon: 'fas fa-procedures', caption: 'Procedures', state: 'procedure'},
       {icon: 'fas fa-user-md-chat', caption: 'Procedure requests', state: 'procedure requests'},
-      {icon: 'fas fa-hospital-user', caption: 'Referrals', state: 'referrals'},
+      {icon: 'fas fa-hospital-user', caption: 'Referral requests', state: 'referrals'},
       {icon: 'fas fa-x-ray', caption: 'Diagnostic orders', state: 'diagnostic orders'},
       {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
       {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
