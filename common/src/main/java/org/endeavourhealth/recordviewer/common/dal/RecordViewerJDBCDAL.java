@@ -407,12 +407,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String[] names = name.split(" ", 2);
 
         if (names.length==1) { // only 1 name specified in search
-            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age,coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name," +
-                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address \n" +
+            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+                    "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
+                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
+                    "pr.name as usual_gp " +
                     "FROM patient p " +
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "where p.last_name like ? or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
+
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, names[0]+"%");
                 statement.setString(2, nhsNumber);
@@ -426,7 +431,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT count(1) " +
                     "FROM patient p \n" +
-                    "join patient_address a on a.id = p.current_address_id \n" +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "where p.last_name like ? or p.nhs_number = ?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -439,12 +447,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             }
         }
         else { // more than one name specified in search
-            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age,coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name," +
-                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address \n" +
+            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+                    "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
+                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
+                    "pr.name as usual_gp " +
                     "FROM patient p " +
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
+
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, names[0]+"%");
                 statement.setString(2, names[1]+"%");
@@ -459,7 +472,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT count(1) " +
                     "FROM patient p \n" +
-                    "join patient_address a on a.id = p.current_address_id \n" +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -490,11 +506,15 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public PatientSummary getPatientSummary(Integer patientId) throws Exception {
         PatientSummary result = new PatientSummary();
 
-        String sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age,coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name,"+
-                "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address \n" +
+        String sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+                "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
+                "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
+                "pr.name as usual_gp " +
                 "FROM patient p " +
-                "join patient_address a on a.id = p.current_address_id "+
-                "join concept c on c.dbid = p.gender_concept_id "+
+                "join patient_address a on a.id = p.current_address_id " +
+                "join concept c on c.dbid = p.gender_concept_id " +
+                "join episode_of_care e on e.patient_id = p.id " +
+                "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                 "where p.id = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -517,7 +537,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setNhsNumber(resultSet.getString("nhs_number"))
                 .setGender(resultSet.getString("gender"))
                 .setAge(resultSet.getString("age"))
-                .setAddress(resultSet.getString("address"));
+                .setAddress(resultSet.getString("address"))
+                .setUsual_gp(resultSet.getString("usual_gp"));
 
         return patientSummary;
     }

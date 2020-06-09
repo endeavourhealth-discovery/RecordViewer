@@ -16,6 +16,7 @@ public class PatientSummary {
     private String address;
     private String gender;
     private String age;
+    private String usual_gp;
 
     public String getId() {
         return id;
@@ -87,6 +88,16 @@ public class PatientSummary {
         this.age = age;
         return this;
     }
+
+    public String getUsual_gp() {
+        return usual_gp;
+    }
+
+    public PatientSummary setUsual_gp(String usual_gp) {
+        this.usual_gp = usual_gp;
+        return this;
+    }
+
 
     public String toTitleCase(String input) {
         StringBuilder titleCase = new StringBuilder(input.length());

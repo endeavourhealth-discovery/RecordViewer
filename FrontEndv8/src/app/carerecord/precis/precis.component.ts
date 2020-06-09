@@ -20,6 +20,7 @@ export class PrecisComponent implements OnInit {
   address: string = "";
   gender: string;
   age: string = "";
+  usual_gp: string = "";
 
   @Output() patientChange: EventEmitter<number> = new EventEmitter();
 
@@ -44,7 +45,7 @@ export class PrecisComponent implements OnInit {
   swapPatient() {
       const dialogRef = this.dialog.open(PatientComponent, {
         height: '850px',
-        width: '1300px',
+        width: '1600px',
         data: {patientId: this.patientId}
       });
 
@@ -70,6 +71,7 @@ export class PrecisComponent implements OnInit {
     this.address = patient.address;
     this.gender = patient.gender;
     this.age = patient.age;
+    this.usual_gp = patient.usual_gp;
 
     this.patientChange.emit(this.patientId);
 

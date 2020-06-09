@@ -43,28 +43,32 @@
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <th style="width:50px" mat-header-cell *matHeaderCellDef>Name</th>
           <td mat-cell *matCellDef="let element"> {{element.name}} </td>
         </ng-container>
         <ng-container matColumnDef="age">
-          <th mat-header-cell *matHeaderCellDef>Age</th>
+          <th style="width:50px" mat-header-cell *matHeaderCellDef>Age</th>
           <td mat-cell *matCellDef="let element"> {{element.age}} </td>
         </ng-container>
         <ng-container matColumnDef="gender">
-          <th mat-header-cell *matHeaderCellDef>Gender</th>
+          <th style="width:50px" mat-header-cell *matHeaderCellDef>Gender</th>
           <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
         </ng-container>
         <ng-container matColumnDef="dob">
-          <th mat-header-cell *matHeaderCellDef>Date of birth</th>
+          <th style="width:50px" mat-header-cell *matHeaderCellDef>Date of birth</th>
           <td mat-cell *matCellDef="let element"> {{element.dob}} </td>
         </ng-container>
         <ng-container matColumnDef="nhsNumber">
-          <th mat-header-cell *matHeaderCellDef>NHS number</th>
+          <th style="width:50px" mat-header-cell *matHeaderCellDef>NHS number</th>
           <td mat-cell *matCellDef="let element"> {{element.nhsNumber}} </td>
         </ng-container>
         <ng-container matColumnDef="address">
-          <th mat-header-cell *matHeaderCellDef>Address</th>
+          <th style="width:50px" mat-header-cell *matHeaderCellDef>Address</th>
           <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+        </ng-container>
+        <ng-container matColumnDef="usual_gp">
+          <th style="width:50px" mat-header-cell *matHeaderCellDef>Usual GP</th>
+          <td mat-cell *matCellDef="let element"> {{element.usual_gp}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

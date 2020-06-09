@@ -24,7 +24,7 @@ export class PatientComponent {
   nhsNumber: string = '';
   dob: string;
 
-  displayedColumns: string[] = ['name','age','gender','dob','nhsNumber','address'];
+  displayedColumns: string[] = ['name','age','gender','dob','nhsNumber','address', 'usual_gp'];
 
   constructor(
     public dialogRef: MatDialogRef<PatientComponent>,
@@ -33,6 +33,7 @@ export class PatientComponent {
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
 
     this.events = [
+      {id: "0", name: "no results"},{id: "0", name: "no results"},
       {id: "0", name: "no results"},{id: "0", name: "no results"},
       {id: "0", name: "no results"},{id: "0", name: "no results"},
       {id: "0", name: "no results"},{id: "0", name: "no results"},
