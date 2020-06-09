@@ -280,13 +280,15 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "where patient_id = ? "+
-                        "and c.name not like '%(procedure)' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+
                         "order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ?";
+                        "where patient_id = ? "+
+                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 ";
+
                 break;
             case 3: // procedures
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -294,12 +296,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%(procedure)' order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? and c.name like '%procedure%' order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%(procedure)'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ? and c.name like '%procedure%'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
                 break;
             case 4: // family history
                 sql = "SELECT o.clinical_effective_date as date," +
