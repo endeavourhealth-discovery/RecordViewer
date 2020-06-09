@@ -33,7 +33,6 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {PrecisComponent} from "./precis/precis.component";
 import {Globals} from "./globals";
 import {ObservationComponent} from "./observation/observation.component";
-import {ValuesComponent} from "./values/values.component";
 import {AllergyComponent} from "./allergy/allergy.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {BarChartModule, LineChartModule} from "@swimlane/ngx-charts";
@@ -48,7 +47,6 @@ import {EncountersComponent} from "./encounters/encounters.component";
     PatientComponent,
     CareSummaryComponent,
     MedicationComponent,
-    ValuesComponent,
     DashboardComponent,
     ObservationComponent,
     AppointmentComponent,
