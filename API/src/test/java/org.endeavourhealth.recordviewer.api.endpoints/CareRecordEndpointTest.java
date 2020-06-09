@@ -79,7 +79,7 @@ public class CareRecordEndpointTest {
     private static PatientFull getPatientFull() throws ParseException {
         return new PatientFull().setId("9999").setAdd1("18 Oxford Street").setAdd2("Hammersmith").setCity("London")
                 .setFirstname("Patrick").setGender("Male").setLastname("Laughton").setNhsNumber("123456").setStartdate(format.parse("12-10-2019 00:00:00")).setPostcode("IG2")
-                .setOrgname("1001");
+                .setOrglocation("1001");
     }
 
 

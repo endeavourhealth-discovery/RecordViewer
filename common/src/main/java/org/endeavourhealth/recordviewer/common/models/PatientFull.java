@@ -25,6 +25,7 @@ public class PatientFull {
     private String postcode;
     private String city;
     private String otheraddresses;
+    private String orglocation;
     private String orgname;
     private String startdate;
     private String ethnicDescription;
@@ -234,6 +235,15 @@ public class PatientFull {
 
     public PatientFull setOtheraddresses(String otheraddresses) {
         this.otheraddresses = otheraddresses;
+        return this;
+    }
+
+    public String getOrglocation() {
+        return orglocation;
+    }
+
+    public PatientFull setOrglocation(String orglocation) {
+        this.orglocation = orglocation;
         return this;
     }
 

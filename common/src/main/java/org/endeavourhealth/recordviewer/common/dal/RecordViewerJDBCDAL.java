@@ -547,6 +547,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
+                "coalesce(p.organization_id,'') as orglocation,"+
                 "coalesce(o.name,'') as orgname,"+
                 "coalesce(p.date_of_birth,'') as dob,"+
                 "p.date_of_death as dod,"+
@@ -598,6 +599,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
+                "coalesce(p.organization_id,'') as orglocation,"+
                 "coalesce(o.name,'') as orgname,"+
                 "coalesce(p.date_of_birth,'') as dob,"+
                 "p.date_of_death as dod,"+
@@ -871,6 +873,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setPostcode(resultSet.getString("postcode"))
                 .setCity(resultSet.getString("city"))
                 .setOtheraddresses(resultSet.getString("otheraddresses"))
+                .setOrglocation(resultSet.getString("orglocation"))
                 .setOrgname(resultSet.getString("orgname"))
                 .setPractitionerId(resultSet.getInt("practitionerId"))
                 .setRegistrationEndDate(resultSet.getString("registeredEndDate"))

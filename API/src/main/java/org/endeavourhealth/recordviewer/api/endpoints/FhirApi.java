@@ -121,8 +121,8 @@ public class FhirApi {
         meta.addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-StructuredRecord-Bundle-1");
         bundle.setMeta(meta);
 
-        if (patient.getOrgname().trim().length() > 0) {
-            patientResource.setManagingOrganization(new Reference(getOrganizationFhirObj(Integer.parseInt(patient.getOrgname()))));
+        if (patient.getOrglocation().trim().length() > 0) {
+            patientResource.setManagingOrganization(new Reference(getOrganizationFhirObj(Integer.parseInt(patient.getOrglocation()))));
         }
         if (patient.getPractitionerId() != 0) {
             patientResource.setGeneralPractitioner(Arrays.asList(new Reference(getPractitionerResource(patient.getPractitionerId()))));
@@ -162,7 +162,7 @@ public class FhirApi {
 
         addProcedureToBundle(patientIds);
 
-        addLocationToBundle(patient.getOrgname());
+        addLocationToBundle(patient.getOrglocation());
 
         addFhirImmunizationsToBundle(patientIds);
 
