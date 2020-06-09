@@ -42,33 +42,25 @@
     </mat-grid-list>
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
-        <ng-container matColumnDef="name">
-          <th style="width:50px" mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <ng-container matColumnDef="name/address">
+          <th mat-header-cell *matHeaderCellDef>Name/Address</th>
+          <td mat-cell *matCellDef="let element"> <b>{{element.name}}</b><br/>{{element.address}}</td>
         </ng-container>
-        <ng-container matColumnDef="age">
-          <th style="width:50px" mat-header-cell *matHeaderCellDef>Age</th>
-          <td mat-cell *matCellDef="let element"> {{element.age}} </td>
+        <ng-container matColumnDef="dob/nhsNumber">
+          <th mat-header-cell *matHeaderCellDef>Date of birth/NHS number</th>
+          <td mat-cell *matCellDef="let element"> {{element.dob}}<br/>{{element.nhsNumber}} </td>
         </ng-container>
-        <ng-container matColumnDef="gender">
-          <th style="width:50px" mat-header-cell *matHeaderCellDef>Gender</th>
-          <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
+        <ng-container matColumnDef="age/gender">
+          <th mat-header-cell *matHeaderCellDef>Age/Gender</th>
+          <td mat-cell *matCellDef="let element"> {{element.age}}<br/>{{element.gender}} </td>
         </ng-container>
-        <ng-container matColumnDef="dob">
-          <th style="width:50px" mat-header-cell *matHeaderCellDef>Date of birth</th>
-          <td mat-cell *matCellDef="let element"> {{element.dob}} </td>
+        <ng-container matColumnDef="usual_gp/organisation">
+          <th mat-header-cell *matHeaderCellDef>Usual GP/Organisation</th>
+          <td mat-cell *matCellDef="let element"> {{element.usual_gp}}<br/>{{element.organisation}}</td>
         </ng-container>
-        <ng-container matColumnDef="nhsNumber">
-          <th style="width:50px" mat-header-cell *matHeaderCellDef>NHS number</th>
-          <td mat-cell *matCellDef="let element"> {{element.nhsNumber}} </td>
-        </ng-container>
-        <ng-container matColumnDef="address">
-          <th style="width:50px" mat-header-cell *matHeaderCellDef>Address</th>
-          <td mat-cell *matCellDef="let element"> {{element.address}} </td>
-        </ng-container>
-        <ng-container matColumnDef="usual_gp">
-          <th style="width:50px" mat-header-cell *matHeaderCellDef>Usual GP</th>
-          <td mat-cell *matCellDef="let element"> {{element.usual_gp}}</td>
+        <ng-container matColumnDef="registration">
+          <th mat-header-cell *matHeaderCellDef>Registration status</th>
+          <td mat-cell *matCellDef="let element"> {{element.registration}}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

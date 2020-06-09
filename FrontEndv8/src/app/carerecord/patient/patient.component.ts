@@ -24,7 +24,7 @@ export class PatientComponent {
   nhsNumber: string = '';
   dob: string;
 
-  displayedColumns: string[] = ['name','age','gender','dob','nhsNumber','address', 'usual_gp'];
+  displayedColumns: string[] = ['name/address', 'dob/nhsNumber', 'age/gender', 'usual_gp/organisation', 'registration'];
 
   constructor(
     public dialogRef: MatDialogRef<PatientComponent>,

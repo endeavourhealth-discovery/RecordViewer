@@ -17,6 +17,8 @@ public class PatientSummary {
     private String gender;
     private String age;
     private String usual_gp;
+    private String organisation;
+    private String registration;
 
     public String getId() {
         return id;
@@ -95,6 +97,22 @@ public class PatientSummary {
 
     public PatientSummary setUsual_gp(String usual_gp) {
         this.usual_gp = usual_gp;
+        return this;
+    }
+
+    public String getOrganisation() {
+        return organisation;
+    }
+
+    public PatientSummary setOrganisation(String organisation) {
+        this.organisation = organisation;
+        return this;
+    }
+
+    public String getRegistration() { return registration; }
+
+    public PatientSummary setRegistration(String registration) {
+        this.registration = registration;
         return this;
     }
 
