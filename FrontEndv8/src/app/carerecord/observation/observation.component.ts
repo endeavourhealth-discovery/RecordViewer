@@ -85,6 +85,11 @@ export class ObservationComponent implements OnInit, AfterViewInit {
       this.subTitle = "A record of a request for a diagnostic investigation service to be performed";
       this.icon = 'fa-x-ray';
     }
+    else if (this.eventType==8) {
+      this.eventTypeTitle = "Warnings & Flags";
+      this.subTitle = "Prospective warnings of potential issues when providing care to the patient";
+      this.icon = 'fa-exclamation-triangle';
+    }
 
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
