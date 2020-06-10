@@ -1182,7 +1182,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         if (isPatient) {
             where_clause = " where e.patient_id in (" + StringUtils.join(patientIds, ',') + ")";
         } else {
-            where_clause = " where e.id =?";
+            where_clause = " where e.id = " + encounterId;
         }
         sql=sql+where_clause;
 
