@@ -1,5 +1,6 @@
 package org.endeavourhealth.recordviewer.api.endpoints;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
 import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
@@ -33,18 +34,10 @@ public class AuthenticateUser {
                     try {
                         Form form = null;
 
-                        if (userAuth.getGrantType().equals("password")) {
-                            form = new Form()
-                                    .param("grant_type", userAuth.getGrantType())
-                                    .param("client_id", userAuth.getClientId())
-                                    .param("username", userAuth.getUserName())
-                                    .param("password", userAuth.getPassword());
-                        } else if (userAuth.getGrantType().equals("refresh_token")) {
-                            form = new Form()
-                                    .param("grant_type", userAuth.getGrantType())
-                                    .param("client_id", userAuth.getClientId())
-                                    .param("refresh_token", userAuth.getPassword());
-                        }
+                        form = new Form()
+                                .param("grant_type", userAuth.getGrantType())
+                                .param("client_id", userAuth.getClientId())
+                                .param("client_secret", userAuth.getClientSecret());
 
                         Response response = target
                                 .request()
@@ -53,9 +46,14 @@ public class AuthenticateUser {
                         if (response.getStatus() == HttpStatus.SC_OK) { // user is authenticated in keycloak, so get the user's access token
                             String loginResponse = response.readEntity(String.class);
                             JSONParser parser = new JSONParser();
-                            return (JSONObject) parser.parse(loginResponse);
+
+                            JSONObject jsonobj = (JSONObject) parser.parse(loginResponse);
+                            jsonobj.remove("refresh_token");
+                            jsonobj.remove("refresh_expires_in");
+
+                            return jsonobj;
                         } else { // user is not authenticated in Keycloak
-                            throw new RuntimeException("Unauthorized User: "+userAuth.getUserName()+", httpStatus: "+response.getStatus()); // Not authenticated so send 401/403 Unauthorized response to the client
+                            throw new RuntimeException("Unauthorized Client: "+userAuth.getClientId()+", httpStatus: "+response.getStatus()); // Not authenticated so send 401/403 Unauthorized response to the client
                         }
 
                     } catch (Exception ex) {

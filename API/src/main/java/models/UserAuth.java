@@ -10,8 +10,7 @@ import java.util.Map;
 @JsonPropertyOrder({
         "grantType",
         "clientId",
-        "userName",
-        "password"
+        "clientSecret"
 })
 public class UserAuth {
 
@@ -19,10 +18,8 @@ public class UserAuth {
     private String grantType;
     @JsonProperty("clientId")
     private String clientId;
-    @JsonProperty("userName")
-    private String userName;
-    @JsonProperty("password")
-    private String password;
+    @JsonProperty("clientSecret")
+    private String clientSecret;
 
     @JsonProperty("grantType")
     public String getGrantType() {
@@ -42,21 +39,13 @@ public class UserAuth {
         this.clientId = clientId;
     }
 
-    @JsonProperty("userName")
-    public String getUserName() {
-        return userName;
+    @JsonProperty("clientSecret")
+    public String getClientSecret() {
+        return clientSecret;
     }
-    @JsonProperty("userName")
-    public void setUserName(String userName) {
-        this.userName = userName;
+    @JsonProperty("clientSecret")
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
-    @JsonProperty("password")
-    public String getPassword() {
-        return password;
-    }
-    @JsonProperty("password")
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
