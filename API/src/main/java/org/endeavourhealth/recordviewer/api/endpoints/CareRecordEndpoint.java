@@ -31,6 +31,26 @@ public class CareRecordEndpoint {
     private static final Logger LOG = LoggerFactory.getLogger(CareRecordEndpoint.class);
 
     @GET
+    @Path("/diagnostics")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDiagnostics(@Context SecurityContext sc,
+                                  @QueryParam("page") Integer page,
+                                  @QueryParam("size") Integer size,
+                                  @QueryParam("patientId") Integer patientId) throws Exception {
+        LOG.debug("getDiagnostics");
+
+        try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
+            DiagnosticsResult result = viewerDAL.getDiagnosticsResult(page, size, patientId);
+
+            return Response
+                    .ok()
+                    .entity(result)
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/encounters")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

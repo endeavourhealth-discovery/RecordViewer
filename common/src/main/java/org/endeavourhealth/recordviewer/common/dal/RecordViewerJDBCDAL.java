@@ -17,6 +17,63 @@ import java.util.Map;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
+    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId) throws Exception {
+        DiagnosticsResult result = new DiagnosticsResult();
+
+        String sql = "SELECT o.clinical_effective_date as date, c.name as term, " +
+                "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result " +
+                "FROM observation o  " +
+                "join concept c on c.dbid = o.non_core_concept_id " +
+                "where patient_id = ? " +
+                "and o.result_value_units is not null " +
+                "order by o.clinical_effective_date DESC LIMIT ?,?";
+
+
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            statement.setInt(2, page*15);
+            statement.setInt(3, size);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result.setResults(getDiagnosticsSummaryList(resultSet));
+            }
+        }
+
+        sql = "SELECT count(1) " +
+                "FROM observation o " +
+                "join concept c on c.dbid = o.non_core_concept_id " +
+                "where patient_id = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                result.setLength(resultSet.getInt(1));
+            }
+        }
+
+        return result;
+    }
+
+    private List<DiagnosticsSummary> getDiagnosticsSummaryList(ResultSet resultSet) throws SQLException {
+        List<DiagnosticsSummary> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(getDiagnosticsSummary(resultSet));
+        }
+
+        return result;
+    }
+
+    public static DiagnosticsSummary getDiagnosticsSummary(ResultSet resultSet) throws SQLException {
+        DiagnosticsSummary diagnosticsSummary = new DiagnosticsSummary();
+        diagnosticsSummary
+                .setDate(resultSet.getDate("date"))
+                .setTerm(resultSet.getString("term"))
+                .setResult(resultSet.getString("result"));
+
+        return diagnosticsSummary;
+    }
+
     public EncountersResult getEncountersResult(Integer page, Integer size, Integer patientId) throws Exception {
         EncountersResult result = new EncountersResult();
 

@@ -11,6 +11,7 @@ import {DashboardComponent} from "./carerecord/dashboard/dashboard.component";
 import {AppointmentComponent} from "./carerecord/appointment/appointment.component";
 import {ReferralsComponent} from "./carerecord/referrals/referrals.component";
 import {EncountersComponent} from "./carerecord/encounters/encounters.component";
+import {DiagnosticsComponent} from "./carerecord/diagnostics/diagnostics.component";
 
 @Injectable()
 export class AppMenuService implements  AbstractMenuProvider {
@@ -25,6 +26,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {path: 'appointment', component: AppointmentComponent, data: {role: 'record-viewer'}},
       {path: 'referrals', component: ReferralsComponent, data: {role: 'record-viewer'}},
       {path: 'encounters', component: EncountersComponent, data: {role: 'record-viewer'}},
+      {path: 'diagnostics', component: DiagnosticsComponent, data: {role: 'record-viewer'}},
       {path: 'condition', component: ObservationComponent, data: {role: 'record-viewer', eventType: '1'}},
       {path: 'procedure', component: ObservationComponent, data: {role: 'record-viewer', eventType: '3'}},
       {path: 'observation', component: ObservationComponent, data: {role: 'record-viewer', eventType: '2'}},
@@ -57,7 +59,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'encounters'},
       {icon: 'fas fa-monitor-heart-rate', caption: 'Observations', state: 'observation'},
       {icon: 'fas fa-x-ray', caption: 'Diagnostic orders', state: 'diagnostic orders'},
-      {icon: 'fas fa-microscope', caption: 'Diagnostic reports', state: 'observation'},
+      {icon: 'fas fa-microscope', caption: 'Diagnostic reports', state: 'diagnostics'},
       {icon: 'fas fa-user-md-chat', caption: 'Procedure requests', state: 'procedure requests'},
       {icon: 'fas fa-procedures', caption: 'Procedures', state: 'procedure'},
       {icon: 'fas fa-hospital-user', caption: 'Referral requests', state: 'referrals'},
