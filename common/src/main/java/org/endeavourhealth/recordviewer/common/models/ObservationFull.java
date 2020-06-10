@@ -11,6 +11,7 @@ public class ObservationFull {
     private String name;
     private int organizationId;
     private int practitionerId;
+    private int encounterId;
 
     public int getId() {
         return id;
@@ -27,6 +28,15 @@ public class ObservationFull {
 
     public ObservationFull setPatientId(int patientId) {
         this.patientId = patientId;
+        return this;
+    }
+
+    public int getEncounterId() {
+        return encounterId;
+    }
+
+    public ObservationFull setEncounterId(int encounterId) {
+        this.encounterId = encounterId;
         return this;
     }
 
