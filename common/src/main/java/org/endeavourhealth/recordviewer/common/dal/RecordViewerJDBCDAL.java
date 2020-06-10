@@ -28,8 +28,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "and o.result_value_units is not null " +
                 "order by o.clinical_effective_date DESC LIMIT ?,?";
 
-
-
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
             statement.setInt(2, page*15);
@@ -42,7 +40,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         sql = "SELECT count(1) " +
                 "FROM observation o " +
                 "join concept c on c.dbid = o.non_core_concept_id " +
-                "where patient_id = ?";
+                "where patient_id = ? "+
+                "and o.result_value_units is not null";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
