@@ -141,7 +141,6 @@ public class FhirApi {
             patientIds = Arrays.asList(patientId);
         }
         setCoding(patientMap);
-        addObservationToBundle(patientIds);
 
         if (includeAllergies) {
             addFhirAllergiesToBundle(patientIds);
@@ -159,6 +158,8 @@ public class FhirApi {
         addEpisodeOfCareToBundle(patientIds);
 
         addFhirEncountersToBundle(patientIds);
+
+        addObservationToBundle(patientIds);
 
         addProcedureToBundle(patientIds);
 
@@ -327,6 +328,7 @@ public class FhirApi {
                     observationResource.getMeta().addTag(patientCodingMap.get((observationFull.getPatientId())));
                     observationResource.setPerformer(Arrays.asList(new Reference(getPractitionerRoleResource(new Integer(observationFull.getPractitionerId()), observationFull.getOrganizationId()))));
                     observationResource.setSubject(new Reference(patientResource));
+                    observationResource.setContext(new Reference(getEncounterFhirObj(observationFull.getEncounterId())));
                     bundle.addEntry().setResource(observationResource);
                     observationListResource.addEntry().setItem(new Reference(observationResource));
                 }

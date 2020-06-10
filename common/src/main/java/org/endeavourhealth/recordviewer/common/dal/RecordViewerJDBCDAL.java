@@ -739,6 +739,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "o.clinical_effective_date as date," +
                 "coalesce(o.patient_id, '') as patientId, " +
                 "coalesce(o.practitioner_id, '') as practitionerId, " +
+                "coalesce(o.encounter_id, '') as encounterId, " +
                 "coalesce(o.organization_id, '') as organizationId, " +
                 "coalesce(o.result_value, '') as resultValue, " +
                 "coalesce(o.result_value, '') as resultValue, " +
@@ -876,6 +877,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setDescription(resultSet.getString("description"))
                 .setPractitionerId(resultSet.getInt("practitionerId"))
                 .setOrganizationId(resultSet.getInt("organizationId"))
+                .setEncounterId(resultSet.getInt("encounterId"))
                 .setName(resultSet.getString("name"))
                 .setResultValue(resultSet.getDouble("resultValue"))
                 .setResultValueUnits(resultSet.getString("resultValueUnits"));
