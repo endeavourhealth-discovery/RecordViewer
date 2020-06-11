@@ -91,7 +91,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadConditions() {
     this.events2 = null;
-    this.carerecordService.getObservation(this.page2, this.size2, this.patientId, 1, 1)
+    this.carerecordService.getObservation(this.page2, this.size2, this.patientId, 1, this.active2)
       .subscribe(
         (result) => this.displayConditions(result),
         (error) => this.log.error(error)

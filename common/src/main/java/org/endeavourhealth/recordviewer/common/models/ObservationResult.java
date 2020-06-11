@@ -36,12 +36,4 @@ public class ObservationResult {
         return this;
     }
 
-    public int getActive() {
-        return active;
-    }
-
-    public ObservationResult setActive(int active) {
-        this.active = active;
-        return this;
-    }
 }
