@@ -29,11 +29,23 @@ export class CareSummaryComponent implements OnInit {
   page3: number = 0;
   size3: number = 15;
 
+  events4: any;
+  dataSource4: MatTableDataSource<any>;
+  page4: number = 0;
+  size4: number = 15;
+
+  events5: any;
+  dataSource5: MatTableDataSource<any>;
+  page5: number = 0;
+  size5: number = 15;
+
   patientId: number;
 
   displayedColumns1: string[] = ['name'];
-  displayedColumns2: string[] = ['name'];
+  displayedColumns2: string[] = ['name', 'date'];
   displayedColumns3: string[] = ['name'];
+  displayedColumns4: string[] = ['name'];
+  displayedColumns5: string[] = ['date', 'location', 'practitioner'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -52,6 +64,8 @@ export class CareSummaryComponent implements OnInit {
       this.loadConditions();
       this.loadAllergies();
       this.loadMedication();
+      this.loadWarnings();
+      this.loadEncounters();
     });
   }
 
@@ -82,6 +96,24 @@ export class CareSummaryComponent implements OnInit {
       );
   }
 
+  loadWarnings() {
+    this.events4 = null;
+    this.carerecordService.getObservation(this.page4, this.size4, this.patientId, 8)
+      .subscribe(
+        (result) => this.displayWarnings(result),
+        (error) => this.log.error(error)
+      );
+  }
+
+  loadEncounters() {
+    this.events5 = null;
+    this.carerecordService.getEncounters(this.page5, this.size5, this.patientId)
+      .subscribe(
+        (result) => this.displayEncounters(result),
+        (error) => this.log.error(error)
+      );
+  }
+
   displayMedication(events: any) {
     this.events1 = events;
     this.dataSource1 = new MatTableDataSource(events.results);
@@ -95,6 +127,16 @@ export class CareSummaryComponent implements OnInit {
   displayAllergies(events: any) {
     this.events3 = events;
     this.dataSource3 = new MatTableDataSource(events.results);
+  }
+
+  displayWarnings(events: any) {
+    this.events4 = events;
+    this.dataSource4 = new MatTableDataSource(events.results);
+  }
+
+  displayEncounters(events: any) {
+    this.events5 = events;
+    this.dataSource5 = new MatTableDataSource(events.results);
   }
 
   onPage1(event: PageEvent) {
@@ -114,4 +156,17 @@ export class CareSummaryComponent implements OnInit {
     this.size3 = event.pageSize;
     this.loadAllergies();
   }
+
+  onPage4(event: PageEvent) {
+    this.page4 = event.pageIndex;
+    this.size4 = event.pageSize;
+    this.loadWarnings();
+  }
+
+  onPage5(event: PageEvent) {
+    this.page5 = event.pageIndex;
+    this.size5 = event.pageSize;
+    this.loadEncounters();
+  }
+
 }
