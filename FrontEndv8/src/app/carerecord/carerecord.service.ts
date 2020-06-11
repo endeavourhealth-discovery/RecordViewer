@@ -10,12 +10,13 @@ export class CareRecordService {
 
   constructor(private http: HttpClient) { }
 
-  getMedication(page?: number, size?: number, patientId?: number): Observable<any> {
+  getMedication(page?: number, size?: number, patientId?: number, active?: number): Observable<any> {
     console.log("page: "+page+", size: "+size);
     let params = new HttpParams();
     params = params.append('page', page.toString());
     params = params.append('size', size.toString());
     params = params.append('patientId', patientId.toString());
+    params = params.append('active', active.toString());
 
     return this.http.get('api/events/medication', {params});
   }

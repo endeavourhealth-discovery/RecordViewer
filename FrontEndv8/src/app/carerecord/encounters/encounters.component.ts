@@ -20,7 +20,7 @@ export class EncountersComponent implements OnInit, AfterViewInit {
   size: number = 12;
   patientId: number;
 
-  displayedColumns: string[] = ["date", "type", "location", "practitioner"];
+  displayedColumns: string[] = ["type", "location", "practitioner","date"];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;

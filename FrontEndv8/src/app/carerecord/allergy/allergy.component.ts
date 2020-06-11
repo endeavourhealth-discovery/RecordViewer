@@ -24,7 +24,7 @@ export class AllergyComponent implements OnInit, AfterViewInit {
   subTitle: string;
   icon: string;
 
-  displayedColumns: string[] = ['name','status', 'date'];
+  displayedColumns: string[] = ['name', 'date'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;

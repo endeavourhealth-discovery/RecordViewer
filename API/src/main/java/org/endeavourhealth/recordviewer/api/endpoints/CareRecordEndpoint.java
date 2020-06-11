@@ -97,11 +97,12 @@ public class CareRecordEndpoint {
     public Response getMedication(@Context SecurityContext sc,
                                   @QueryParam("page") Integer page,
                                   @QueryParam("size") Integer size,
-                                  @QueryParam("patientId") Integer patientId) throws Exception {
+                                  @QueryParam("patientId") Integer patientId,
+                                  @QueryParam("active") Integer active) throws Exception {
         LOG.debug("getMedication");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            MedicationResult result = viewerDAL.getMedicationResult(page, size, patientId);
+            MedicationResult result = viewerDAL.getMedicationResult(page, size, patientId, active);
 
             return Response
                     .ok()

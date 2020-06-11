@@ -22,11 +22,12 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   patientId: number;
   eventType: number;
   eventTypeTitle: string;
+  dateTitle: string;
   subTitle: string;
   icon: string;
   active: number = 0;
 
-  displayedColumns: string[] = ['name','status', 'date'];
+  displayedColumns: string[] = ['name', 'date'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -55,41 +56,52 @@ export class ObservationComponent implements OnInit, AfterViewInit {
       this.eventTypeTitle = "Conditions";
       this.subTitle = "A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern";
       this.icon = 'fa-diagnoses';
+      this.dateTitle = "Onset date";
+      this.displayedColumns = ['name','status', 'date'];
     }
     else if (this.eventType==2) {
       this.eventTypeTitle = "Observations";
       this.subTitle = "Measurements and simple assertions made about a patient";
       this.icon = 'fa-monitor-heart-rate';
+      this.dateTitle = "Effective date";
     }
     else if (this.eventType==3) {
       this.eventTypeTitle = "Procedures";
       this.subTitle = "Details of procedures performed on a patient";
       this.icon = 'fa-procedures';
+      this.dateTitle = "Effective date";
     }
     else if (this.eventType==4) {
       this.eventTypeTitle = "Family history";
       this.subTitle = "Significant health conditions for a person related to the patient relevant in the context of care for the patient";
       this.icon = 'fa-user-friends';
+      this.dateTitle = "Effective date";
     }
     else if (this.eventType==5) {
       this.eventTypeTitle = "Immunisations";
       this.subTitle = "Current and historical administration of vaccines";
       this.icon = 'fa-syringe';
+      this.dateTitle = "Effective date";
     }
     else if (this.eventType==6) {
       this.eventTypeTitle = "Procedure requests";
       this.subTitle = "A record of a request for a procedure to be performed";
       this.icon = 'fa-user-md-chat';
+      this.dateTitle = "Effective date";
+      this.displayedColumns = ['name','status', 'date'];
     }
     else if (this.eventType==7) {
       this.eventTypeTitle = "Diagnostic orders";
       this.subTitle = "A record of a request for a diagnostic investigation service to be performed";
       this.icon = 'fa-x-ray';
+      this.dateTitle = "Effective date";
     }
     else if (this.eventType==8) {
       this.eventTypeTitle = "Warnings & Flags";
       this.subTitle = "Prospective warnings of potential issues when providing care to the patient";
       this.icon = 'fa-exclamation-triangle';
+      this.dateTitle = "Effective date";
+      this.displayedColumns = ['name','status', 'date'];
     }
 
     this.events = null;

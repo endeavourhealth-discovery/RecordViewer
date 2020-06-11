@@ -19,8 +19,9 @@ export class MedicationComponent implements OnInit, AfterViewInit {
   page: number = 0;
   size: number = 12;
   patientId: number;
+  active: number = 0;
 
-  displayedColumns: string[] = ['name', 'dose', 'quantity', 'date', 'last', 'status', 'type'];
+  displayedColumns: string[] = ['name', 'dose', 'quantity', 'status', 'type', 'date', 'last'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -42,7 +43,7 @@ export class MedicationComponent implements OnInit, AfterViewInit {
   loadEvents() {
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getMedication(this.page, this.size, this.patientId)
+    this.carerecordService.getMedication(this.page, this.size, this.patientId, this.active)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

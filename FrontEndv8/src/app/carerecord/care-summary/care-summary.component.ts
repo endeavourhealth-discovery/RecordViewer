@@ -14,40 +14,45 @@ export class CareSummaryComponent implements OnInit {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
 
+  // medication
   events1: any;
   dataSource1: MatTableDataSource<any>;
   page1: number = 0;
-  size1: number = 10;
+  size1: number = 999;
+  active1: number = 1;
+  displayedColumns1: string[] = ['name','type','last'];
 
+  // conditions
   events2: any;
   dataSource2: MatTableDataSource<any>;
   page2: number = 0;
-  size2: number = 10;
+  size2: number = 999;
   active2: number = 1;
+  displayedColumns2: string[] = ['name', 'date'];
 
+  // allergies
   events3: any;
   dataSource3: MatTableDataSource<any>;
   page3: number = 0;
-  size3: number = 10;
+  size3: number = 999;
+  displayedColumns3: string[] = ['name','date'];
 
+  // warnings
   events4: any;
   dataSource4: MatTableDataSource<any>;
   page4: number = 0;
-  size4: number = 10;
-  active4: number = 0;
+  size4: number = 999;
+  active4: number = 1;
+  displayedColumns4: string[] = ['name','date'];
 
+  // encounters
   events5: any;
   dataSource5: MatTableDataSource<any>;
   page5: number = 0;
   size5: number = 5;
+  displayedColumns5: string[] = ['type', 'location', 'practitioner','date'];
 
   patientId: number;
-
-  displayedColumns1: string[] = ['name'];
-  displayedColumns2: string[] = ['name', 'date'];
-  displayedColumns3: string[] = ['name'];
-  displayedColumns4: string[] = ['name','date'];
-  displayedColumns5: string[] = ['date', 'location', 'practitioner'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -73,7 +78,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadMedication() {
     this.events1 = null;
-    this.carerecordService.getMedication(this.page1, this.size1, this.patientId)
+    this.carerecordService.getMedication(this.page1, this.size1, this.patientId, this.active1)
       .subscribe(
         (result) => this.displayMedication(result),
         (error) => this.log.error(error)

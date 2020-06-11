@@ -52,6 +52,8 @@ public class MedicationSummary {
     public MedicationSummary setName(String name) {
         this.name = name.replaceAll("Product containing precisely ","");
         this.name = this.name.replaceAll("Product containing ","");
+        this.name = this.name.replaceAll("\\(clinical drug\\)","");
+        this.name = this.name.replaceAll("\\(product\\)","");
         this.name = toTitleCase(this.name);
         return this;
     }

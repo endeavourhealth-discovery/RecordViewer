@@ -20,7 +20,7 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
   size: number = 12;
   patientId: number;
 
-  displayedColumns: string[] = ["date", "term", "result"];
+  displayedColumns: string[] = ["term", "result", "date"];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
