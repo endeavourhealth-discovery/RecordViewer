@@ -138,8 +138,8 @@ public class CareRecordEndpoint {
                                    @QueryParam("page") Integer page,
                                    @QueryParam("size") Integer size,
                                    @QueryParam("patientId") Integer patientId,
-                                   @QueryParam("active") Integer active,
-                                   @QueryParam("eventType") Integer eventType) throws Exception {
+                                   @QueryParam("eventType") Integer eventType,
+                                   @QueryParam("active") Integer active) throws Exception {
         LOG.debug("getObservation");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
