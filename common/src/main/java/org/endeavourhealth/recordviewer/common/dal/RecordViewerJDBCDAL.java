@@ -313,7 +313,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         ObservationResult result = new ObservationResult();
 
         String sql = "";
-        String activewhere = " and o.problem_end_date IS NOT NULL ";
+        String activewhere = " and o.problem_end_date IS NULL ";
         String sqlCount = "";
 
         if (active==0)
