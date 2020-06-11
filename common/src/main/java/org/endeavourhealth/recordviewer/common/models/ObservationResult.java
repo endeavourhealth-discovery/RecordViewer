@@ -7,6 +7,7 @@ public class ObservationResult {
     private int page = 1;
     private int length = 0;
     private List<ObservationSummary> results = new ArrayList<>();
+    private int active = 0;
 
     public int getPage() {
         return page;
@@ -32,6 +33,15 @@ public class ObservationResult {
 
     public ObservationResult setResults(List<ObservationSummary> results) {
         this.results = results;
+        return this;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public ObservationResult setActive(int active) {
+        this.active = active;
         return this;
     }
 }

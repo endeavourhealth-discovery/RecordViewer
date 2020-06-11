@@ -17,34 +17,36 @@ export class CareSummaryComponent implements OnInit {
   events1: any;
   dataSource1: MatTableDataSource<any>;
   page1: number = 0;
-  size1: number = 15;
+  size1: number = 10;
 
   events2: any;
   dataSource2: MatTableDataSource<any>;
   page2: number = 0;
-  size2: number = 15;
+  size2: number = 10;
+  active2: number = 1;
 
   events3: any;
   dataSource3: MatTableDataSource<any>;
   page3: number = 0;
-  size3: number = 15;
+  size3: number = 10;
 
   events4: any;
   dataSource4: MatTableDataSource<any>;
   page4: number = 0;
-  size4: number = 15;
+  size4: number = 10;
+  active4: number = 0;
 
   events5: any;
   dataSource5: MatTableDataSource<any>;
   page5: number = 0;
-  size5: number = 15;
+  size5: number = 5;
 
   patientId: number;
 
   displayedColumns1: string[] = ['name'];
   displayedColumns2: string[] = ['name', 'date'];
   displayedColumns3: string[] = ['name'];
-  displayedColumns4: string[] = ['name'];
+  displayedColumns4: string[] = ['name','date'];
   displayedColumns5: string[] = ['date', 'location', 'practitioner'];
 
   ngAfterViewInit(): void {
@@ -89,7 +91,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadConditions() {
     this.events2 = null;
-    this.carerecordService.getObservation(this.page2, this.size2, this.patientId, 1)
+    this.carerecordService.getObservation(this.page2, this.size2, this.patientId, 1, this.active2)
       .subscribe(
         (result) => this.displayConditions(result),
         (error) => this.log.error(error)
@@ -98,7 +100,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadWarnings() {
     this.events4 = null;
-    this.carerecordService.getObservation(this.page4, this.size4, this.patientId, 8)
+    this.carerecordService.getObservation(this.page4, this.size4, this.patientId, 8, this.active4)
       .subscribe(
         (result) => this.displayWarnings(result),
         (error) => this.log.error(error)

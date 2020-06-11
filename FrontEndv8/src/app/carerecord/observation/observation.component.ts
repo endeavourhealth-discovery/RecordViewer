@@ -24,6 +24,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   eventTypeTitle: string;
   subTitle: string;
   icon: string;
+  active: number = 0;
 
   displayedColumns: string[] = ['name','status', 'date'];
 
@@ -93,7 +94,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
 
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getObservation(this.page, this.size, this.patientId, this.eventType)
+    this.carerecordService.getObservation(this.page, this.size, this.patientId, this.eventType, this.active)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

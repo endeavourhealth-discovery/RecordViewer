@@ -60,13 +60,14 @@ export class CareRecordService {
     return this.http.get('api/events/appointment', {params});
   }
 
-  getObservation(page?: number, size?: number, patientId?: number, eventType?: number): Observable<any> {
+  getObservation(page?: number, size?: number, patientId?: number, eventType?: number, active?: number): Observable<any> {
     console.log("page: "+page+", size: "+size);
     let params = new HttpParams();
     params = params.append('page', page.toString());
     params = params.append('size', size.toString());
     params = params.append('patientId', patientId.toString());
     params = params.append('eventType', eventType.toString());
+    params = params.append('active', active.toString());
 
     return this.http.get('api/events/observation', {params});
   }
