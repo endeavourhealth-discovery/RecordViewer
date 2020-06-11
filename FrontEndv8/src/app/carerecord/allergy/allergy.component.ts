@@ -18,7 +18,7 @@ export class AllergyComponent implements OnInit, AfterViewInit {
   events: any;
   dataSource: MatTableDataSource<any>;
   page: number = 0;
-  size: number = 15;
+  size: number = 12;
   patientId: number;
   eventTypeTitle: string;
   subTitle: string;

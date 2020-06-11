@@ -30,7 +30,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*15);
+            statement.setInt(2, page*12);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getDiagnosticsSummaryList(resultSet));
@@ -90,7 +90,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*15);
+            statement.setInt(2, page*12);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getEncountersSummaryList(resultSet));
@@ -151,7 +151,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*15);
+            statement.setInt(2, page*12);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getReferralsSummaryList(resultSet));
@@ -212,7 +212,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*15);
+            statement.setInt(2, page*12);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getAppointmentSummaryList(resultSet));
@@ -267,7 +267,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*15);
+            statement.setInt(2, page*12);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getMedicationSummaryList(resultSet));
@@ -429,7 +429,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*15);
+            statement.setInt(2, page*12);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getObservationSummaryList(resultSet));
@@ -1001,7 +1001,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*15);
+            statement.setInt(2, page*12);
             statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getAllergySummaryList(resultSet));
