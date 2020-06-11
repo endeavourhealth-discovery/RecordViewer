@@ -20,7 +20,7 @@ export class MedicationComponent implements OnInit, AfterViewInit {
   size: number = 12;
   patientId: number;
 
-  displayedColumns: string[] = ['name','dose','quantity','date'];
+  displayedColumns: string[] = ['name', 'dose', 'quantity', 'date', 'last', 'status', 'type'];
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;

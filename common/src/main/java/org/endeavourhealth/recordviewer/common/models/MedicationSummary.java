@@ -15,6 +15,9 @@ public class MedicationSummary {
     private String dose;
     private String name;
     private String quantity;
+    private String status;
+    private String type;
+    private String last;
 
     public String getDate() {
         return date;
@@ -59,6 +62,33 @@ public class MedicationSummary {
 
     public MedicationSummary setQuantity(String quantity) {
         this.quantity = quantity;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public MedicationSummary setStatus(String status) {
+        this.status = status;
+        return this;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public MedicationSummary setType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public String getLast() {
+        return last;
+    }
+
+    public MedicationSummary setLast(String last) {
+        this.last = last;
         return this;
     }
 

@@ -260,10 +260,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId) throws Exception {
         MedicationResult result = new MedicationResult();
 
-        String sql = "SELECT m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity \n" +
-                "FROM medication_statement m \n" +
-                "join concept c on c.dbid = m.non_core_concept_id \n"+
-                "where patient_id = ? order by m.clinical_effective_date DESC LIMIT ?,?";
+        String sql = "SELECT m.id,m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,'',m.quantity_unit) as quantity, " +
+                "CASE WHEN is_active = 1 THEN 'Active' " +
+				"else 'Past' END as status,c2.name as type, " +
+                "max(coalesce(mo.clinical_effective_date,'')) as last_issue_date " +
+                "FROM medication_statement m " +
+                "join medication_order mo on m.id = mo.medication_statement_id " +
+                "join concept c on c.dbid = m.non_core_concept_id " +
+                "join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
+                "where m.patient_id = ? group by m.id " +
+                "order by status,type,m.clinical_effective_date DESC LIMIT ?,?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
@@ -276,8 +282,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         sql = "SELECT count(1) \n" +
                 "FROM medication_statement m \n" +
-                "join concept c on c.dbid = m.non_core_concept_id \n"+
-                "where patient_id = ?";
+                "join medication_order mo on m.id = mo.medication_statement_id " +
+                "join concept c on c.dbid = m.non_core_concept_id " +
+                "join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
+                "where m.patient_id = ? group by m.id";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
@@ -305,7 +313,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setDate(resultSet.getDate("date"))
                 .setDose(resultSet.getString("dose"))
                 .setQuantity(resultSet.getString("quantity"))
-                .setName(resultSet.getString("name"));
+                .setName(resultSet.getString("name"))
+                .setStatus(resultSet.getString("status"))
+                .setType(resultSet.getString("type"))
+                .setLast(resultSet.getString("last_issue_date"));
         return medicationSummary;
     }
 
