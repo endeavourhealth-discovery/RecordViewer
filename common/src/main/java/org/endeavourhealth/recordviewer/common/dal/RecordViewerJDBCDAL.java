@@ -309,11 +309,15 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationSummary;
     }
 
-    public ObservationResult getObservationResult(Integer page, Integer size, Integer patientId, Integer eventType) throws Exception {
+    public ObservationResult getObservationResult(Integer page, Integer size, Integer patientId, Integer eventType, Integer active) throws Exception {
         ObservationResult result = new ObservationResult();
 
         String sql = "";
+        String activewhere = " and o.problem_end_date IS NOT NULL ";
         String sqlCount = "";
+
+        if (active==0)
+            activewhere = "";
 
         switch(eventType) {
             case 1: // conditions
@@ -322,12 +326,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and o.is_problem = 1 order by o.problem_end_date, o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? and o.is_problem = 1 "+activewhere+
+                        "order by o.problem_end_date, o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and o.is_problem = 1";
+                        "where patient_id = ? and o.is_problem = 1 "+activewhere;
                 break;
             case 2: // observations
                 sql = "SELECT o.clinical_effective_date as date," +
