@@ -4,7 +4,8 @@
       <i style="margin-right: 20px" class="fad fa-user-injured"></i>
     </div>
     <mat-card-title>
-      <div>{{name}}
+      <div>
+       <span [ngClass]="{'deceased': dod != null}">{{name}}</span>
       <span class="precis">Age: {{age}}</span>
       <span class="precis">Gender: {{gender}}</span>
       <span class="precis">NHS: {{nhsNumber}}</span>

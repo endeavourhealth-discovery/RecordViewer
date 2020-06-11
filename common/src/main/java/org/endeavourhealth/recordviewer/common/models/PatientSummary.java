@@ -12,6 +12,7 @@ public class PatientSummary {
     private String id;
     private String name;
     private String dob;
+    private String dod;
     private String nhsNumber;
     private String address;
     private String gender;
@@ -51,6 +52,23 @@ public class PatientSummary {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.dob = simpleDateFormat.format(dob);
+        }
+        catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return this;
+    }
+
+    public String getDod() {
+        return dod;
+    }
+
+    public PatientSummary setDod(Date dod) {
+        try {
+            String pattern = "dd-MMM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            this.dod = simpleDateFormat.format(dod);
         }
         catch (Exception e) {
             LOG.error(e.getMessage());

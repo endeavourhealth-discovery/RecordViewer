@@ -614,6 +614,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setId(resultSet.getString("id"))
                 .setName(resultSet.getString("name"))
                 .setDob(resultSet.getDate("date_of_birth"))
+                .setDod(resultSet.getDate("p.date_of_death"))
                 .setNhsNumber(resultSet.getString("nhs_number"))
                 .setGender(resultSet.getString("gender"))
                 .setAge(resultSet.getString("age"))
