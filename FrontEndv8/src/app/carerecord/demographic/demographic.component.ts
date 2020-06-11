@@ -59,7 +59,7 @@ export class DemographicComponent implements OnInit, AfterViewInit {
     this.name = patient.name;
     this.gender = patient.gender;
     this.dob = patient.dob;
-    this.dod = patient.date_of_death;
+    this.dod = patient.dod;
     this.nhsNumber = patient.nhsNumber;
     this.mobile = patient.mobile;
     this.address = patient.address;

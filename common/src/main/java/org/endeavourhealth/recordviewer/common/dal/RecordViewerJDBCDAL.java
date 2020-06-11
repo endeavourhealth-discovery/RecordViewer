@@ -614,7 +614,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setId(resultSet.getString("id"))
                 .setName(resultSet.getString("name"))
                 .setDob(resultSet.getDate("date_of_birth"))
-                .setDod(resultSet.getDate("p.date_of_death"))
+                .setDod(resultSet.getDate("date_of_death"))
                 .setNhsNumber(resultSet.getString("nhs_number"))
                 .setGender(resultSet.getString("gender"))
                 .setAge(resultSet.getString("age"))
@@ -622,7 +622,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setUsual_gp(resultSet.getString("usual_gp"))
                 .setOrganisation(resultSet.getString("orgname"))
                 .setStart_date(resultSet.getString("startdate"))
-                .setDate_of_death(resultSet.getString("date_of_death"))
                 .setMobile(resultSet.getString("mobile"))
                 .setRegistration(resultSet.getString("reg_type"));
 
