@@ -211,11 +211,10 @@ export class CareSummaryComponent implements OnInit {
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '850px',
       width: '1600px',
-      data: {}
+      data: {patientId: this.patientId}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-
 
     });
   }

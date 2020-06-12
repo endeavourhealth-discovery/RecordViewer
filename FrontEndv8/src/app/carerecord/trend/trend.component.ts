@@ -2,11 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
-import {MatTableDataSource} from "@angular/material/table";
-import {PageEvent} from "@angular/material/paginator";
 
 export interface DialogData {
-
+  patientId: string;
 }
 
 @Component({
@@ -16,20 +14,103 @@ export interface DialogData {
 })
 
 export class TrendComponent {
-  page: number = 0;
-  size: number = 10;
+
+  view: any[] = [1300, 500];
+  chartResults: any[];
+  dateFrom: string = '2020-01-01';
+  dateTo: string = this.formatDate(new Date());
+  showLineCharts: boolean = true;
+
+  // options
+  legend: boolean = true;
+  legendPosition: string = 'right';
+  animations: boolean = true;
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+  showYAxisLabel: boolean = true;
+  showXAxisLabel: boolean = true;
+  xAxisLabel: string = 'Date';
+  yAxisLabel: string = 'Count';
+  timeline: boolean = true;
+  showGridLines: boolean = true;
+  showAreaChart: boolean = false;
+  gradient: boolean = false;
+  logarithmic: boolean = false;
+
+  colorScheme = {
+    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
+  };
 
   constructor(
     public dialogRef: MatDialogRef<TrendComponent>,
+    private carerecordService: CareRecordService,
     private log: LoggerService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
 
   }
 
+  ngOnInit() {
+    this.showLineCharts = true;
 
-  onPage(event: PageEvent) {
-    this.page = event.pageIndex;
-    this.size = event.pageSize;
+    this.refresh();
+  }
+
+  refresh() {
+    this.carerecordService.getDashboard('94686', this.formatDate(this.dateFrom), this.formatDate(this.dateTo))
+      .subscribe(result => {
+        console.log(result);
+
+        this.chartResults = result.results;
+
+        if (this.logarithmic) {
+          // apply log10 to values in series
+          this.chartResults = this.chartResults.map(
+            e => {
+              return {
+                name: e.name,
+                series: e.series.map(
+                  v => {
+                    return {
+                      name: v.name,
+                      value: Math.log10(v.value)
+                    }
+                  }
+                )
+              }
+            }
+          )
+        }
+      });
+  }
+
+  // apply pow10 to yAxis tick values and tootip value
+  getMathPower(val: number){
+    if (this.logarithmic)
+      return Math.round(Math.pow(10,val));
+    else
+      return val;
+  }
+
+  dateTickFormatting(val: any): String {
+    return new Date(val).toLocaleDateString();
+  }
+
+  onSelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
+
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 
   onCancelClick(): void {

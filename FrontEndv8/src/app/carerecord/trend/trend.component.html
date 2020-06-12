@@ -1,13 +1,105 @@
 <mat-card>
   <mat-card-header class="header2">
     <div mat-card-avatar>
-      <i class="fad fa-search"></i>
+      <i class="fad fa-analytics"></i>
     </div>
-    <mat-card-title>Health status chart</mat-card-title>
-    <mat-card-subtitle>Health status trends.</mat-card-subtitle>
+    <mat-card-title>Trend chart</mat-card-title>
+    <mat-card-subtitle>Health status value trend chart over time.</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
+
+    <div class="filter">
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Date from</mat-label>
+        <input matInput [matDatepicker]="picker1" placeholder="Date from" [(ngModel)]="dateFrom">
+        <mat-datepicker-toggle matSuffix [for]="picker1">
+          <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field style="margin-left: 10px" class="example-full-width" appearance="outline">
+        <mat-label>Date to</mat-label>
+        <input matInput [matDatepicker]="picker2" placeholder="Date to" [(ngModel)]="dateTo">
+        <mat-datepicker-toggle matSuffix [for]="picker2">
+          <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <button style="margin-left: 10px; margin-right: 10px" mat-raised-button (click)="refresh()">Refresh chart</button>
+
+      <mat-checkbox class="checkbox" [(ngModel)]="showGridLines">Show gridlines</mat-checkbox>
+      <mat-checkbox class="checkbox" [(ngModel)]="showAreaChart">Show area chart</mat-checkbox>
+      <mat-checkbox class="checkbox" [(ngModel)]="gradient">Gradient fill</mat-checkbox>
+    </div>
+
+    <div *ngIf="showLineCharts">
+      <div *ngIf="!showAreaChart" class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+        <ngx-charts-line-chart
+          [view]="view"
+          [scheme]="colorScheme"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [animations]="animations"
+          [showGridLines]="showGridLines"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          [timeline]="timeline"
+          [results]="chartResults"
+          [legendPosition]="legendPosition"
+          [gradient]="gradient"
+          [xAxisTickFormatting]="dateTickFormatting"
+          (select)="onSelect($event)"
+        >
+          <ng-template #tooltipTemplate let-model="model">
+            <span class="tooltip-label">{{model.series}} • {{model.name}}</span>
+            <span class="tooltip-val">{{getMathPower(model.value)}}</span>
+          </ng-template>
+          <ng-template #seriesTooltipTemplate let-model="model">
+            <span class="tooltip-label" *ngFor="let series of model">
+              {{series.series}}: {{getMathPower(series.value)}}
+            </span>
+          </ng-template>
+        </ngx-charts-line-chart>
+      </div>
+
+      <div *ngIf="showAreaChart" class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+        <ngx-charts-area-chart
+          [view]="view"
+          [scheme]="colorScheme"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [animations]="animations"
+          [showGridLines]="showGridLines"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          [timeline]="timeline"
+          [results]="chartResults"
+          [legendPosition]="legendPosition"
+          [gradient]="gradient"
+          [xAxisTickFormatting]="dateTickFormatting"
+          (select)="onSelect($event)"
+        >
+          <ng-template #tooltipTemplate let-model="model">
+            <span class="tooltip-label">{{model.series}} • {{model.name}}</span>
+            <span class="tooltip-val">{{getMathPower(model.value)}}</span>
+          </ng-template>
+          <ng-template #seriesTooltipTemplate let-model="model">
+            <span class="tooltip-label" *ngFor="let series of model">
+              {{series.series}}: {{getMathPower(series.value)}}
+            </span>
+          </ng-template>
+        </ngx-charts-area-chart>
+      </div>
+
+    </div>
 
     <div mat-dialog-actions>
       <button mat-raised-button (click)="onCancelClick()">Cancel</button>

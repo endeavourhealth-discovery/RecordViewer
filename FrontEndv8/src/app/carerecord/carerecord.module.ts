@@ -35,8 +35,7 @@ import {PrecisComponent} from "./precis/precis.component";
 import {Globals} from "./globals";
 import {ObservationComponent} from "./observation/observation.component";
 import {AllergyComponent} from "./allergy/allergy.component";
-import {DashboardComponent} from "./dashboard/dashboard.component";
-import {BarChartModule, LineChartModule} from "@swimlane/ngx-charts";
+import {BarChartModule, LineChartModule, AreaChartModule} from "@swimlane/ngx-charts";
 import {AppointmentComponent} from "./appointment/appointment.component";
 import {ReferralsComponent} from "./referrals/referrals.component";
 import {EncountersComponent} from "./encounters/encounters.component";
@@ -50,7 +49,6 @@ import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
     TrendComponent,
     CareSummaryComponent,
     MedicationComponent,
-    DashboardComponent,
     ObservationComponent,
     AppointmentComponent,
     ReferralsComponent,
@@ -85,7 +83,8 @@ import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
     MatNativeDateModule,
     MatDatepickerModule,
     BarChartModule,
-    LineChartModule
+    LineChartModule,
+    AreaChartModule
   ],
   entryComponents: [
     PatientComponent,
