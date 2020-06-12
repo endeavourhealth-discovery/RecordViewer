@@ -27,6 +27,7 @@ import {FhirComponent} from "./fhir/fhir.component";
 import {MedicationComponent} from "./medication/medication.component";
 import {DemographicComponent} from "./demographic/demographic.component";
 import {PatientComponent} from "./patient/patient.component";
+import {TrendComponent} from "./trend/trend.component";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
@@ -46,6 +47,7 @@ import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
     PrecisComponent,
     DemographicComponent,
     PatientComponent,
+    TrendComponent,
     CareSummaryComponent,
     MedicationComponent,
     DashboardComponent,
@@ -86,7 +88,8 @@ import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
     LineChartModule
   ],
   entryComponents: [
-    PatientComponent
+    PatientComponent,
+    TrendComponent
   ],
   providers: [ Globals ]
 })

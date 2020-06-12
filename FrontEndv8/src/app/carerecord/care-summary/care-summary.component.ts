@@ -4,7 +4,7 @@ import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
-import {PatientComponent} from "../patient/patient.component";
+import {TrendComponent} from "../trend/trend.component";
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({
@@ -208,15 +208,14 @@ export class CareSummaryComponent implements OnInit {
   }
 
   showTrend() {
-    const dialogRef = this.dialog.open(PatientComponent, {
+    const dialogRef = this.dialog.open(TrendComponent, {
       height: '850px',
       width: '1600px',
-      data: {patientId: this.patientId}
+      data: {}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result)
-        this.patientId = result;
+
 
     });
   }
