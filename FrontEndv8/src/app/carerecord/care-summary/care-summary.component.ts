@@ -4,6 +4,8 @@ import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
+import {PatientComponent} from "../patient/patient.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-care-summary',
@@ -67,6 +69,7 @@ export class CareSummaryComponent implements OnInit {
 
   constructor(
     private carerecordService: CareRecordService,
+    private dialog: MatDialog,
     private log: LoggerService
     ) { }
 
@@ -202,6 +205,20 @@ export class CareSummaryComponent implements OnInit {
     this.page6 = event.pageIndex;
     this.size6 = event.pageSize;
     this.loadDiagnostics();
+  }
+
+  showTrend() {
+    const dialogRef = this.dialog.open(PatientComponent, {
+      height: '850px',
+      width: '1600px',
+      data: {patientId: this.patientId}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+        this.patientId = result;
+
+    });
   }
 
 }
