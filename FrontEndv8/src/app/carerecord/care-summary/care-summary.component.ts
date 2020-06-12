@@ -52,6 +52,13 @@ export class CareSummaryComponent implements OnInit {
   size5: number = 5;
   displayedColumns5: string[] = ['type', 'location', 'practitioner','date'];
 
+  // health status
+  events6: any;
+  dataSource6: MatTableDataSource<any>;
+  page6: number = 0;
+  size6: number = 5;
+  displayedColumns6: string[] = ['term', 'result', 'date'];
+
   patientId: number;
 
   ngAfterViewInit(): void {
@@ -73,6 +80,7 @@ export class CareSummaryComponent implements OnInit {
       this.loadMedication();
       this.loadWarnings();
       this.loadEncounters();
+      this.loadDiagnostics();
     });
   }
 
@@ -121,6 +129,15 @@ export class CareSummaryComponent implements OnInit {
       );
   }
 
+  loadDiagnostics() {
+    this.events6 = null;
+    this.carerecordService.getDiagnostics(this.page6, this.size6, this.patientId)
+      .subscribe(
+        (result) => this.displayDiagnostics(result),
+        (error) => this.log.error(error)
+      );
+  }
+
   displayMedication(events: any) {
     this.events1 = events;
     this.dataSource1 = new MatTableDataSource(events.results);
@@ -144,6 +161,11 @@ export class CareSummaryComponent implements OnInit {
   displayEncounters(events: any) {
     this.events5 = events;
     this.dataSource5 = new MatTableDataSource(events.results);
+  }
+
+  displayDiagnostics(events: any) {
+    this.events6 = events;
+    this.dataSource6 = new MatTableDataSource(events.results);
   }
 
   onPage1(event: PageEvent) {
@@ -174,6 +196,12 @@ export class CareSummaryComponent implements OnInit {
     this.page5 = event.pageIndex;
     this.size5 = event.pageSize;
     this.loadEncounters();
+  }
+
+  onPage6(event: PageEvent) {
+    this.page6 = event.pageIndex;
+    this.size6 = event.pageSize;
+    this.loadDiagnostics();
   }
 
 }
