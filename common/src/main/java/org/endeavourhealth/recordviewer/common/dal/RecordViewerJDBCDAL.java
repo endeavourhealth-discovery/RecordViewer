@@ -9,10 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
@@ -1518,6 +1515,56 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             stmt.setString(3, message);
             stmt.executeUpdate();
         }
+    }
+
+    public ChartResult getDashboard(String chartName, String dateFrom, String dateTo) throws Exception {
+
+        List<String> charts = Arrays.asList(chartName.split("\\s*,\\s*"));
+
+        ChartResult result = new ChartResult();
+        String sql = "";
+
+        List<Chart> chart = new ArrayList<>();
+        Chart chartItem = null;
+
+        for (String chart_name : charts) {
+            chartItem = new Chart();
+            chartItem.setName(chart_name);
+
+            sql = "SELECT series_name,series_value from dashboards.dashboard_results where name = ? "+
+                    "and series_name between ? and ? order by series_name";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, chart_name);
+                statement.setString(2, dateFrom);
+                statement.setString(3, dateTo);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    chartItem.setSeries(getSeriesFromResultSet(resultSet));
+                }
+            }
+
+            chart.add(chartItem);
+        }
+
+        result.setResults(chart);
+
+        return result;
+    }
+
+    private List<Series> getSeriesFromResultSet(ResultSet resultSet) throws SQLException {
+        List<Series> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(getSeries(resultSet));
+        }
+
+        return result;
+    }
+
+    public static Series getSeries(ResultSet resultSet) throws SQLException {
+        Series series = new Series();
+        series.setName(resultSet.getString("series_name"));
+        series.setValue(resultSet.getInt("series_value"));
+        return series;
     }
 
 }

@@ -31,6 +31,26 @@ public class CareRecordEndpoint {
     private static final Logger LOG = LoggerFactory.getLogger(CareRecordEndpoint.class);
 
     @GET
+    @Path("/dashboard")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDashboard(@Context SecurityContext sc,
+                                 @QueryParam("chartName") String chartName,
+                                 @QueryParam("dateFrom") String dateFrom,
+                                 @QueryParam("dateTo") String dateTo) throws Exception {
+        LOG.debug("getDashboard");
+
+        try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
+            ChartResult result = viewerDAL.getDashboard(chartName,dateFrom,dateTo);
+
+            return Response
+                    .ok()
+                    .entity(result)
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/diagnostics")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -268,6 +288,8 @@ public class CareRecordEndpoint {
         }
         return "";
     }
+
+
 
 }
 

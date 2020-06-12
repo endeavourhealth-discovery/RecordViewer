@@ -7,7 +7,6 @@ import {FhirComponent} from "./carerecord/fhir/fhir.component";
 import {DemographicComponent} from "./carerecord/demographic/demographic.component";
 import {ObservationComponent} from "./carerecord/observation/observation.component";
 import {AllergyComponent} from "./carerecord/allergy/allergy.component";
-import {DashboardComponent} from "./carerecord/dashboard/dashboard.component";
 import {AppointmentComponent} from "./carerecord/appointment/appointment.component";
 import {ReferralsComponent} from "./carerecord/referrals/referrals.component";
 import {EncountersComponent} from "./carerecord/encounters/encounters.component";
@@ -35,7 +34,6 @@ export class AppMenuService implements  AbstractMenuProvider {
       {path: 'procedure requests', component: ObservationComponent, data: {role: 'record-viewer', eventType: '6'}},
       {path: 'diagnostic orders', component: ObservationComponent, data: {role: 'record-viewer', eventType: '7'}},
       {path: 'warnings', component: ObservationComponent, data: {role: 'record-viewer', eventType: '8'}},
-      {path: 'dashboard', component: DashboardComponent, data: {role: 'record-viewer'}}
     ];
   }
 
@@ -65,8 +63,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-hospital-user', caption: 'Referral requests', state: 'referrals'},
       {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
       {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
-      {icon: 'fas fa-fire-alt', caption: 'FHIR Care Connect API', state: 'fhir'},
-      {icon: 'fas fa-analytics', caption: 'Dashboard', state: 'dashboard'}
+      {icon: 'fas fa-fire-alt', caption: 'FHIR Care Connect API', state: 'fhir'}
     ];
   }
 }
