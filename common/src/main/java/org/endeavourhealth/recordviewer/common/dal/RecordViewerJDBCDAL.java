@@ -14,11 +14,11 @@ import java.util.*;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId) throws Exception {
+    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId, String codeId) throws Exception {
         DiagnosticsResult result = new DiagnosticsResult();
 
         String sql = "SELECT o.clinical_effective_date as date, c.name as term, " +
-                "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result " +
+                "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result, non_core_concept_id as codeId " +
                 "FROM observation o  " +
                 "join concept c on c.dbid = o.non_core_concept_id " +
                 "where patient_id = ? " +
@@ -29,6 +29,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, patientId);
             statement.setInt(2, page*12);
             statement.setInt(3, size);
+            statement.setString(4, codeId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getDiagnosticsSummaryList(resultSet));
             }
@@ -65,7 +66,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         diagnosticsSummary
                 .setDate(resultSet.getDate("date"))
                 .setTerm(resultSet.getString("term"))
-                .setResult(resultSet.getString("result"));
+                .setResult(resultSet.getString("result"))
+                .setCodeId(resultSet.getString("codeId"));
 
         return diagnosticsSummary;
     }

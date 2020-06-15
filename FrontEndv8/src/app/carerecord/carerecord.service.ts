@@ -41,12 +41,13 @@ export class CareRecordService {
     return this.http.get('api/events/encounters', {params});
   }
 
-  getDiagnostics(page?: number, size?: number, patientId?: number): Observable<any> {
+  getDiagnostics(page?: number, size?: number, patientId?: number, codeId?: string): Observable<any> {
     console.log("page: "+page+", size: "+size);
     let params = new HttpParams();
     params = params.append('page', page.toString());
     params = params.append('size', size.toString());
     params = params.append('patientId', patientId.toString());
+    params = params.append('codeId', codeId.toString());
 
     return this.http.get('api/events/diagnostics', {params});
   }

@@ -15,6 +15,7 @@ public class DiagnosticsSummary {
     private String date;
     private String term;
     private String result;
+    private String codeId;
 
     public String getDate() { return date; }
     public DiagnosticsSummary setDate(Date date) {
@@ -43,6 +44,14 @@ public class DiagnosticsSummary {
     }
     public DiagnosticsSummary setResult(String result) {
         this.result = result;
+        return this;
+    }
+
+    public String getCodeId() {
+        return codeId;
+    }
+    public DiagnosticsSummary setCodeId(String codeId) {
+        this.codeId = codeId;
         return this;
     }
 
