@@ -38,11 +38,12 @@ public class CareRecordEndpoint {
                                  @QueryParam("codeId") String codeId,
                                  @QueryParam("patientId") String patientId,
                                  @QueryParam("dateFrom") String dateFrom,
-                                 @QueryParam("dateTo") String dateTo) throws Exception {
+                                 @QueryParam("dateTo") String dateTo,
+                                 @QueryParam("term") String term) throws Exception {
         LOG.debug("getDashboard");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            ChartResult result = viewerDAL.getDashboard(codeId, patientId, dateFrom, dateTo);
+            ChartResult result = viewerDAL.getDashboard(codeId, patientId, dateFrom, dateTo, term);
 
             return Response
                     .ok()

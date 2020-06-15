@@ -1518,9 +1518,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
     }
 
-    public ChartResult getDashboard(String codeId, String patientId, String dateFrom, String dateTo) throws Exception {
+    public ChartResult getDashboard(String codeId, String patientId, String dateFrom, String dateTo, String term) throws Exception {
 
-        List<String> charts = Arrays.asList(codeId.split("\\s*,\\s*"));
+        List<String> charts = Arrays.asList(term.split("\\s*,\\s*"));
 
         ChartResult result = new ChartResult();
         String sql = "";

@@ -206,11 +206,11 @@ export class CareSummaryComponent implements OnInit {
     this.loadDiagnostics();
   }
 
-  showTrend(code_id: string) {
+  showTrend(code_id: string, term: string) {
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '850px',
       width: '1600px',
-      data: {patientId: this.patientId, codeId: code_id}
+      data: {patientId: this.patientId, codeId: code_id, term: term}
     });
 
     dialogRef.afterClosed().subscribe(result => {

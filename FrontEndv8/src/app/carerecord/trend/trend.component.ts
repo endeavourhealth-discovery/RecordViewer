@@ -6,6 +6,7 @@ import {LoggerService} from 'dds-angular8';
 export interface DialogData {
   patientId: string;
   codeId: string;
+  term: string;
 }
 
 @Component({
@@ -18,7 +19,7 @@ export class TrendComponent {
 
   view: any[] = [1300, 500];
   chartResults: any[];
-  dateFrom: string = '2020-01-01';
+  dateFrom: string = '1900-01-01';
   dateTo: string = this.formatDate(new Date());
   showLineCharts: boolean = true;
 
@@ -40,6 +41,7 @@ export class TrendComponent {
 
   patientId: string;
   codeId: string;
+  term: string;
 
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
@@ -53,6 +55,7 @@ export class TrendComponent {
 
     this.patientId = data.patientId;
     this.codeId = data.codeId;
+    this.term = data.term;
 
   }
 
@@ -63,7 +66,7 @@ export class TrendComponent {
   }
 
   refresh() {
-    this.carerecordService.getDashboard(this.codeId, this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo))
+    this.carerecordService.getDashboard(this.codeId, this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), this.term)
       .subscribe(result => {
         console.log(result);
 
