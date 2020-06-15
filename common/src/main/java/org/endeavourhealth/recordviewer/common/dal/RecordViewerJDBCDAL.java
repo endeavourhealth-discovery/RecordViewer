@@ -14,7 +14,7 @@ import java.util.*;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId, String codeId) throws Exception {
+    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId) throws Exception {
         DiagnosticsResult result = new DiagnosticsResult();
 
         String sql = "SELECT o.clinical_effective_date as date, c.name as term, " +
@@ -29,7 +29,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             statement.setInt(1, patientId);
             statement.setInt(2, page*12);
             statement.setInt(3, size);
-            statement.setString(4, codeId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getDiagnosticsSummaryList(resultSet));
             }
