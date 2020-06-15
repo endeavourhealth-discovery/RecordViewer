@@ -118,12 +118,14 @@ export class CareRecordService {
     return this.http.post('api/events/fhir', requestParams, httpOptions);
   }
 
-  getDashboard(charts: string, dateFrom: string, dateTo: string): Observable<any> {
+  getDashboard(codeId:string, patientId:string, dateFrom: string, dateTo: string): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('chartName', charts);
+    params = params.append('codeId', codeId);
+    params = params.append('patientId', patientId);
     params = params.append('dateFrom', dateFrom);
     params = params.append('dateTo', dateTo);
+
     return this.http.get('api/events/dashboard', {params});
   }
 

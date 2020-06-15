@@ -1517,9 +1517,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
     }
 
-    public ChartResult getDashboard(String chartName, String dateFrom, String dateTo) throws Exception {
+    public ChartResult getDashboard(String codeId, String patientId, String dateFrom, String dateTo) throws Exception {
 
-        List<String> charts = Arrays.asList(chartName.split("\\s*,\\s*"));
+        List<String> charts = Arrays.asList(codeId.split("\\s*,\\s*"));
 
         ChartResult result = new ChartResult();
         String sql = "";
@@ -1531,13 +1531,19 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             chartItem = new Chart();
             chartItem.setName(chart_name);
 
-            sql = "SELECT series_name,series_value from dashboards.dashboard_results where name = ? "+
-                    "and series_name between ? and ? order by series_name";
+            sql = "SELECT c.name as name, clinical_effective_date as series_name, result_value as series_value FROM subscriber_pi.observation o " +
+                    "join concept c on c.dbid = o.non_core_concept_id " +
+                    "where non_core_concept_id = ? " +
+                    "and patient_id = ? " +
+                    "and clinical_effective_date between ? and ?";
+
+
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setString(1, chart_name);
-                statement.setString(2, dateFrom);
-                statement.setString(3, dateTo);
+                statement.setString(1, codeId);
+                statement.setString(2, patientId);
+                statement.setString(3, dateFrom);
+                statement.setString(4, dateTo);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     chartItem.setSeries(getSeriesFromResultSet(resultSet));
                 }

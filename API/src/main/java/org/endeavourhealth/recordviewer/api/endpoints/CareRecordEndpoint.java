@@ -35,13 +35,14 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDashboard(@Context SecurityContext sc,
-                                 @QueryParam("chartName") String chartName,
+                                 @QueryParam("codeId") String codeId,
+                                 @QueryParam("patientId") String patientId,
                                  @QueryParam("dateFrom") String dateFrom,
                                  @QueryParam("dateTo") String dateTo) throws Exception {
         LOG.debug("getDashboard");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            ChartResult result = viewerDAL.getDashboard(chartName,dateFrom,dateTo);
+            ChartResult result = viewerDAL.getDashboard(codeId, patientId, dateFrom, dateTo);
 
             return Response
                     .ok()

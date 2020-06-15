@@ -5,6 +5,7 @@ import {LoggerService} from 'dds-angular8';
 
 export interface DialogData {
   patientId: string;
+  codeId: string;
 }
 
 @Component({
@@ -37,6 +38,9 @@ export class TrendComponent {
   gradient: boolean = false;
   logarithmic: boolean = false;
 
+  patientId: string;
+  codeId: string;
+
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
@@ -47,6 +51,9 @@ export class TrendComponent {
     private log: LoggerService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
 
+    this.patientId = data.patientId;
+    this.codeId = data.codeId;
+
   }
 
   ngOnInit() {
@@ -56,7 +63,7 @@ export class TrendComponent {
   }
 
   refresh() {
-    this.carerecordService.getDashboard('94686', this.formatDate(this.dateFrom), this.formatDate(this.dateTo))
+    this.carerecordService.getDashboard(this.codeId, this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo))
       .subscribe(result => {
         console.log(result);
 

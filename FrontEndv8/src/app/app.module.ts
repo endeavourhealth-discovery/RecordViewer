@@ -6,6 +6,7 @@ import {CareRecordModule} from './carerecord/carerecord.module';
 import {HttpClientModule} from '@angular/common/http';
 import {AbstractMenuProvider, LayoutComponent, LayoutModule, LoggerModule, SecurityModule, UserManagerModule} from 'dds-angular8';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import {MAT_DATE_LOCALE} from "@angular/material/core";
 
 const keycloakService = new KeycloakService();
 
@@ -23,7 +24,8 @@ const keycloakService = new KeycloakService();
   ],
   providers: [
     { provide: AbstractMenuProvider, useClass : AppMenuService },
-    { provide: KeycloakService, useValue: keycloakService }
+    { provide: KeycloakService, useValue: keycloakService },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ]
 })
 export class AppModule implements DoBootstrap {
