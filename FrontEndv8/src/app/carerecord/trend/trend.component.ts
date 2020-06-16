@@ -35,8 +35,8 @@ export class TrendComponent {
   yAxisLabel: string = 'Count';
   timeline: boolean = true;
   showGridLines: boolean = true;
-  showAreaChart: boolean = false;
-  gradient: boolean = false;
+  showAreaChart: boolean = true;
+  gradient: boolean = true;
   logarithmic: boolean = false;
 
   patientId: string;
