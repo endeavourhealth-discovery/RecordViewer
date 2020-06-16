@@ -4,6 +4,8 @@ import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
+import {TrendComponent} from "../trend/trend.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-diagnostics',
@@ -28,6 +30,7 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
 
   constructor(
     private carerecordService: CareRecordService,
+    private dialog: MatDialog,
     private log: LoggerService
     ) { }
 
@@ -58,6 +61,18 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
     this.page = event.pageIndex;
     this.size = event.pageSize;
     this.loadEvents();
+  }
+
+  showTrend(code_id: string, term: string) {
+    const dialogRef = this.dialog.open(TrendComponent, {
+      height: '850px',
+      width: '1600px',
+      data: {patientId: this.patientId, codeId: code_id, term: term}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
   }
 
 }
