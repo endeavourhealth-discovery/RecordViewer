@@ -489,7 +489,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             name = "@ @";
         String[] names = name.split(" ", 2);
 
-        if (!dob.equals("") && names.length==0) { // dob only
+        if (!dob.equals("") && name.equals("")) { // dob only
             sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +

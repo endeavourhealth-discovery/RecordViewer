@@ -22,7 +22,7 @@ export class PatientComponent {
   size: number = 10;
   name: string = '';
   nhsNumber: string = '';
-  dob: string;
+  dob: string = '';
 
   displayedColumns: string[] = ['name/address', 'dob/nhsNumber', 'age/gender', 'usual_gp/organisation', 'registration'];
 
@@ -45,7 +45,7 @@ export class PatientComponent {
 
   loadEvents() {
     this.events = null;
-    this.carerecordService.getPatients(this.page, this.size, this.name, this.nhsNumber, this.dob)
+    this.carerecordService.getPatients(this.page, this.size, this.name, this.nhsNumber, this.formatDate(this.dob))
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
@@ -73,4 +73,21 @@ export class PatientComponent {
   onCancelClick(): void {
     this.dialogRef.close();
   }
+
+  formatDate(date) {
+    if (date=="") return "";
+
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
 }
