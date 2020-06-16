@@ -203,11 +203,12 @@ public class CareRecordEndpoint {
                                 @QueryParam("page") Integer page,
                                 @QueryParam("size") Integer size,
                                 @QueryParam("name") String name,
-                                @QueryParam("nhsNumber") String nhsNumber) throws Exception {
+                                @QueryParam("nhsNumber") String nhsNumber,
+                                @QueryParam("dob") String dob) throws Exception {
         LOG.debug("getPatients");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            PatientResult result = viewerDAL.getPatientResult(page, size, name, nhsNumber);
+            PatientResult result = viewerDAL.getPatientResult(page, size, name, nhsNumber, dob);
 
             return Response
                     .ok()

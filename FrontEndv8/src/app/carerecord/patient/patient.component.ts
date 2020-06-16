@@ -45,7 +45,7 @@ export class PatientComponent {
 
   loadEvents() {
     this.events = null;
-    this.carerecordService.getPatients(this.page, this.size, this.name, this.nhsNumber)
+    this.carerecordService.getPatients(this.page, this.size, this.name, this.nhsNumber, this.dob)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

@@ -83,13 +83,14 @@ export class CareRecordService {
     return this.http.get('api/events/allergy', {params});
   }
 
-  getPatients(page?: number, size?: number, name?: string, nhsNumber?: string): Observable<any> {
+  getPatients(page?: number, size?: number, name?: string, nhsNumber?: string, dob?: string): Observable<any> {
     console.log("page: "+page+", size: "+size);
     let params = new HttpParams();
     params = params.append('page', page.toString());
     params = params.append('size', size.toString());
     params = params.append('name', name.toString());
     params = params.append('nhsNumber', nhsNumber.toString());
+    params = params.append('dob', dob.toString());
 
     return this.http.get('api/events/patients', {params});
   }

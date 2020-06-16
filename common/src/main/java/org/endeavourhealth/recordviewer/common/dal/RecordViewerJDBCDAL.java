@@ -481,17 +481,148 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return observationSummary;
     }
 
-    public PatientResult getPatientResult(Integer page, Integer size, String name, String nhsNumber) throws Exception {
+    public PatientResult getPatientResult(Integer page, Integer size, String name, String nhsNumber, String dob) throws Exception {
         PatientResult result = new PatientResult();
-
         String sql = "";
 
         if (!nhsNumber.equals(""))
             name = "@ @";
-
         String[] names = name.split(" ", 2);
 
-        if (names.length==1) { // only 1 name specified in search
+        if (!dob.equals("") && names.length==0) { // dob only
+            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+                    "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
+                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
+                    "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
+                    "FROM patient p " +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "join organization o on o.id = p.organization_id " +
+                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "where p.date_of_birth = ? order by p.last_name, p.first_names LIMIT ?,?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, dob);
+                statement.setInt(2, page * 10);
+                statement.setInt(3, size);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getPatientSummaryList(resultSet));
+                }
+            }
+
+            sql = "SELECT count(1) " +
+                    "FROM patient p \n" +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "join organization o on o.id = p.organization_id " +
+                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "where p.date_of_birth like ?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, dob);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
+            }
+
+        } else if (!dob.equals("") && names.length==1) { // dob and 1 name
+            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+                    "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
+                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
+                    "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
+                    "FROM patient p " +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "join organization o on o.id = p.organization_id " +
+                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "where (p.last_name like ? and p.date_of_birth = ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0]+"%");
+                statement.setString(2, dob);
+                statement.setString(3, nhsNumber);
+                statement.setInt(4, page * 10);
+                statement.setInt(5, size);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getPatientSummaryList(resultSet));
+                }
+            }
+
+            sql = "SELECT count(1) " +
+                    "FROM patient p \n" +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "join organization o on o.id = p.organization_id " +
+                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "where (p.last_name like ? and p.date_of_birth = ?) or p.nhs_number = ?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0]+"%");
+                statement.setString(2, dob);
+                statement.setString(3, nhsNumber);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
+            }
+
+        } else if (!dob.equals("") && names.length>1) { // dob and more than 1 name
+            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+                    "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
+                    "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
+                    "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
+                    "FROM patient p " +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "join organization o on o.id = p.organization_id " +
+                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "where (p.first_names like ? and p.last_name like ? and date_of_birth = ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0] + "%");
+                statement.setString(2, names[1] + "%");
+                statement.setString(3, dob);
+                statement.setString(4, nhsNumber);
+                statement.setInt(5, page * 10);
+                statement.setInt(6, size);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getPatientSummaryList(resultSet));
+                }
+            }
+
+            sql = "SELECT count(1) " +
+                    "FROM patient p \n" +
+                    "join patient_address a on a.id = p.current_address_id " +
+                    "join concept c on c.dbid = p.gender_concept_id " +
+                    "join episode_of_care e on e.patient_id = p.id " +
+                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "join organization o on o.id = p.organization_id " +
+                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "where (p.first_names like ? and p.last_name like ? and date_of_birth = ?) or p.nhs_number = ?";
+
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, names[0] + "%");
+                statement.setString(2, names[1] + "%");
+                statement.setString(3, dob);
+                statement.setString(4, nhsNumber);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
+            }
+
+        } else if (dob.equals("") && names.length==1) { // no dob and only 1 name specified in search
             sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
@@ -510,7 +641,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 statement.setString(2, nhsNumber);
                 statement.setInt(3, page * 10);
                 statement.setInt(4, size);
-
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getPatientSummaryList(resultSet));
                 }
@@ -535,7 +665,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 }
             }
         }
-        else { // more than one name specified in search
+
+        else if (dob.equals("") && names.length>1) { // no dob and more than one name specified in search
             sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
@@ -555,7 +686,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 statement.setString(3, nhsNumber);
                 statement.setInt(4, page * 10);
                 statement.setInt(5, size);
-
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getPatientSummaryList(resultSet));
                 }
@@ -580,9 +710,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     result.setLength(resultSet.getInt(1));
                 }
             }
-
         }
-
 
         return result;
     }
