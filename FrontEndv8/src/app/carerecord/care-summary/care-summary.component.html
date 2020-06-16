@@ -13,7 +13,7 @@
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 mat-table-compact" *ngIf="events2" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
-            <th style="width:450px" mat-header-cell *matHeaderCellDef > <i class="fad fa-diagnoses" style="width:25px"></i> Active conditions / problems</th>
+            <th style="width:450px" mat-header-cell *matHeaderCellDef > <i class="fas fa-diagnoses" style="width:25px"></i> Active conditions / problems</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
           </ng-container>
           <ng-container matColumnDef="date">
@@ -29,7 +29,7 @@
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8 mat-table-compact" *ngIf="events3" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
-            <th style="width:450px" mat-header-cell *matHeaderCellDef><i class="fad fa-allergies" style="width:25px"></i>Allergies & intolerances</th>
+            <th style="width:450px" mat-header-cell *matHeaderCellDef><i class="fas fa-allergies" style="width:25px"></i>Allergies & intolerances</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
           </ng-container>
           <ng-container matColumnDef="date">
@@ -47,7 +47,7 @@
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8 mat-table-compact" *ngIf="events1" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
-            <th style="width:300px" mat-header-cell *matHeaderCellDef><i class="fad fa-pills" style="width:25px"></i>Current medication</th>
+            <th style="width:300px" mat-header-cell *matHeaderCellDef><i class="fas fa-pills" style="width:25px"></i>Current medication</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
           </ng-container>
           <ng-container matColumnDef="last">
@@ -68,7 +68,7 @@
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource4" class="mat-elevation-z8 mat-table-compact" *ngIf="events4" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
-            <th style="width:445px" mat-header-cell *matHeaderCellDef><i class="fad fa-exclamation-triangle" style="width:25px"></i>Warnings & Flags</th>
+            <th style="width:445px" mat-header-cell *matHeaderCellDef><i class="fas fa-exclamation-triangle" style="width:25px"></i>Warnings & Flags</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
           </ng-container>
           <ng-container matColumnDef="date">
@@ -86,7 +86,7 @@
       <table mat-table [dataSource]="dataSource5" class="mat-elevation-z8 mat-table-compact" *ngIf="events5" fxFlex="100" fxFill>
 
         <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef><i class="fad fa-users-medical" style="width:25px"></i>Recent encounters</th>
+          <th mat-header-cell *matHeaderCellDef><i class="fas fa-users-medical" style="width:25px"></i>Recent encounters</th>
           <td mat-cell *matCellDef="let element"> {{element.type}} </td>
         </ng-container>
         <ng-container matColumnDef="location">
@@ -114,7 +114,7 @@
           <td mat-cell *matCellDef="let element"> {{element.date}} </td>
         </ng-container>
         <ng-container matColumnDef="term">
-          <th mat-header-cell *matHeaderCellDef><i class="fad fa-microscope" style="width:25px"></i>Health status</th>
+          <th mat-header-cell *matHeaderCellDef><i class="fas fa-microscope" style="width:25px"></i>Health status</th>
           <td mat-cell *matCellDef="let element">
             <i class="fad fa-analytics" (click)="showTrend(element.codeId, element.term)" style="width:25px;cursor:pointer">
               <span class="text">click for trend chart</span> </i>
