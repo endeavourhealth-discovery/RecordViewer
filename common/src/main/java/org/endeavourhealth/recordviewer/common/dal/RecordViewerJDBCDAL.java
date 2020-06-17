@@ -1649,12 +1649,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public ChartResult getDashboard(String codeId, String patientId, String dateFrom, String dateTo, String term) throws Exception {
 
         List<String> charts = Arrays.asList(term.split("\\s*,\\s*"));
+        List<String> codeIds = Arrays.asList(codeId.split("\\s*,\\s*"));
 
         ChartResult result = new ChartResult();
         String sql = "";
 
         List<Chart> chart = new ArrayList<>();
         Chart chartItem = null;
+        Integer i = 0;
 
         for (String chart_name : charts) {
             chartItem = new Chart();
@@ -1667,9 +1669,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "and clinical_effective_date between ? and ?";
 
 
+            String code = codeIds.get(i);
+            i++;
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setString(1, codeId);
+                statement.setString(1, code);
                 statement.setString(2, patientId);
                 statement.setString(3, dateFrom);
                 statement.setString(4, dateTo);
