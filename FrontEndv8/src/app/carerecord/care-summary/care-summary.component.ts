@@ -6,6 +6,7 @@ import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
 import {TrendComponent} from "../trend/trend.component";
 import {MatDialog} from "@angular/material/dialog";
+import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-care-summary',
@@ -15,6 +16,7 @@ import {MatDialog} from "@angular/material/dialog";
 export class CareSummaryComponent implements OnInit {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
+  selection = new SelectionModel<any>(true, []);
 
   // medication
   events1: any;
@@ -59,7 +61,7 @@ export class CareSummaryComponent implements OnInit {
   dataSource6: MatTableDataSource<any>;
   page6: number = 0;
   size6: number = 5;
-  displayedColumns6: string[] = ['term', 'result', 'date'];
+  displayedColumns6: string[] = ['select', 'term', 'result', 'date'];
   patientId: number;
 
   ngAfterViewInit(): void {
@@ -207,6 +209,21 @@ export class CareSummaryComponent implements OnInit {
   }
 
   showTrend(code_id: string, term: string) {
+
+    var terms = "";
+    var codeIds = "";
+    for (let s of this.selection.selected) {
+      console.log(s);
+      terms = terms + s.term + ",";
+      codeIds = codeIds + s.codeId + ",";
+    }
+    console.log(terms);
+    if (terms != "")
+    {
+      code_id = codeIds;
+      term = terms;
+    }
+
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '850px',
       width: '1600px',
@@ -216,6 +233,25 @@ export class CareSummaryComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
 
     });
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource6.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource6.data.forEach(row => this.selection.select(row));
+  }
+
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
 }
