@@ -33,7 +33,7 @@ export class TrendComponent {
   showXAxisLabel: boolean = true;
   xAxisLabel: string = 'Date';
   yAxisLabel: string = 'Value';
-  timeline: boolean = true;
+  timeline: boolean = false;
   showGridLines: boolean = true;
   showAreaChart: boolean = true;
   gradient: boolean = true;
@@ -76,7 +76,7 @@ export class TrendComponent {
               series: e.series.map(
                 v => {
                   return {
-                    name: v.name,
+                    name: new Date(v.name),
                     value: Math.log10(v.value)
                   }
                 }

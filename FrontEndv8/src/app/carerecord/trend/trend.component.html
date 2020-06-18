@@ -57,7 +57,7 @@
           (select)="onSelect($event)"
         >
           <ng-template #tooltipTemplate let-model="model">
-            <span class="tooltip-label">{{model.series}} • {{model.name}}</span>
+            <span class="tooltip-label">{{model.series}} • {{dateTickFormatting(model.name)}}</span>
             <span class="tooltip-val">{{getMathPower(model.value)}}</span>
           </ng-template>
           <ng-template #seriesTooltipTemplate let-model="model">
@@ -90,7 +90,7 @@
           (select)="onSelect($event)"
         >
           <ng-template #tooltipTemplate let-model="model">
-            <span class="tooltip-label">{{model.series}} • {{model.name}}</span>
+            <span class="tooltip-label">{{model.series}} • {{dateTickFormatting(model.name)}}</span>
             <span class="tooltip-val">{{getMathPower(model.value)}}</span>
           </ng-template>
           <ng-template #seriesTooltipTemplate let-model="model">
