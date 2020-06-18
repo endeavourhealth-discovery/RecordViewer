@@ -33,6 +33,7 @@ export class CareSummaryComponent implements OnInit {
   size2: number = 999;
   active2: number = 1;
   displayedColumns2: string[] = ['name', 'date'];
+  term2: string = '';
 
   // allergies
   events3: any;
@@ -48,6 +49,7 @@ export class CareSummaryComponent implements OnInit {
   size4: number = 999;
   active4: number = 1;
   displayedColumns4: string[] = ['name','date'];
+  term4: string = '';
 
   // encounters
   events5: any;
@@ -108,7 +110,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadConditions() {
     this.events2 = null;
-    this.carerecordService.getObservation(this.page2, this.size2, this.patientId, 1, this.active2)
+    this.carerecordService.getObservation(this.page2, this.size2, this.patientId, 1, this.active2, this.term2)
       .subscribe(
         (result) => this.displayConditions(result),
         (error) => this.log.error(error)
@@ -117,7 +119,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadWarnings() {
     this.events4 = null;
-    this.carerecordService.getObservation(this.page4, this.size4, this.patientId, 8, this.active4)
+    this.carerecordService.getObservation(this.page4, this.size4, this.patientId, 8, this.active4, this.term4)
       .subscribe(
         (result) => this.displayWarnings(result),
         (error) => this.log.error(error)

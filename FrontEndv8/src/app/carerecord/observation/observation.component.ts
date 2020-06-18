@@ -26,6 +26,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   subTitle: string;
   icon: string;
   active: number = 0;
+  term: string = '';
 
   displayedColumns: string[] = ['name', 'date'];
 
@@ -106,14 +107,21 @@ export class ObservationComponent implements OnInit, AfterViewInit {
 
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getObservation(this.page, this.size, this.patientId, this.eventType, this.active)
+    this.carerecordService.getObservation(this.page, this.size, this.patientId, this.eventType, this.active, this.term)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
       );
   }
 
+  termEntered(event) {
+    if (event.key === "Enter") {
+      this.loadEvents();
+    }
+  }
+
   displayEvents(events: any) {
+    console.log(events);
     this.events = events;
     this.dataSource = new MatTableDataSource(events.results);
   }

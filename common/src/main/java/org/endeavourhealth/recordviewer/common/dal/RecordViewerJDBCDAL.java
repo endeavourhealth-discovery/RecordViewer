@@ -369,7 +369,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "where patient_id = ? "+
-                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 ";
+                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm;
 
                 break;
             case 3: // procedures
