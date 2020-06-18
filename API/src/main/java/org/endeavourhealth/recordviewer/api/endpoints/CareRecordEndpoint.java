@@ -162,11 +162,12 @@ public class CareRecordEndpoint {
                                    @QueryParam("size") Integer size,
                                    @QueryParam("patientId") Integer patientId,
                                    @QueryParam("eventType") Integer eventType,
-                                   @QueryParam("active") Integer active) throws Exception {
+                                   @QueryParam("active") Integer active,
+                                   @QueryParam("term") String term) throws Exception {
         LOG.debug("getObservation");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            ObservationResult result = viewerDAL.getObservationResult(page, size, patientId, eventType, active);
+            ObservationResult result = viewerDAL.getObservationResult(page, size, patientId, eventType, active, term);
 
             return Response
                     .ok()

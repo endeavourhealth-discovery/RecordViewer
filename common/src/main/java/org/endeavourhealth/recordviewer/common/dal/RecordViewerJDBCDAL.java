@@ -341,7 +341,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             sqlTerm = " and c.name like ? ";
         }
 
-
         switch(eventType) {
             case 1: // conditions
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -349,13 +348,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and o.is_problem = 1 "+activeProblem+sqlTerm+
+                        "where patient_id = ? and o.is_problem = 1 "+activeProblem+
                         "order by o.problem_end_date, o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and o.is_problem = 1 "+activeProblem+sqlTerm;
+                        "where patient_id = ? and o.is_problem = 1 "+activeProblem;
                 break;
             case 2: // observations
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -363,7 +362,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "where patient_id = ? "+
-                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+
+                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm+
                         "order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
@@ -450,18 +449,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         if (term.equals("")) {
-                try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                    statement.setInt(1, patientId);
-                    statement.setInt(2, page * 12);
-                    statement.setInt(3, size);
-                    try (ResultSet resultSet = statement.executeQuery()) {
-                        result.setResults(getObservationSummaryList(resultSet));
-                    }
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, patientId);
+                statement.setInt(2, page * 12);
+                statement.setInt(3, size);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getObservationSummaryList(resultSet));
                 }
+            }
         } else {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, patientId);
-                statement.setString(2, term);
+                statement.setString(2, "%"+term+"%");
                 statement.setInt(2, page * 12);
                 statement.setInt(3, size);
                 try (ResultSet resultSet = statement.executeQuery()) {
