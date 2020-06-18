@@ -9,6 +9,15 @@
     <mat-card-subtitle>The findings and interpretation of diagnostic tests performed on patients.</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+
+    <div class = "search">
+      <mat-form-field style="margin-left: 10px" appearance="outline">
+        <mat-label>Search term</mat-label>
+        <input matInput placeholder="Term" [(ngModel)]="term" (keyup)="termEntered($event)">
+      </mat-form-field>
+      <button style="margin-left: 20px" mat-raised-button (click)="loadEvents()">Search</button>
+    </div>
+
     <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
 

@@ -65,6 +65,7 @@ export class CareSummaryComponent implements OnInit {
   size6: number = 10;
   displayedColumns6: string[] = ['select', 'term', 'result', 'date'];
   patientId: number;
+  term6: string = '';
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -137,7 +138,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadDiagnostics() {
     this.events6 = null;
-    this.carerecordService.getDiagnostics(this.page6, this.size6, this.patientId)
+    this.carerecordService.getDiagnostics(this.page6, this.size6, this.patientId, this.term6)
       .subscribe(
         (result) => this.displayDiagnostics(result),
         (error) => this.log.error(error)

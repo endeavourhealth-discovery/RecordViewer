@@ -14,23 +14,42 @@ import java.util.*;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId) throws Exception {
+    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId, String term) throws Exception {
         DiagnosticsResult result = new DiagnosticsResult();
+
+        String sqlTerm = "";
+
+        if (!term.equals("")) {
+            sqlTerm = " and c.name like ? ";
+        }
 
         String sql = "SELECT o.clinical_effective_date as date, c.name as term, " +
                 "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result, non_core_concept_id as codeId " +
                 "FROM observation o  " +
                 "join concept c on c.dbid = o.non_core_concept_id " +
                 "where patient_id = ? " +
-                "and o.result_value_units is not null " +
+                "and o.result_value_units is not null "+sqlTerm+
                 "order by o.clinical_effective_date DESC LIMIT ?,?";
 
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
-            statement.setInt(2, page*12);
-            statement.setInt(3, size);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                result.setResults(getDiagnosticsSummaryList(resultSet));
+
+        if (term.equals("")) {
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, patientId);
+                statement.setInt(2, page * 12);
+                statement.setInt(3, size);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getDiagnosticsSummaryList(resultSet));
+                }
+            }
+        } else {
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, patientId);
+                statement.setString(2, "%"+term+"%");
+                statement.setInt(3, page * 12);
+                statement.setInt(4, size);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getDiagnosticsSummaryList(resultSet));
+                }
             }
         }
 
@@ -38,13 +57,25 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "FROM observation o " +
                 "join concept c on c.dbid = o.non_core_concept_id " +
                 "where patient_id = ? "+
-                "and o.result_value_units is not null";
+                "and o.result_value_units is not null "+sqlTerm;
 
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                resultSet.next();
-                result.setLength(resultSet.getInt(1));
+
+        if (term.equals("")) {
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, patientId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
+            }
+        } else {
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, patientId);
+                statement.setString(2, "%"+term+"%");
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
             }
         }
 
