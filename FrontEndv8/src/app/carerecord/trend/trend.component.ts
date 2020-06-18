@@ -87,8 +87,12 @@ export class TrendComponent {
       });
   }
 
-  // apply pow10 to yAxis tick values and tootip value
+  // apply pow10 to yAxis tick values and tooltip value
   getMathPower(val: number) {
+    return Math.round((Math.pow(10, val) + Number.EPSILON) * 100) / 100
+  }
+
+  getYMathPower(val: number) {
     return Math.round(Math.pow(10, val));
   }
 

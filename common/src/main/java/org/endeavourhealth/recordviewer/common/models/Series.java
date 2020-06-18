@@ -16,7 +16,7 @@ public class Series {
     @JsonProperty("name")
     private String name;
     @JsonProperty("value")
-    private Integer value;
+    private String value;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -31,12 +31,12 @@ public class Series {
     }
 
     @JsonProperty("value")
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
     @JsonProperty("value")
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

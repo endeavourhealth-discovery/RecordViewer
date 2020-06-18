@@ -1731,7 +1731,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public static Series getSeries(ResultSet resultSet) throws SQLException {
         Series series = new Series();
         series.setName(resultSet.getString("series_name"));
-        series.setValue(resultSet.getInt("series_value"));
+        series.setValue(resultSet.getString("series_value"));
         return series;
     }
 
