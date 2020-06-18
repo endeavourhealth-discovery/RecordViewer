@@ -24,6 +24,7 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
   page: number = 0;
   size: number = 12;
   patientId: number;
+  term: string = '';
 
   displayedColumns: string[] = ["select", "term", "result", "date"];
 
@@ -48,14 +49,21 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
   loadEvents() {
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getDiagnostics(this.page, this.size, this.patientId)
+    this.carerecordService.getDiagnostics(this.page, this.size, this.patientId, this.term)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
       );
   }
 
+  termEntered(event) {
+    if (event.key === "Enter") {
+      this.loadEvents();
+    }
+  }
+
   displayEvents(events: any) {
+    console.log(events);
     this.events = events;
     this.dataSource = new MatTableDataSource(events.results);
   }
