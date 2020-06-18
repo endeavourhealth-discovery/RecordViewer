@@ -1726,7 +1726,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join concept c on c.dbid = o.non_core_concept_id " +
                     "where non_core_concept_id = ? " +
                     "and patient_id = ? " +
-                    "and clinical_effective_date between ? and ?";
+                    "and clinical_effective_date between ? and ? order by clinical_effective_date";
 
 
             String code = codeIds.get(i);
