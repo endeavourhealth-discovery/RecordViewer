@@ -27,6 +27,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   icon: string;
   active: number = 0;
   term: string = '';
+  showSearch: boolean = false;
 
   displayedColumns: string[] = ['name', 'date'];
 
@@ -65,6 +66,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
       this.subTitle = "Measurements and simple assertions made about a patient";
       this.icon = 'fa-monitor-heart-rate';
       this.dateTitle = "Effective date";
+      this.showSearch = true;
     }
     else if (this.eventType==3) {
       this.eventTypeTitle = "Procedures";

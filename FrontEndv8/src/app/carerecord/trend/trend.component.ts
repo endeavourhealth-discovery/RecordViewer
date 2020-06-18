@@ -37,7 +37,6 @@ export class TrendComponent {
   showGridLines: boolean = true;
   showAreaChart: boolean = true;
   gradient: boolean = true;
-  logarithmic: boolean = false;
 
   patientId: string;
   codeId: string;
@@ -56,19 +55,10 @@ export class TrendComponent {
     this.patientId = data.patientId;
     this.codeId = data.codeId;
     this.term = data.term;
-
-    let count = (this.codeId.match(/,/g) || []).length;
-    console.log(count);
-
-    if (count > 1) {
-      this.logarithmic = true;
-    }
-
   }
 
   ngOnInit() {
     this.showLineCharts = true;
-
     this.refresh();
   }
 
@@ -78,49 +68,32 @@ export class TrendComponent {
 
         this.chartResults = result.results;
 
-        if (this.logarithmic) {
-          // apply log10 to values in series
-          this.chartResults = this.chartResults.map(
-            e => {
-              return {
-                name: e.name,
-                series: e.series.map(
-                  v => {
-                    return {
-                      name: v.name,
-                      value: Math.log10(v.value)
-                    }
+        // apply log10 to values in series
+        this.chartResults = this.chartResults.map(
+          e => {
+            return {
+              name: e.name,
+              series: e.series.map(
+                v => {
+                  return {
+                    name: v.name,
+                    value: Math.log10(v.value)
                   }
-                )
-              }
+                }
+              )
             }
-          )
-        }
+          }
+        )
       });
   }
 
   // apply pow10 to yAxis tick values and tootip value
-  getMathPower(val: number){
-    console.log("log1:"+this.logarithmic);
-    if (this.logarithmic)
-      return Math.round(Math.pow(10,val));
-    else
-      return val;
+  getMathPower(val: number) {
+    return Math.round(Math.pow(10, val));
   }
 
   dateTickFormatting(val: any): String {
-    console.log("log2:"+this.logarithmic);
     return new Date(val).toLocaleDateString();
-  }
-
-  yFormatting(val: any): String {
-    let r = val;
-
-    console.log("log3:"+this.logarithmic);
-    if (this.logarithmic)
-      r = "";
-
-    return r;
   }
 
   onSelect(data): void {

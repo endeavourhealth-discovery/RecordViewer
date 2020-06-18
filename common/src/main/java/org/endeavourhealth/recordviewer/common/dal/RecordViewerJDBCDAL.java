@@ -461,22 +461,33 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, patientId);
                 statement.setString(2, "%"+term+"%");
-                statement.setInt(2, page * 12);
-                statement.setInt(3, size);
+                statement.setInt(3, page * 12);
+                statement.setInt(4, size);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getObservationSummaryList(resultSet));
                 }
             }
         }
 
-
-        try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
-            statement.setInt(1, patientId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                resultSet.next();
-                result.setLength(resultSet.getInt(1));
+        if (term.equals("")) {
+            try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
+                statement.setInt(1, patientId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
+            }
+        } else {
+            try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
+                statement.setInt(1, patientId);
+                statement.setString(2, "%"+term+"%");
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    result.setLength(resultSet.getInt(1));
+                }
             }
         }
+
 
         return result;
     }

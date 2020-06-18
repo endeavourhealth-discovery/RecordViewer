@@ -52,8 +52,8 @@
           [results]="chartResults"
           [legendPosition]="legendPosition"
           [gradient]="gradient"
-          [yAxisTickFormatting]="yFormatting"
           [xAxisTickFormatting]="dateTickFormatting"
+          [yAxisTickFormatting]="getMathPower"
           (select)="onSelect($event)"
         >
           <ng-template #tooltipTemplate let-model="model">
@@ -85,8 +85,8 @@
           [results]="chartResults"
           [legendPosition]="legendPosition"
           [gradient]="gradient"
-          [yAxisTickFormatting]="yFormatting"
           [xAxisTickFormatting]="dateTickFormatting"
+          [yAxisTickFormatting]="getMathPower"
           (select)="onSelect($event)"
         >
           <ng-template #tooltipTemplate let-model="model">
