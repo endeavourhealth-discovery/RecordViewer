@@ -60,7 +60,7 @@ export class CareSummaryComponent implements OnInit {
   events6: any;
   dataSource6: MatTableDataSource<any>;
   page6: number = 0;
-  size6: number = 5;
+  size6: number = 10;
   displayedColumns6: string[] = ['select', 'term', 'result', 'date'];
   patientId: number;
 

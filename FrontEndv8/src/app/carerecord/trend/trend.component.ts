@@ -32,7 +32,7 @@ export class TrendComponent {
   showYAxisLabel: boolean = true;
   showXAxisLabel: boolean = true;
   xAxisLabel: string = 'Date';
-  yAxisLabel: string = 'Count';
+  yAxisLabel: string = 'Value';
   timeline: boolean = true;
   showGridLines: boolean = true;
   showAreaChart: boolean = true;
@@ -57,6 +57,13 @@ export class TrendComponent {
     this.codeId = data.codeId;
     this.term = data.term;
 
+    let count = (this.codeId.match(/,/g) || []).length;
+    console.log(count);
+
+    if (count > 1) {
+      this.logarithmic = true;
+    }
+
   }
 
   ngOnInit() {
@@ -68,7 +75,6 @@ export class TrendComponent {
   refresh() {
     this.carerecordService.getDashboard(this.codeId, this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), this.term)
       .subscribe(result => {
-        console.log(result);
 
         this.chartResults = result.results;
 
@@ -95,6 +101,7 @@ export class TrendComponent {
 
   // apply pow10 to yAxis tick values and tootip value
   getMathPower(val: number){
+    console.log("log1:"+this.logarithmic);
     if (this.logarithmic)
       return Math.round(Math.pow(10,val));
     else
@@ -102,7 +109,18 @@ export class TrendComponent {
   }
 
   dateTickFormatting(val: any): String {
+    console.log("log2:"+this.logarithmic);
     return new Date(val).toLocaleDateString();
+  }
+
+  yFormatting(val: any): String {
+    let r = val;
+
+    console.log("log3:"+this.logarithmic);
+    if (this.logarithmic)
+      r = "";
+
+    return r;
   }
 
   onSelect(data): void {

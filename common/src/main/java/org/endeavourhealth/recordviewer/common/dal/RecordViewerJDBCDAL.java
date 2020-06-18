@@ -323,18 +323,24 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationSummary;
     }
 
-    public ObservationResult getObservationResult(Integer page, Integer size, Integer patientId, Integer eventType, Integer active) throws Exception {
+    public ObservationResult getObservationResult(Integer page, Integer size, Integer patientId, Integer eventType, Integer active, String term) throws Exception {
         ObservationResult result = new ObservationResult();
 
         String sql = "";
         String activeProblem = " and o.problem_end_date IS NULL ";
         String activeWarning = " and is_active = 1 ";
         String sqlCount = "";
+        String sqlTerm = "";
 
         if (active==0) {
             activeProblem = "";
             activeWarning = "";
         }
+
+        if (!term.equals("")) {
+            sqlTerm = " and c.name like ? ";
+        }
+
 
         switch(eventType) {
             case 1: // conditions
@@ -343,13 +349,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and o.is_problem = 1 "+activeProblem+
+                        "where patient_id = ? and o.is_problem = 1 "+activeProblem+sqlTerm+
                         "order by o.problem_end_date, o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and o.is_problem = 1 "+activeProblem;
+                        "where patient_id = ? and o.is_problem = 1 "+activeProblem+sqlTerm;
                 break;
             case 2: // observations
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -443,14 +449,27 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 // code block
         }
 
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
-            statement.setInt(2, page*12);
-            statement.setInt(3, size);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                result.setResults(getObservationSummaryList(resultSet));
+        if (term.equals("")) {
+                try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                    statement.setInt(1, patientId);
+                    statement.setInt(2, page * 12);
+                    statement.setInt(3, size);
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        result.setResults(getObservationSummaryList(resultSet));
+                    }
+                }
+        } else {
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, patientId);
+                statement.setString(2, term);
+                statement.setInt(2, page * 12);
+                statement.setInt(3, size);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    result.setResults(getObservationSummaryList(resultSet));
+                }
             }
         }
+
 
         try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
             statement.setInt(1, patientId);
