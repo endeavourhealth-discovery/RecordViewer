@@ -5,6 +5,7 @@ import org.endeavourhealth.recordviewer.common.models.AppointmentFull;
 import org.hl7.fhir.dstu3.model.Coding;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -74,7 +75,13 @@ public class Appointment {
 		slot.setId(String.valueOf(id));
 		slot.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Slot-1");
 		slot.setStart(startDt);
-		//slot.setEnd();
+
+		if(plannedDuration != 0) {
+			Calendar c = Calendar.getInstance();
+			c.setTime(startDt);
+            c.add(Calendar.DAY_OF_MONTH,plannedDuration);
+			slot.setEnd(c.getTime());
+		}
 
 		return slot;
 	}
