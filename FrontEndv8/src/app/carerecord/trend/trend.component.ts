@@ -35,7 +35,7 @@ export class TrendComponent {
   yAxisLabel: string = 'Value';
   timeline: boolean = false;
   showGridLines: boolean = true;
-  showAreaChart: boolean = true;
+  showAreaChart: boolean = false;
   gradient: boolean = true;
 
   patientId: string;
@@ -67,6 +67,8 @@ export class TrendComponent {
       .subscribe(result => {
 
         this.chartResults = result.results;
+
+        console.log(this.chartResults);
 
         // apply log10 to values in series
         this.chartResults = this.chartResults.map(

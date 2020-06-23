@@ -393,14 +393,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "where patient_id = ? "+
-                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm+
+                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%FH:%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm+
                         "order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "where patient_id = ? "+
-                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm;
+                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%FH:%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm;
 
                 break;
             case 3: // procedures
@@ -420,12 +420,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "'' as status,c.name " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%family history%' order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? and (c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "where patient_id = ? and c.name like '%family history%'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ? and (c.name like '%family history%' or c.name like '%FH:%')"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
                 break;
             case 5: // immunisations
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -1008,7 +1008,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(c.description, '') as description," +
                 "coalesce(o.result_value_units,'') as resultValueUnits from observation o " +
                 "join concept c on o.non_core_concept_id = c.dbid " +
-                "where o.patient_id in (" + StringUtils.join(id, ',') + ") " + "and c.name not like '%family history%' and c.name not like '%immunisation%' and c.name not like '%procedure%'" +
+                "where o.patient_id in (" + StringUtils.join(id, ',') + ") " + "and c.name not like '%family history%' and c.name not like '%FH:%' and c.name not like '%immunisation%' and c.name not like '%procedure%'" +
                 " and c.name not like '%vaccination%' and o.is_problem = 0";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -1582,7 +1582,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "ELSE 'Past' END as status,c.name,c.code " +
                 "FROM observation o " +
                 "join concept c on c.dbid = o.non_core_concept_id \n"+
-                "where patient_id in (" + StringUtils.join(patientIds, ',') + ") " + "and c.name like '%family history%' order by o.clinical_effective_date DESC";
+                "where patient_id in (" + StringUtils.join(patientIds, ',') + ") " + "and (c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -1722,11 +1722,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             chartItem = new Chart();
             chartItem.setName(chart_name);
 
-            sql = "SELECT c.name as name, clinical_effective_date as series_name, result_value as series_value FROM subscriber_pi.observation o " +
+            sql = "SELECT c.name as name, clinical_effective_date as series_name, result_value as series_value FROM observation o " +
                     "join concept c on c.dbid = o.non_core_concept_id " +
                     "where non_core_concept_id = ? " +
                     "and patient_id = ? " +
-                    "and clinical_effective_date between ? and ? order by clinical_effective_date";
+                    "and clinical_effective_date between ? and ? and result_value is not null and result_value != '' order by clinical_effective_date";
 
 
             String code = codeIds.get(i);
