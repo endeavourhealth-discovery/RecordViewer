@@ -79,7 +79,7 @@ public class Appointment {
 		if(plannedDuration != 0) {
 			Calendar c = Calendar.getInstance();
 			c.setTime(startDt);
-            c.add(Calendar.DAY_OF_MONTH,plannedDuration);
+            c.add(Calendar.MINUTE,plannedDuration);
 			slot.setEnd(c.getTime());
 		}
 
