@@ -531,7 +531,7 @@ public class FhirApi {
         if (appointmentList != null || appointmentList.size() > 0) {
             Appointment fhirAppointment = new Appointment();
             List<Reference> slotList = new ArrayList<Reference>();
-            List<String> scheduleIds = new ArrayList<>();
+            Map<String, Schedule> scheduleIds = new HashMap<>();
 
             for (AppointmentFull appointmentFull : appointmentList) {
                         appointmentResource = fhirAppointment.getAppointmentResource(appointmentFull);
@@ -539,7 +539,7 @@ public class FhirApi {
                         appointmentResource.setSlot(slotList);
                         appointmentResource.addParticipant().setActor(new Reference(patientResource));
 
-                        if(!scheduleIds.contains(appointmentFull.getScheduleId())) {
+                        if(!scheduleIds.containsKey(appointmentFull.getScheduleId())) {
                             List<Reference> actorList = new ArrayList<Reference>();
                             scheduleResource = fhirAppointment.getScheduleResource(appointmentFull);
                             actorList.add(new Reference(getOrganizationFhirObj(appointmentFull.getOrgId())));
@@ -549,6 +549,8 @@ public class FhirApi {
                             }
                             scheduleResource.setActor(actorList);
                             bundle.addEntry().setResource(scheduleResource);
+                        } else {
+                            scheduleResource = scheduleIds.get(scheduleResource);
                         }
 
                         bundle.addEntry().setResource(appointmentResource);
