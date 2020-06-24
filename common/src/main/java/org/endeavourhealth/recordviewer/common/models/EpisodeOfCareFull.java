@@ -1,29 +1,29 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 public class EpisodeOfCareFull {
-    private int id;
-    private int patientId;
+    private long id;
+    private long patientId;
     private String code;
     private String name;
     private String dateRegistered;
     private String dateRegisteredEnd;
-    private int organizationId;
-    private int practitionerId;
+    private long organizationId;
+    private long practitionerId;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public EpisodeOfCareFull setId(int id) {
+    public EpisodeOfCareFull setId(long id) {
         this.id = id;
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public EpisodeOfCareFull setPatientId(int patientId) {
+    public EpisodeOfCareFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }
@@ -64,20 +64,20 @@ public class EpisodeOfCareFull {
         return this;
     }
 
-    public int getOrganizationId() {
+    public long getOrganizationId() {
         return organizationId;
     }
 
-    public EpisodeOfCareFull setOrganizationId(int organizationId) {
+    public EpisodeOfCareFull setOrganizationId(long organizationId) {
         this.organizationId = organizationId;
         return this;
     }
 
-    public int getPractitionerId() {
+    public long getPractitionerId() {
         return practitionerId;
     }
 
-    public EpisodeOfCareFull setPractitionerId(int practitionerId) {
+    public EpisodeOfCareFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
         return this;
     }

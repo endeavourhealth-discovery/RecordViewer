@@ -4,47 +4,47 @@ import java.util.Date;
 
 public class AllergyFull {
 
-    private int id;
-    private int patientId;
+    private long id;
+    private long patientId;
     private Date date;
     private String status;
     private String name;
-    private int organizationId;
-    private int practitionerId;
+    private long organizationId;
+    private long practitionerId;
     private String code;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public AllergyFull setId(int id) {
+    public AllergyFull setId(long id) {
         this.id = id;
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public AllergyFull setPatientId(int patientId) {
+    public AllergyFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }
 
-    public int getOrganizationId() {
+    public long getOrganizationId() {
         return organizationId;
     }
 
-    public AllergyFull setOrganizationId(int organizationId) {
+    public AllergyFull setOrganizationId(long organizationId) {
         this.organizationId = organizationId;
         return this;
     }
 
-    public int getPractitionerId() {
+    public long getPractitionerId() {
         return practitionerId;
     }
 
-    public AllergyFull setPractitionerId(int practitionerId) {
+    public AllergyFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
         return this;
     }

@@ -4,27 +4,27 @@ import java.util.Date;
 
 public class ConditionFull {
 
-    private int id;
-    private int patientId;
+    private long id;
+    private long patientId;
     private  String clinicalStatus;
     private Date date;
     private String code;
     private String name;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public ConditionFull setId(int id) {
+    public ConditionFull setId(long id) {
         this.id = id;
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public ConditionFull setPatientId(int patientId) {
+    public ConditionFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }

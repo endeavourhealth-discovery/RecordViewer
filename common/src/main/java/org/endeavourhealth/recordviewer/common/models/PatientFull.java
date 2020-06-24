@@ -29,7 +29,7 @@ public class PatientFull {
     private String orgname;
     private String startdate;
     private String ethnicDescription;
-    private int practitionerId;
+    private long practitionerId;
     private String registrationType;
     private String registrationEndDate;
 
@@ -60,11 +60,11 @@ public class PatientFull {
         return this;
     }
 
-    public int getPractitionerId() {
+    public long getPractitionerId() {
         return practitionerId;
     }
 
-    public PatientFull setPractitionerId(int practitionerId) {
+    public PatientFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
         return this;
     }

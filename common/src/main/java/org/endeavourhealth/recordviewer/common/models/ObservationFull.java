@@ -1,59 +1,59 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 public class ObservationFull {
-    private int id;
-    private int patientId;
+    private long id;
+    private long patientId;
     private String date;
     private String description;
     private double resultValue;
     private String resultValueUnits;
     private String code;
     private String name;
-    private int organizationId;
-    private int practitionerId;
-    private int encounterId;
+    private long organizationId;
+    private long practitionerId;
+    private long encounterId;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public ObservationFull setId(int id) {
+    public ObservationFull setId(long id) {
         this.id = id;
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public ObservationFull setPatientId(int patientId) {
+    public ObservationFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }
 
-    public int getEncounterId() {
+    public long getEncounterId() {
         return encounterId;
     }
 
-    public ObservationFull setEncounterId(int encounterId) {
+    public ObservationFull setEncounterId(long encounterId) {
         this.encounterId = encounterId;
         return this;
     }
 
-    public int getOrganizationId() {
+    public long getOrganizationId() {
         return organizationId;
     }
 
-    public ObservationFull setOrganizationId(int organizationId) {
+    public ObservationFull setOrganizationId(long organizationId) {
         this.organizationId = organizationId;
         return this;
     }
 
-    public int getPractitionerId() {
+    public long getPractitionerId() {
         return practitionerId;
     }
 
-    public ObservationFull setPractitionerId(int practitionerId) {
+    public ObservationFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
         return this;
     }

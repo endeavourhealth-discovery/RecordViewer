@@ -1,16 +1,16 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 public class OrganizationFull {
-    private int id;
+    private long id;
     private String odsCode;
     private String name;
     private String postCode;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public OrganizationFull setId(int id) {
+    public OrganizationFull setId(long id) {
         this.id = id;
         return this;
     }
