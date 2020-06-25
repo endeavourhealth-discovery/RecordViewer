@@ -35,6 +35,7 @@ public class Patient {
 		String startdate = replaceNull(patientResult.getStartdate());
 		String ethnicDescription = replaceNull(patientResult.getEthnicDescription());
 		String endDate = replaceNull(patientResult.getRegistrationEndDate());
+		String registrationStatusValue = replaceNull(patientResult.getRegistrationStatusValue());
 
 		org.hl7.fhir.dstu3.model.Patient patient = new org.hl7.fhir.dstu3.model.Patient();
 
@@ -167,8 +168,18 @@ public class Patient {
 			Extension ext1 = new Extension();
 			ext1.setUrl("registrationPeriod");
 			ext1.setValue(period);
+			Extension ext2 = new Extension();
+			CodeableConcept codeRegistration = new CodeableConcept();
+			codeRegistration.addCoding()
+					.setDisplay(registrationStatusValue)
+					.setSystem("https://fhir.hl7.org.uk/STU3/ValueSet/CareConnect-RegistrationType-1");
+
+			ext2.setUrl("registrationType");
+			ext2.setValue(codeRegistration);
+
 			List<Extension> ext = new ArrayList<>();
 			ext.add(ext1);
+			ext.add(ext2);
 			registration.setExtension(ext);
 		}
 

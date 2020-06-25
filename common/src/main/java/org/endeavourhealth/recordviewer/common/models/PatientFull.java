@@ -31,6 +31,7 @@ public class PatientFull {
     private String ethnicDescription;
     private long practitionerId;
     private String registrationType;
+    private String registrationStatusValue;
     private String registrationEndDate;
 
     public String getId() {
@@ -68,6 +69,16 @@ public class PatientFull {
         this.practitionerId = practitionerId;
         return this;
     }
+
+    public String getRegistrationStatusValue() {
+        return registrationStatusValue;
+    }
+
+    public PatientFull setRegistrationStatusValue(String registrationStatusValue) {
+        this.registrationStatusValue = registrationStatusValue;
+        return this;
+    }
+
 
     public String getRegistrationType() {
         return registrationType;
