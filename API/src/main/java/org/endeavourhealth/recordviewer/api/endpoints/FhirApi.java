@@ -536,7 +536,6 @@ public class FhirApi {
             for (AppointmentFull appointmentFull : appointmentList) {
                         appointmentResource = fhirAppointment.getAppointmentResource(appointmentFull);
                         appointmentResource.getMeta().addTag(patientCodingMap.get((appointmentFull.getPatientId())));
-                        appointmentResource.setSlot(slotList);
                         appointmentResource.addParticipant().setActor(new Reference(patientResource));
 
                         if(!scheduleIds.containsKey(appointmentFull.getScheduleId())) {
@@ -558,6 +557,7 @@ public class FhirApi {
                         slotResource = fhirAppointment.getSlotResource(appointmentFull);
                         slotResource.setSchedule(new Reference(scheduleResource));
                         slotList.add(new Reference(slotResource));
+                        appointmentResource.setSlot(slotList);
                         bundle.addEntry().setResource(slotResource);
 
             }
