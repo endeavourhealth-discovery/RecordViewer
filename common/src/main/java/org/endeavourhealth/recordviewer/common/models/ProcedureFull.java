@@ -9,6 +9,8 @@ public class ProcedureFull {
     private String status;
     private String name;
     private String code;
+    private long practitionerId;
+    private long organizationId;
 
     public String getId() {
         return id;
@@ -28,6 +30,23 @@ public class ProcedureFull {
         return this;
     }
 
+    public long getPractitionerId() {
+        return practitionerId;
+    }
+
+    public ProcedureFull setPractitionerId(long practitionerId) {
+        this.practitionerId = practitionerId;
+        return this;
+    }
+
+    public long getOrganizationId() {
+        return organizationId;
+    }
+
+    public ProcedureFull setOrganizationId(long organizationId) {
+        this.organizationId = organizationId;
+        return this;
+    }
 
     public Date getDate() {
         return date;

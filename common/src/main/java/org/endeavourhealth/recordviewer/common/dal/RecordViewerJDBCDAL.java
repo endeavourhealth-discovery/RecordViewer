@@ -1043,6 +1043,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         String sql = "SELECT coalesce(o.clinical_effective_date, '') as date," +
                 "coalesce(o.patient_id, '') as patientId," +
+                "coalesce(o.practitioner_id, '') as practitionerId," +
+                "coalesce(o.organization_id, '') as organizationId," +
                 "CASE WHEN o.problem_end_date IS NULL THEN 'Active'\n" +
                 "ELSE 'Past' END as status,c.name, c.code\n" +
                 "FROM observation o\n" +
@@ -1093,6 +1095,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setPatientId(resultSet.getLong("patientId"))
                 .setStatus(resultSet.getString("status"))
                 .setName(resultSet.getString("name"))
+                .setPractitionerId(resultSet.getLong("practitionerId"))
+                .setOrganizationId(resultSet.getLong("organizationId"))
                 .setCode(resultSet.getString("code"));
         return procedureFull;
     }

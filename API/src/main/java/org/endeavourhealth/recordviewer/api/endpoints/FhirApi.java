@@ -487,6 +487,8 @@ public class FhirApi {
             for (ProcedureFull procedureFull : procedureFullList) {
                 org.hl7.fhir.dstu3.model.Procedure procedureResource = Procedure.getProcedureResource(procedureFull);
                 procedureResource.getMeta().addTag(patientCodingMap.get((procedureFull.getPatientId())));
+                procedureResource.setPerformer(Arrays.asList(new org.hl7.fhir.dstu3.model.Procedure.ProcedurePerformerComponent(new Reference
+                        (getPractitionerRoleResource(new Long(procedureFull.getPractitionerId()), procedureFull.getOrganizationId())))));
                procedureResource.setSubject(new Reference(patientResource));
                 bundle.addEntry().setResource(procedureResource);
             }
