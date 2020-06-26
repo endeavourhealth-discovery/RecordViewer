@@ -12,7 +12,7 @@
     <div class="filter">
       <mat-form-field class="example-full-width" appearance="outline">
         <mat-label>Date from</mat-label>
-        <input matInput [matDatepicker]="picker1" placeholder="Date from" [(ngModel)]="dateFrom">
+        <input matInput [matDatepicker]="picker1" placeholder="Date from" [(ngModel)]="dateFrom" (dateChange)="refresh()">
         <mat-datepicker-toggle matSuffix [for]="picker1">
           <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
         </mat-datepicker-toggle>
@@ -20,18 +20,23 @@
       </mat-form-field>
       <mat-form-field style="margin-left: 10px" class="example-full-width" appearance="outline">
         <mat-label>Date to</mat-label>
-        <input matInput [matDatepicker]="picker2" placeholder="Date to" [(ngModel)]="dateTo">
+        <input matInput [matDatepicker]="picker2" placeholder="Date to" [(ngModel)]="dateTo" (dateChange)="refresh()">
         <mat-datepicker-toggle matSuffix [for]="picker2">
           <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
         </mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
-
-      <button style="margin-left: 10px; margin-right: 10px" mat-raised-button (click)="refresh()">Refresh chart</button>
+      <mat-form-field style="margin-left: 10px" class="example-full-width" appearance="outline">
+        <mat-label>Select series</mat-label>
+        <mat-select [formControl]="results" multiple [(value)]="selected">
+          <mat-option (click)="refresh()" *ngFor="let result of resultList" [value]="result">{{result}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
       <mat-checkbox class="checkbox" [(ngModel)]="showGridLines">Show gridlines</mat-checkbox>
       <mat-checkbox class="checkbox" [(ngModel)]="showAreaChart">Show area chart</mat-checkbox>
       <mat-checkbox class="checkbox" [(ngModel)]="gradient">Gradient fill</mat-checkbox>
+      <mat-checkbox class="checkbox" (click)="refresh()" [(ngModel)]="logarithmic">Logarithmic</mat-checkbox>
     </div>
 
     <div *ngIf="showLineCharts">

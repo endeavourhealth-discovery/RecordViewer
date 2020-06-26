@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
+import {FormControl} from '@angular/forms';
 
 export interface DialogData {
   patientId: string;
@@ -22,6 +23,9 @@ export class TrendComponent {
   dateFrom: string = '1900-01-01';
   dateTo: string = this.formatDate(new Date());
   showLineCharts: boolean = true;
+  results = new FormControl();
+  resultList: string[] = [''];
+  selected: string = '';
 
   // options
   legend: boolean = true;
@@ -37,13 +41,14 @@ export class TrendComponent {
   showGridLines: boolean = true;
   showAreaChart: boolean = true;
   gradient: boolean = true;
+  logarithmic: boolean = true;
 
   patientId: string;
   codeId: string;
   term: string;
 
   colorScheme = {
-    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
+    domain: ['#5aa454', '#e44d25', '#cfc0bb', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
   constructor(
@@ -59,11 +64,26 @@ export class TrendComponent {
 
   ngOnInit() {
     this.showLineCharts = true;
+
+
+
     this.refresh();
   }
 
   refresh() {
-    this.carerecordService.getDashboard(this.codeId, this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), this.term)
+
+    let values = "";
+
+    this.resultList = this.term.split(',');
+
+    if (this.selected == "") {
+      values = this.term;
+    }
+    else {
+      values = this.selected;
+    }
+
+    this.carerecordService.getDashboard(this.codeId, this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), values)
       .subscribe(result => {
 
         this.chartResults = result.results;
@@ -77,7 +97,7 @@ export class TrendComponent {
                 v => {
                   return {
                     name: new Date(v.name),
-                    value: Math.log10(v.value)
+                    value: this.applyLogarithm(v.value)
                   }
                 }
               )
@@ -89,11 +109,30 @@ export class TrendComponent {
 
   // apply pow10 to yAxis tick values and tooltip value
   getMathPower(val: number) {
-    return Math.round((Math.pow(10, val) + Number.EPSILON) * 100) / 100
+    if (this.logarithmic == true) {
+      return Math.round((Math.pow(10, val) + Number.EPSILON) * 100) / 100;
+    }
+    else {
+      return val;
+    }
   }
 
   getYMathPower(val: number) {
-    return Math.round(Math.pow(10, val));
+    if (this.logarithmic == true) {
+      return Math.round(Math.pow(10, val));
+    }
+    else {
+      return val;
+    }
+  }
+
+  applyLogarithm(value: number) {
+    if (this.logarithmic == true) {
+      return Math.log10(value)
+    }
+    else  {
+      return value
+    }
   }
 
   dateTickFormatting(val: any): String {
