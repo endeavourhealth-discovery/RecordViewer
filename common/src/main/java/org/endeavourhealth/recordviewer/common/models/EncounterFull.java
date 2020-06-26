@@ -5,11 +5,11 @@ public class EncounterFull {
         return status;
     }
 
-    public int getEncounterid() {
+    public long getEncounterid() {
         return encounterid;
     }
 
-    public EncounterFull setEncounterid(int encounterid) {
+    public EncounterFull setEncounterid(long encounterid) {
         this.encounterid = encounterid;
         return this;
     }
@@ -37,11 +37,11 @@ public class EncounterFull {
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public EncounterFull setPatientId(int patientId) {
+    public EncounterFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }
@@ -78,8 +78,8 @@ public class EncounterFull {
     private String status;
     private String name;
     private String code;
-    private int encounterid;
-    private int patientId;
+    private long encounterid;
+    private long patientId;
     private String date;
     private String endDate;
     private String episode_of_care_id;

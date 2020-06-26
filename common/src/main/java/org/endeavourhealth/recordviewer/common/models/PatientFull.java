@@ -29,8 +29,9 @@ public class PatientFull {
     private String orgname;
     private String startdate;
     private String ethnicDescription;
-    private int practitionerId;
+    private long practitionerId;
     private String registrationType;
+    private String registrationStatusValue;
     private String registrationEndDate;
 
     public String getId() {
@@ -60,14 +61,24 @@ public class PatientFull {
         return this;
     }
 
-    public int getPractitionerId() {
+    public long getPractitionerId() {
         return practitionerId;
     }
 
-    public PatientFull setPractitionerId(int practitionerId) {
+    public PatientFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
         return this;
     }
+
+    public String getRegistrationStatusValue() {
+        return registrationStatusValue;
+    }
+
+    public PatientFull setRegistrationStatusValue(String registrationStatusValue) {
+        this.registrationStatusValue = registrationStatusValue;
+        return this;
+    }
+
 
     public String getRegistrationType() {
         return registrationType;

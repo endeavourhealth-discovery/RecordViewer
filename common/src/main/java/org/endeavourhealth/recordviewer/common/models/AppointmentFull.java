@@ -4,55 +4,55 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppointmentFull {
-    private int id;
-    private int patientId;
-    private int scheduleId;
-    private int orgId;
-    private int practitionerId;
+    private long id;
+    private long patientId;
+    private long scheduleId;
+    private long orgId;
+    private long practitionerId;
     private int actualDuration;
     private String startDate;
     private int plannedDuration;
     private String type;
 
-    public int getId() { return id; }
+    public long getId() { return id; }
 
-    public AppointmentFull setId(int id) {
+    public AppointmentFull setId(long id) {
         this.id = id;
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public AppointmentFull setPatientId(int patientId) {
+    public AppointmentFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }
 
-    public int getScheduleId() {
+    public long getScheduleId() {
         return scheduleId;
     }
 
-    public AppointmentFull setScheduleId(int scheduleId) {
+    public AppointmentFull setScheduleId(long scheduleId) {
         this.scheduleId = scheduleId;
         return this;
     }
 
-    public int getOrgId() {
+    public long getOrgId() {
         return orgId;
     }
 
-    public AppointmentFull setOrgId(int orgId) {
+    public AppointmentFull setOrgId(long orgId) {
         this.orgId = orgId;
         return this;
     }
 
-    public int getPractitionerId() {
+    public long getPractitionerId() {
         return practitionerId;
     }
 
-    public AppointmentFull setPractitionerId(int practitionerId) {
+    public AppointmentFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
         return this;
     }

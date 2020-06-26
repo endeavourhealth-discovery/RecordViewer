@@ -7,8 +7,8 @@ import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedicationStatementFull {
-    private int id;
-    private int patientId;
+    private long id;
+    private long patientId;
     private String nhsNumber;
     private String name;
     private String code;
@@ -19,20 +19,20 @@ public class MedicationStatementFull {
 
     private String cancellationDate;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public MedicationStatementFull setId(int id) {
+    public MedicationStatementFull setId(long id) {
         this.id = id;
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public MedicationStatementFull setPatientId(int patientId) {
+    public MedicationStatementFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }

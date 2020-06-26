@@ -3,15 +3,15 @@ package org.endeavourhealth.recordviewer.common.models;
 import java.util.Date;
 
 public class ImmunizationFull {
-    private int id;
+    private long id;
     private Date clinicalEffectiveDate;
     private String name;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public ImmunizationFull setId(int id) {
+    public ImmunizationFull setId(long id) {
         this.id = id;
         return this;
     }
@@ -37,7 +37,7 @@ public class ImmunizationFull {
     private String code;
     private String encounterID;
     private String practitionerID;
-    private int patientId;
+    private long patientId;
 
     public Date getClinicalEffectiveDate() {
         return clinicalEffectiveDate;
@@ -57,11 +57,11 @@ public class ImmunizationFull {
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public ImmunizationFull setPatientId(int patientId) {
+    public ImmunizationFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }

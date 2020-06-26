@@ -34,7 +34,7 @@
         </ng-container>
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>Appointment status</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{ 'noShow': element.status == 'No Show', 'fulfilled': element.status == 'Fulfilled'}"> {{element.status}} </td>
+          <td mat-cell *matCellDef="let element" [ngClass]="{ 'cancelled': element.status == 'Cancelled', 'noShow': element.status == 'No Show', 'fulfilled': element.status == 'Fulfilled'}"> {{element.status}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

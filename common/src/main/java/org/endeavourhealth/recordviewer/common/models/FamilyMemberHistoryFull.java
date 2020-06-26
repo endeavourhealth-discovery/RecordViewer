@@ -1,18 +1,18 @@
 package org.endeavourhealth.recordviewer.common.models;
 
 public class FamilyMemberHistoryFull {
-    private int id;
-    private int patientId;
+    private long id;
+    private long patientId;
     private String date;
     private String status;
     private String name;
     private String code;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public FamilyMemberHistoryFull setId(int id) {
+    public FamilyMemberHistoryFull setId(long id) {
         this.id = id;
         return this;
     }
@@ -33,11 +33,11 @@ public class FamilyMemberHistoryFull {
         return this;
     }
 
-    public int getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public FamilyMemberHistoryFull setPatientId(int patientId) {
+    public FamilyMemberHistoryFull setPatientId(long patientId) {
         this.patientId = patientId;
         return this;
     }

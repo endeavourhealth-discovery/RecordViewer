@@ -65,6 +65,7 @@ public class Appointment {
 	public org.hl7.fhir.dstu3.model.Slot getSlotResource(AppointmentFull appointmentResult) throws Exception {
 		String startdate = replaceNull(appointmentResult.getStartDate());
 		int plannedDuration = appointmentResult.getPlannedDuration();
+		int actualDuration = appointmentResult.getActualDuration();
 		UUID id = UUID.randomUUID();
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -76,10 +77,10 @@ public class Appointment {
 		slot.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Slot-1");
 		slot.setStart(startDt);
 
-		if(plannedDuration != 0) {
+		if(actualDuration != 0 || plannedDuration != 0) {
 			Calendar c = Calendar.getInstance();
 			c.setTime(startDt);
-            c.add(Calendar.DAY_OF_MONTH,plannedDuration);
+            c.add(Calendar.MINUTE,actualDuration != 0 ? actualDuration  : plannedDuration);
 			slot.setEnd(c.getTime());
 		}
 

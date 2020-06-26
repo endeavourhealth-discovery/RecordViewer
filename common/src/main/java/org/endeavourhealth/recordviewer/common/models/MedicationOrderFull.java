@@ -4,18 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedicationOrderFull {
-    private int id;
+    private long id;
     private String nhsNumber;
     private String date;
     private String dose;
     private double qValue;
     private String qUnit;
-    private int practitionerId;
-    private int orgId;
+    private long practitionerId;
+    private long orgId;
 
-    public int getId() { return id; }
+    public long getId() { return id; }
 
-    public MedicationOrderFull setId(int id) {
+    public MedicationOrderFull setId(long id) {
         this.id = id;
         return this;
     }
@@ -65,20 +65,20 @@ public class MedicationOrderFull {
         return this;
     }
 
-    public int getPractitionerId() {
+    public long getPractitionerId() {
         return practitionerId;
     }
 
-    public MedicationOrderFull setPractitionerId(int practitionerId) {
+    public MedicationOrderFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
         return this;
     }
 
-    public int getOrgId() {
+    public long getOrgId() {
         return orgId;
     }
 
-    public MedicationOrderFull setOrgId(int orgId) {
+    public MedicationOrderFull setOrgId(long orgId) {
         this.orgId = orgId;
         return this;
     }
