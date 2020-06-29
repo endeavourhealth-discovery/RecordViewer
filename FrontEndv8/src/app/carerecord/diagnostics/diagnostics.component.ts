@@ -42,6 +42,8 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
     this.precisComponentReference.patientChange.subscribe(patientId => {
       console.log("patient changed to "+patientId);
       this.patientId = patientId;
+      this.selection.clear();
+
       this.loadEvents();
     });
   }
@@ -74,26 +76,22 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
     this.loadEvents();
   }
 
-  showTrend(code_id: string, term: string) {
+  showTrend(term: string) {
     var terms = "";
-    var codeIds = "";
+
     for (let s of this.selection.selected) {
-      console.log(s);
       terms = terms + s.term + ",";
-      codeIds = codeIds + s.codeId + ",";
-    }
-    console.log(terms);
-    if (terms != "")
-    {
-      code_id = codeIds;
-      term = terms;
     }
 
+    if (terms != "")
+    {
+      term = terms.replace(/,\s*$/, "");
+    }
 
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '850px',
       width: '1600px',
-      data: {patientId: this.patientId, codeId: code_id, term: term}
+      data: {patientId: this.patientId, term: term}
     });
 
     dialogRef.afterClosed().subscribe(result => {

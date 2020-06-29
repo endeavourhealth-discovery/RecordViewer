@@ -1713,10 +1713,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
     }
 
-    public ChartResult getDashboard(String codeId, String patientId, String dateFrom, String dateTo, String term) throws Exception {
-
-        List<String> charts = Arrays.asList(term.split("\\s*,\\s*"));
-        List<String> codeIds = Arrays.asList(codeId.split("\\s*,\\s*"));
+    public ChartResult getDashboard(String patientId, String dateFrom, String dateTo, String term) throws Exception {
+        List<String> terms = Arrays.asList(term.split("\\s*,\\s*"));
 
         ChartResult result = new ChartResult();
         String sql = "";
@@ -1725,22 +1723,20 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         Chart chartItem = null;
         Integer i = 0;
 
-        for (String chart_name : charts) {
+        for (String t : terms) {
             chartItem = new Chart();
-            chartItem.setName(chart_name);
+            chartItem.setName(t);
 
             sql = "SELECT c.name as name, clinical_effective_date as series_name, result_value as series_value FROM observation o " +
                     "join concept c on c.dbid = o.non_core_concept_id " +
-                    "where non_core_concept_id = ? " +
+                    "where c.name = ? " +
                     "and patient_id = ? " +
                     "and clinical_effective_date between ? and ? and result_value is not null and result_value != '' order by clinical_effective_date";
 
-
-            String code = codeIds.get(i);
             i++;
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setString(1, code);
+                statement.setString(1, t);
                 statement.setString(2, patientId);
                 statement.setString(3, dateFrom);
                 statement.setString(4, dateTo);

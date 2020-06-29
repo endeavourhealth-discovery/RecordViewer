@@ -6,7 +6,6 @@ import {FormControl} from '@angular/forms';
 
 export interface DialogData {
   patientId: string;
-  codeId: string;
   term: string;
 }
 
@@ -17,7 +16,6 @@ export interface DialogData {
 })
 
 export class TrendComponent {
-
   view: any[] = [1300, 500];
   chartResults: any[];
   dateFrom: string = '1900-01-01';
@@ -26,6 +24,7 @@ export class TrendComponent {
   results = new FormControl();
   resultList: string[] = [''];
   selected: string = '';
+  months: string[] = [''];
 
   // options
   legend: boolean = true;
@@ -44,7 +43,6 @@ export class TrendComponent {
   logarithmic: boolean = true;
 
   patientId: string;
-  codeId: string;
   term: string;
 
   colorScheme = {
@@ -58,32 +56,27 @@ export class TrendComponent {
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
 
     this.patientId = data.patientId;
-    this.codeId = data.codeId;
     this.term = data.term;
   }
 
   ngOnInit() {
     this.showLineCharts = true;
-
-
-
     this.refresh();
   }
 
   refresh() {
-
     let values = "";
 
     this.resultList = this.term.split(',');
 
     if (this.selected == "") {
-      values = this.term;
+      values = this.resultList.toString();
     }
     else {
       values = this.selected;
     }
 
-    this.carerecordService.getDashboard(this.codeId, this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), values)
+    this.carerecordService.getDashboard(this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), values)
       .subscribe(result => {
 
         this.chartResults = result.results;
@@ -109,22 +102,13 @@ export class TrendComponent {
       });
   }
 
-  // apply pow10 to yAxis tick values and tooltip value
-  getMathPower(val: number) {
+  formatYAxis(val: number) {
     if (this.logarithmic == true) {
-      return Math.round((Math.pow(10, val) + Number.EPSILON) * 100) / 100;
+      val = Math.round((Math.pow(10, val) + Number.EPSILON) * 100) / 100;
+      return val.toLocaleString()
     }
     else {
-      return val;
-    }
-  }
-
-  getYMathPower(val: number) {
-    if (this.logarithmic == true) {
-      return Math.round(Math.pow(10, val));
-    }
-    else {
-      return val;
+      return Number(val).toLocaleString()
     }
   }
 
@@ -137,8 +121,15 @@ export class TrendComponent {
     }
   }
 
-  dateTickFormatting(val: any): String {
-    return new Date(val).toLocaleDateString();
+  formatXAxis(val: any): String {
+    this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var month = (val.toLocaleString()).substring(3,5);
+    var monthName = this.months[(Number(month)-1)];
+    var day = (val.toLocaleString()).substring(0,2);
+    var year = (val.toLocaleString()).substring(6,10);
+    val = (day + " " + monthName + " " + year);
+
+    return val.toLocaleString();
   }
 
   onSelect(data): void {
