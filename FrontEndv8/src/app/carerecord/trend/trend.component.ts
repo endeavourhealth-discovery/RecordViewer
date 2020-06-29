@@ -102,9 +102,19 @@ export class TrendComponent {
       });
   }
 
-  formatYAxis(val: number) {
+  formatTooltipYAxis(val: number) {
     if (this.logarithmic == true) {
       val = Math.round((Math.pow(10, val) + Number.EPSILON) * 100) / 100;
+      return val.toLocaleString()
+    }
+    else {
+      return Number(val).toLocaleString()
+    }
+  }
+
+  formatYAxis(val: number) {
+    if (val<5) {
+      val = Math.round(Math.pow(10, val));
       return val.toLocaleString()
     }
     else {
