@@ -55,20 +55,18 @@ export class DemographicComponent implements OnInit, AfterViewInit {
 
   setPatient(patient: any) {
     console.log(patient);
-    this.id = patient.id;
-    this.name = patient.name;
-    this.gender = patient.gender;
-    this.dob = patient.dob;
-    this.dod = patient.dod;
-    this.nhsNumber = patient.nhsNumber;
-    this.mobile = patient.mobile;
-    this.address = patient.address;
-    this.orgname = patient.organisation;
-    this.startdate = patient.start_date;
-    this.usualgp = patient.usual_gp;
-    this.regtype = patient.registration;
-
-
-  }
+      this.id = patient.id;
+      this.name = patient.name;
+      this.gender = patient.gender;
+      this.dob = patient.dob;
+      this.dod = patient.dod;
+      this.nhsNumber = patient.nhsNumber;
+      this.mobile = patient.mobile;
+      this.address = patient.address;
+      this.orgname = patient.organisation;
+      this.startdate = patient.start_date;
+      this.usualgp = patient.usual_gp;
+      this.regtype = patient.registration;
+    }
 
 }

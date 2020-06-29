@@ -60,7 +60,17 @@ export class PrecisComponent implements OnInit {
       });
   }
 
+  clearPatient() {
+    this.patientId = -1;
+    this.carerecordService.getPatientSummary(this.patientId)
+      .subscribe(
+        (result) => this.setPatient(result),
+        (error) => this.log.error(error)
+      );
+  }
+
   loadPatient() {
+    console.log("Patient ID: " + this.patientId);
     this.carerecordService.getPatientSummary(this.patientId)
       .subscribe(
         (result) => this.setPatient(result),

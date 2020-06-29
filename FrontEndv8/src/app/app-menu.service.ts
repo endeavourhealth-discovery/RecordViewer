@@ -52,7 +52,7 @@ export class AppMenuService implements  AbstractMenuProvider {
       {icon: 'fas fa-diagnoses', caption: 'Conditions', state: 'condition'},
       {icon: 'fas fa-pills', caption: 'Medication', state: 'medication'},
       {icon: 'fas fa-allergies', caption: 'Allergies', state: 'allergy'},
-      {icon: 'fas fa-exclamation-triangle', caption: 'Warnings & Flags', state: 'warnings'},
+      {icon: 'fas fa-exclamation-triangle', caption: 'Warnings & Flags', state: 'warnings', badge: '2'},
       {icon: 'fas fa-calendar-alt', caption: 'Appointments', state: 'appointment'},
       {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'encounters'},
       {icon: 'fas fa-monitor-heart-rate', caption: 'Observations', state: 'observation'},
