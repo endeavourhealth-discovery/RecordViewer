@@ -4,6 +4,7 @@ import {LoggerService} from 'dds-angular8';
 import {PatientComponent} from "../patient/patient.component";
 import {MatDialog} from "@angular/material/dialog";
 import {Globals} from '../globals'
+import {AppMenuService} from "../../app-menu.service";
 
 @Component({
   selector: 'app-precis',
@@ -31,6 +32,7 @@ export class PrecisComponent implements OnInit {
     private carerecordService: CareRecordService,
     private log: LoggerService,
     private dialog: MatDialog,
+    private menuProvider: AppMenuService,
     globals: Globals) {
         this.globals = globals;
     }
@@ -89,6 +91,26 @@ export class PrecisComponent implements OnInit {
 
     this.patientChange.emit(this.patientId);
     this.globals.patientId = this.patientId;
+
+    // get warnings for menu badge
+    this.carerecordService.getObservation(0, 999, this.patientId, 8, 1, '')
+      .subscribe(
+        (result) => this.menuProvider.setMenuBadge(5, result.length.toString()),
+        (error) => this.log.error(error)
+      );
+    // get allergies for menu badge
+    this.carerecordService.getAllergy(0, 999, this.patientId)
+      .subscribe(
+        (result) => this.menuProvider.setMenuBadge(4, result.length.toString()),
+        (error) => this.log.error(error)
+      );
+    // get conditions for menu badge
+    this.carerecordService.getObservation(0, 999, this.patientId, 1, 1, '')
+      .subscribe(
+        (result) => this.menuProvider.setMenuBadge(2, result.length.toString()),
+        (error) => this.log.error(error)
+      );
+
   }
 
 }

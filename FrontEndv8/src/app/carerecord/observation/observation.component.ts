@@ -5,7 +5,6 @@ import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
 import {ActivatedRoute} from "@angular/router";
-import {AppMenuService} from "../../app-menu.service";
 
 @Component({
   selector: 'app-observation',
@@ -34,14 +33,12 @@ export class ObservationComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private carerecordService: CareRecordService,
-    private log: LoggerService,
-    private menuProvider: AppMenuService) {}
+    private log: LoggerService) {}
 
   ngOnInit() {
     this.route.data.subscribe(
       (data) => this.eventType = data.eventType
     );
-
   }
 
   loadEvents() {
@@ -116,10 +113,6 @@ export class ObservationComponent implements OnInit {
   displayEvents(events: any) {
     this.events = events;
     this.dataSource = new MatTableDataSource(events.results);
-
-    if (this.eventType==8) {
-      this.menuProvider.setMenuBadge(5, this.events.length.toString());
-    }
   }
 
   onPage(event: PageEvent) {
