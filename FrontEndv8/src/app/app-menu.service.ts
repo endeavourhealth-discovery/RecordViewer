@@ -13,23 +13,7 @@ import {EncountersComponent} from "./carerecord/encounters/encounters.component"
 import {DiagnosticsComponent} from "./carerecord/diagnostics/diagnostics.component";
 
 @Injectable()
-export class AppMenuService implements AbstractMenuProvider, OnInit, AfterViewInit {
-
-  // @ts-ignore
-  @ViewChild(ObservationComponent) observationComponentReference;
-
-  warningsCount: number = 0;
-
-  ngAfterViewInit(): void {
-    this.warningsCount = this.observationComponentReference.warningsCount;
-  }
-
-  ngOnInit() {
-    this.observationComponentReference.warningsChange.subscribe(warningsCount => {
-      console.log("Warnings count: " + this.warningsCount);
-      this.warningsCount = warningsCount;
-    });
-  }
+export class AppMenuService implements AbstractMenuProvider {
 
   static getRoutes(): Routes {
     return [
@@ -62,25 +46,35 @@ export class AppMenuService implements AbstractMenuProvider, OnInit, AfterViewIn
     return 'Patient Record Viewer';
   }
 
-  getMenuOptions(): MenuOption[] {
-    return [
-      {icon: 'fas fa-home-alt', caption: 'Patient demographics', state: 'demographic'},
-      {icon: 'fas fa-notes-medical', caption: 'Care record summary', state: 'summary'},
-      {icon: 'fas fa-diagnoses', caption: 'Conditions', state: 'condition'},
-      {icon: 'fas fa-pills', caption: 'Medication', state: 'medication'},
-      {icon: 'fas fa-allergies', caption: 'Allergies', state: 'allergy'},
-      {icon: 'fas fa-exclamation-triangle', caption: 'Warnings & Flags', state: 'warnings', badge: this.warningsCount.toString()},
-      {icon: 'fas fa-calendar-alt', caption: 'Appointments', state: 'appointment'},
-      {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'encounters'},
-      {icon: 'fas fa-monitor-heart-rate', caption: 'Observations', state: 'observation'},
-      {icon: 'fas fa-x-ray', caption: 'Diagnostic orders', state: 'diagnostic orders'},
-      {icon: 'fas fa-microscope', caption: 'Diagnostic reports', state: 'diagnostics'},
-      {icon: 'fas fa-user-md-chat', caption: 'Procedure requests', state: 'procedure requests'},
-      {icon: 'fas fa-procedures', caption: 'Procedures', state: 'procedure'},
-      {icon: 'fas fa-hospital-user', caption: 'Referral requests', state: 'referrals'},
-      {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
-      {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
-      {icon: 'fas fa-fire-alt', caption: 'FHIR Care Connect API', state: 'fhir'}
+  menu: MenuOption[] = [
+    {icon: 'fas fa-home-alt', caption: 'Patient demographics', state: 'demographic'},
+    {icon: 'fas fa-notes-medical', caption: 'Care record summary', state: 'summary'},
+    {icon: 'fas fa-diagnoses', caption: 'Conditions', state: 'condition'},
+    {icon: 'fas fa-pills', caption: 'Medication', state: 'medication'},
+    {icon: 'fas fa-allergies', caption: 'Allergies', state: 'allergy'},
+    {icon: 'fas fa-exclamation-triangle', caption: 'Warnings & Flags', state: 'warnings', badge: '0'},
+    {icon: 'fas fa-calendar-alt', caption: 'Appointments', state: 'appointment'},
+    {icon: 'fas fa-users-medical', caption: 'Encounters', state: 'encounters'},
+    {icon: 'fas fa-monitor-heart-rate', caption: 'Observations', state: 'observation'},
+    {icon: 'fas fa-x-ray', caption: 'Diagnostic orders', state: 'diagnostic orders'},
+    {icon: 'fas fa-microscope', caption: 'Diagnostic reports', state: 'diagnostics'},
+    {icon: 'fas fa-user-md-chat', caption: 'Procedure requests', state: 'procedure requests'},
+    {icon: 'fas fa-procedures', caption: 'Procedures', state: 'procedure'},
+    {icon: 'fas fa-hospital-user', caption: 'Referral requests', state: 'referrals'},
+    {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
+    {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
+    {icon: 'fas fa-fire-alt', caption: 'FHIR Care Connect API', state: 'fhir'}
     ];
+
+
+  getMenuOptions(): MenuOption[] {
+    return this.menu;
   }
+
+  setMenuBadge(index: number, value: string) {
+    console.log("Value: " + value);
+    this.menu[index].badge = value;
+    console.log("Index: " + index);
+  }
+
 }
