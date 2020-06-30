@@ -1,10 +1,11 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
 import {ActivatedRoute} from "@angular/router";
+import {Globals} from '../globals'
 
 @Component({
   selector: 'app-observation',
@@ -15,6 +16,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
 
+  globals: Globals;
   events: any;
   dataSource: MatTableDataSource<any>;
   page: number = 0;
@@ -30,6 +32,9 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   showSearch: boolean = false;
 
   displayedColumns: string[] = ['name', 'date'];
+  warningsCount: number = 0;
+
+  @Output() warningsChange: EventEmitter<number> = new EventEmitter();
 
   ngAfterViewInit(): void {
     this.patientId = this.precisComponentReference.patientId;
@@ -38,10 +43,11 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private carerecordService: CareRecordService,
-    private log: LoggerService
-    ) { }
+    private log: LoggerService,
+    globals: Globals) {this.globals = globals;}
 
   ngOnInit() {
+    this.warningsCount = this.globals.warningsCount;
     this.route.data.subscribe(
       (data) => this.eventType = data.eventType
     );
@@ -126,6 +132,11 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     console.log(events);
     this.events = events;
     this.dataSource = new MatTableDataSource(events.results);
+
+    this.warningsCount = this.events.length;
+    this.warningsChange.emit(this.warningsCount);
+    this.globals.warningsCount = this.warningsCount;
+    console.log("Rows: " + this.warningsCount);
   }
 
   onPage(event: PageEvent) {
@@ -133,5 +144,4 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     this.size = event.pageSize;
     this.loadEvents();
   }
-
 }
