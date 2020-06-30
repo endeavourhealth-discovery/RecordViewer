@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
 import {PrecisComponent} from "../precis/precis.component";
@@ -8,11 +8,9 @@ import {PrecisComponent} from "../precis/precis.component";
   templateUrl: './demographic.component.html',
   styleUrls: ['./demographic.component.scss']
 })
-export class DemographicComponent implements OnInit, AfterViewInit {
+export class DemographicComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
-
-  patientId: number = 0;
 
   id : string;
   title : string;
@@ -28,25 +26,13 @@ export class DemographicComponent implements OnInit, AfterViewInit {
   usualgp: string;
   regtype: string;
 
-  ngAfterViewInit(): void {
-    this.patientId = this.precisComponentReference.patientId;
-  }
-
   constructor(
     private carerecordService: CareRecordService,
     private log: LoggerService
   ) { }
 
-  ngOnInit() {
-    this.precisComponentReference.patientChange.subscribe(patientId => {
-      console.log("patient changed to "+patientId);
-      this.patientId = patientId;
-      this.loadPatient();
-    });
-  }
-
   loadPatient() {
-    this.carerecordService.getPatientSummary(this.patientId)
+    this.carerecordService.getPatientSummary(this.precisComponentReference.patientId)
       .subscribe(
         (result) => this.setPatient(result),
         (error) => this.log.error(error)
@@ -54,7 +40,6 @@ export class DemographicComponent implements OnInit, AfterViewInit {
   }
 
   setPatient(patient: any) {
-    console.log(patient);
       this.id = patient.id;
       this.name = patient.name;
       this.gender = patient.gender;

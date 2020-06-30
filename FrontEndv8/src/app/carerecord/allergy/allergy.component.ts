@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
@@ -11,7 +11,7 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './allergy.component.html',
   styleUrls: ['./allergy.component.scss']
 })
-export class AllergyComponent implements OnInit, AfterViewInit {
+export class AllergyComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
 
@@ -19,30 +19,17 @@ export class AllergyComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any>;
   page: number = 0;
   size: number = 12;
-  patientId: number;
   eventTypeTitle: string;
   subTitle: string;
   icon: string;
 
   displayedColumns: string[] = ['name', 'date'];
 
-  ngAfterViewInit(): void {
-    this.patientId = this.precisComponentReference.patientId;
-  }
-
   constructor(
     private route: ActivatedRoute,
     private carerecordService: CareRecordService,
     private log: LoggerService
     ) { }
-
-  ngOnInit() {
-    this.precisComponentReference.patientChange.subscribe(patientId => {
-      console.log("patient changed to "+patientId);
-      this.patientId = patientId;
-      this.loadEvents();
-    });
-  }
 
   loadEvents() {
     this.eventTypeTitle = "Allergies & intolerances";
@@ -51,7 +38,7 @@ export class AllergyComponent implements OnInit, AfterViewInit {
 
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getAllergy(this.page, this.size, this.patientId)
+    this.carerecordService.getAllergy(this.page, this.size, this.precisComponentReference.patientId)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

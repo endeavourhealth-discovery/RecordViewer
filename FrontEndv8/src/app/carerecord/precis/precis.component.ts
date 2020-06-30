@@ -25,7 +25,6 @@ export class PrecisComponent implements OnInit {
   organisation: string = "";
   registration: string = "";
 
-
   @Output() patientChange: EventEmitter<number> = new EventEmitter();
 
   constructor(
@@ -38,7 +37,6 @@ export class PrecisComponent implements OnInit {
 
   ngOnInit() {
     this.patientId = this.globals.patientId;
-    console.log("Patient ID = "+this.patientId);
 
     if (this.patientId==0)
       this.swapPatient();
@@ -70,7 +68,6 @@ export class PrecisComponent implements OnInit {
   }
 
   loadPatient() {
-    console.log("Patient ID: " + this.patientId);
     this.carerecordService.getPatientSummary(this.patientId)
       .subscribe(
         (result) => this.setPatient(result),
@@ -91,9 +88,7 @@ export class PrecisComponent implements OnInit {
     this.registration = patient.registration;
 
     this.patientChange.emit(this.patientId);
-
     this.globals.patientId = this.patientId;
-
   }
 
 }

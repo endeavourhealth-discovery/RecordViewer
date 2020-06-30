@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
@@ -12,7 +12,7 @@ import {AppMenuService} from "../../app-menu.service";
   templateUrl: './observation.component.html',
   styleUrls: ['./observation.component.scss']
 })
-export class ObservationComponent implements OnInit, AfterViewInit {
+export class ObservationComponent implements OnInit {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
 
@@ -20,7 +20,6 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any>;
   page: number = 0;
   size: number = 12;
-  patientId: number;
   eventType: number;
   eventTypeTitle: string;
   dateTitle: string;
@@ -31,12 +30,6 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   showSearch: boolean = false;
 
   displayedColumns: string[] = ['name', 'date'];
-  warningsCount: number = 0;
-
-
-  ngAfterViewInit(): void {
-    this.patientId = this.precisComponentReference.patientId;
-  }
 
   constructor(
     private route: ActivatedRoute,
@@ -45,16 +38,10 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     private menuProvider: AppMenuService) {}
 
   ngOnInit() {
-
     this.route.data.subscribe(
       (data) => this.eventType = data.eventType
     );
 
-    this.precisComponentReference.patientChange.subscribe(patientId => {
-      console.log("patient changed to "+patientId);
-      this.patientId = patientId;
-      this.loadEvents();
-    });
   }
 
   loadEvents() {
@@ -112,8 +99,8 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     }
 
     this.events = null;
-    console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getObservation(this.page, this.size, this.patientId, this.eventType, this.active, this.term)
+
+    this.carerecordService.getObservation(this.page, this.size, this.precisComponentReference.patientId, this.eventType, this.active, this.term)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
@@ -127,16 +114,12 @@ export class ObservationComponent implements OnInit, AfterViewInit {
   }
 
   displayEvents(events: any) {
-    console.log(events);
     this.events = events;
     this.dataSource = new MatTableDataSource(events.results);
 
     if (this.eventType==8) {
-      this.warningsCount = this.events.length;
-      console.log("Rows: " + this.warningsCount);
-      this.menuProvider.setMenuBadge(5, this.warningsCount.toString());
+      this.menuProvider.setMenuBadge(5, this.events.length.toString());
     }
-
   }
 
   onPage(event: PageEvent) {
@@ -145,3 +128,4 @@ export class ObservationComponent implements OnInit, AfterViewInit {
     this.loadEvents();
   }
 }
+

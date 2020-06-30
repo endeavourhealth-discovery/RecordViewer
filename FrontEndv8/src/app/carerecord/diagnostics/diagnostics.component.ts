@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
@@ -13,7 +13,7 @@ import {SelectionModel} from '@angular/cdk/collections';
   templateUrl: './diagnostics.component.html',
   styleUrls: ['./diagnostics.component.scss']
 })
-export class DiagnosticsComponent implements OnInit, AfterViewInit {
+export class DiagnosticsComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
 
@@ -23,14 +23,9 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any>;
   page: number = 0;
   size: number = 12;
-  patientId: number;
   term: string = '';
 
   displayedColumns: string[] = ["select", "term", "result", "date"];
-
-  ngAfterViewInit(): void {
-    this.patientId = this.precisComponentReference.patientId;
-  }
 
   constructor(
     private carerecordService: CareRecordService,
@@ -38,20 +33,12 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
     private log: LoggerService
     ) { }
 
-  ngOnInit() {
-    this.precisComponentReference.patientChange.subscribe(patientId => {
-      console.log("patient changed to "+patientId);
-      this.patientId = patientId;
-      this.selection.clear();
-
-      this.loadEvents();
-    });
-  }
-
   loadEvents() {
+    this.selection.clear();
+
     this.events = null;
-    console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getDiagnostics(this.page, this.size, this.patientId, this.term)
+
+    this.carerecordService.getDiagnostics(this.page, this.size, this.precisComponentReference.patientId, this.term)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
@@ -91,7 +78,7 @@ export class DiagnosticsComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '850px',
       width: '1600px',
-      data: {patientId: this.patientId, term: term}
+      data: {patientId: this.precisComponentReference.patientId, term: term}
     });
 
     dialogRef.afterClosed().subscribe(result => {

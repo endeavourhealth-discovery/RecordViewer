@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
@@ -13,7 +13,7 @@ import {SelectionModel} from '@angular/cdk/collections';
   templateUrl: './care-summary.component.html',
   styleUrls: ['./care-summary.component.scss']
 })
-export class CareSummaryComponent implements OnInit {
+export class CareSummaryComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
   selection = new SelectionModel<any>(true, []);
@@ -64,12 +64,7 @@ export class CareSummaryComponent implements OnInit {
   page6: number = 0;
   size6: number = 10;
   displayedColumns6: string[] = ['select', 'term', 'result', 'date'];
-  patientId: number;
   term6: string = '';
-
-  ngAfterViewInit(): void {
-    this.patientId = this.precisComponentReference.patientId;
-  }
 
   constructor(
     private carerecordService: CareRecordService,
@@ -77,11 +72,7 @@ export class CareSummaryComponent implements OnInit {
     private log: LoggerService
     ) { }
 
-  ngOnInit() {
-    this.precisComponentReference.patientChange.subscribe(patientId => {
-      console.log("patient changed to "+patientId);
-      this.patientId = patientId;
-
+  loadEvents() {
       this.selection.clear();
 
       this.loadConditions();
@@ -90,12 +81,11 @@ export class CareSummaryComponent implements OnInit {
       this.loadWarnings();
       this.loadEncounters();
       this.loadDiagnostics();
-    });
   }
 
   loadMedication() {
     this.events1 = null;
-    this.carerecordService.getMedication(this.page1, this.size1, this.patientId, this.active1)
+    this.carerecordService.getMedication(this.page1, this.size1, this.precisComponentReference.patientId, this.active1)
       .subscribe(
         (result) => this.displayMedication(result),
         (error) => this.log.error(error)
@@ -104,7 +94,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadAllergies() {
     this.events3 = null;
-    this.carerecordService.getAllergy(this.page3, this.size3, this.patientId)
+    this.carerecordService.getAllergy(this.page3, this.size3, this.precisComponentReference.patientId)
       .subscribe(
         (result) => this.displayAllergies(result),
         (error) => this.log.error(error)
@@ -113,7 +103,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadConditions() {
     this.events2 = null;
-    this.carerecordService.getObservation(this.page2, this.size2, this.patientId, 1, this.active2, this.term2)
+    this.carerecordService.getObservation(this.page2, this.size2, this.precisComponentReference.patientId, 1, this.active2, this.term2)
       .subscribe(
         (result) => this.displayConditions(result),
         (error) => this.log.error(error)
@@ -122,7 +112,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadWarnings() {
     this.events4 = null;
-    this.carerecordService.getObservation(this.page4, this.size4, this.patientId, 8, this.active4, this.term4)
+    this.carerecordService.getObservation(this.page4, this.size4, this.precisComponentReference.patientId, 8, this.active4, this.term4)
       .subscribe(
         (result) => this.displayWarnings(result),
         (error) => this.log.error(error)
@@ -131,7 +121,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadEncounters() {
     this.events5 = null;
-    this.carerecordService.getEncounters(this.page5, this.size5, this.patientId)
+    this.carerecordService.getEncounters(this.page5, this.size5, this.precisComponentReference.patientId)
       .subscribe(
         (result) => this.displayEncounters(result),
         (error) => this.log.error(error)
@@ -140,7 +130,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadDiagnostics() {
     this.events6 = null;
-    this.carerecordService.getDiagnostics(this.page6, this.size6, this.patientId, this.term6)
+    this.carerecordService.getDiagnostics(this.page6, this.size6, this.precisComponentReference.patientId, this.term6)
       .subscribe(
         (result) => this.displayDiagnostics(result),
         (error) => this.log.error(error)
@@ -228,7 +218,7 @@ export class CareSummaryComponent implements OnInit {
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '850px',
       width: '1600px',
-      data: {patientId: this.patientId, term: term}
+      data: {patientId: this.precisComponentReference.patientId, term: term}
     });
 
     dialogRef.afterClosed().subscribe(result => {

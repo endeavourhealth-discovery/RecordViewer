@@ -1,4 +1,4 @@
-import {AfterViewInit, Injectable, OnInit, ViewChild} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Routes} from '@angular/router';
 import {CareSummaryComponent} from './carerecord/care-summary/care-summary.component';
 import {AbstractMenuProvider, MenuOption} from 'dds-angular8';
@@ -66,15 +66,12 @@ export class AppMenuService implements AbstractMenuProvider {
     {icon: 'fas fa-fire-alt', caption: 'FHIR Care Connect API', state: 'fhir'}
     ];
 
-
   getMenuOptions(): MenuOption[] {
     return this.menu;
   }
 
   setMenuBadge(index: number, value: string) {
-    console.log("Value: " + value);
     this.menu[index].badge = value;
-    console.log("Index: " + index);
   }
 
 }

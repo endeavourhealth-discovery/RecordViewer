@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
@@ -10,7 +10,7 @@ import {PrecisComponent} from "../precis/precis.component";
   templateUrl: './encounters.component.html',
   styleUrls: ['./encounters.component.scss']
 })
-export class EncountersComponent implements OnInit, AfterViewInit {
+export class EncountersComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
 
@@ -18,31 +18,18 @@ export class EncountersComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any>;
   page: number = 0;
   size: number = 12;
-  patientId: number;
 
   displayedColumns: string[] = ["type", "location", "practitioner","date"];
-
-  ngAfterViewInit(): void {
-    this.patientId = this.precisComponentReference.patientId;
-  }
 
   constructor(
     private carerecordService: CareRecordService,
     private log: LoggerService
     ) { }
 
-  ngOnInit() {
-    this.precisComponentReference.patientChange.subscribe(patientId => {
-      console.log("patient changed to "+patientId);
-      this.patientId = patientId;
-      this.loadEvents();
-    });
-  }
-
   loadEvents() {
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getEncounters(this.page, this.size, this.patientId)
+    this.carerecordService.getEncounters(this.page, this.size, this.precisComponentReference.patientId)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
