@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
@@ -7,16 +7,20 @@ import {PrecisComponent} from "../precis/precis.component";
 import {TrendComponent} from "../trend/trend.component";
 import {MatDialog} from "@angular/material/dialog";
 import {SelectionModel} from '@angular/cdk/collections';
+import {ActivatedRoute} from "@angular/router";
+import {Globals} from "../globals";
 
 @Component({
   selector: 'app-care-summary',
   templateUrl: './care-summary.component.html',
   styleUrls: ['./care-summary.component.scss']
 })
-export class CareSummaryComponent {
+export class CareSummaryComponent implements OnInit {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
   selection = new SelectionModel<any>(true, []);
+
+  globals: Globals;
 
   // medication
   events1: any;
@@ -68,9 +72,19 @@ export class CareSummaryComponent {
 
   constructor(
     private carerecordService: CareRecordService,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
-    private log: LoggerService
-    ) { }
+    private log: LoggerService,
+    globals: Globals) {
+      this.globals = globals;
+  }
+
+  ngOnInit() {
+    this.route.queryParams
+      .subscribe(params => {
+        this.globals.patientId = params.patient_id;
+      });
+  }
 
   loadEvents() {
       this.selection.clear();
