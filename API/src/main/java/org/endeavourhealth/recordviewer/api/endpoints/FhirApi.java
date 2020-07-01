@@ -12,6 +12,7 @@ import org.endeavourhealth.recordviewer.common.models.*;
 import org.hl7.fhir.dstu3.model.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import resources.AllergyIntolerance;
@@ -57,7 +58,7 @@ public class FhirApi {
 
                 String nhsNumber = "0";
                 String dateOfBirth = "0";
-                boolean includeAllergies = true;
+                boolean onlyDemographics = true;
 
                 for (Parameter param : parameters) {
                     String paramName = param.getName();
@@ -67,15 +68,15 @@ public class FhirApi {
                         }
                     } else if (paramName.equals("patientDOB")) {
                             dateOfBirth = param.getValueIdentifier().getValue();
-                    } /*else if (paramName.equals("includeAllergies")) {
+                    } else if (paramName.equals("demographicsOnly")) {
                         if (param.getPart().get(0) != null && param.getPart().get(0).getValueBoolean()) {
-                            includeAllergies = true;
+                            onlyDemographics = true;
                         }
-                    }*/
+                    }
                 }
 
                 try {
-                    json = getFhirBundle(0, nhsNumber, dateOfBirth, includeAllergies);
+                    json = getFhirBundle(0, nhsNumber, dateOfBirth, onlyDemographics);
                 } catch (Exception e) {
                     throw new ResourceNotFoundException("Resource error:" + e);
                 }
@@ -92,10 +93,10 @@ public class FhirApi {
     }
 
     public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth) throws Exception {
-        return getFhirBundle(id, nhsNumber, dateOfBirth, true) ;
+        return getFhirBundle(id, nhsNumber, dateOfBirth, false) ;
     }
 
-    public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth, boolean includeAllergies) throws Exception {
+    public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth, boolean onlyDemographics) throws Exception {
         organizationFhirMap = new HashMap<>();
         encounterFhirMap = new HashMap<>();
         patientCodingMap = new HashMap<>();
@@ -129,6 +130,10 @@ public class FhirApi {
         }
         bundle.addEntry().setResource(patientResource);
 
+        if(onlyDemographics) {
+            return parseBundle();
+        }
+
         Long patientId = Long.parseLong(patient.getId());
         Map<Long, String> patientMap;
         List<Long> patientIds = null;
@@ -142,9 +147,7 @@ public class FhirApi {
         }
         setCoding(patientMap);
 
-        if (includeAllergies) {
-            addFhirAllergiesToBundle(patientIds);
-        }
+        addFhirAllergiesToBundle(patientIds);
 
         // Adding MedicationStatement, MedicationRequest, Medication & MedicationStatementList to bundle
         addFhirMedicationStatementToBundle(patientIds);
@@ -178,6 +181,10 @@ public class FhirApi {
             }
         }
 
+        return parseBundle();
+    }
+
+    private JSONObject parseBundle() throws ParseException {
         FhirContext ctx = FhirContext.forDstu3();
         String encodedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
 
