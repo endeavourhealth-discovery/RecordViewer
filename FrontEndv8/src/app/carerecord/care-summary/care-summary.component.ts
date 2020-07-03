@@ -82,8 +82,7 @@ export class CareSummaryComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams
       .subscribe(params => {
-        if (params.length>0)
-          this.globals.patientId = params.patient_id;
+          this.globals.patientId = params['patient_id'] || 0;
       });
   }
 
