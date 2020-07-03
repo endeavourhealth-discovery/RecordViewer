@@ -58,7 +58,7 @@ public class FhirApi {
 
                 String nhsNumber = "0";
                 String dateOfBirth = "0";
-                boolean onlyDemographics = true;
+                boolean onlyDemographics = false;
 
                 for (Parameter param : parameters) {
                     String paramName = param.getName();
