@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
@@ -832,7 +831,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return patientSummary;
     }
 
-    public PatientFull getPatientFull(Integer id, String nhsNumber, String dateOfBirth) throws Exception {
+    public PatientFull getPatientFull(Integer id, String nhsNumber, String dateOfBirth, boolean includeOnlyActivePatient) throws Exception {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
@@ -870,7 +869,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "where c2.code = 'R' "+
                 "and p.date_of_death IS NULL "+
                 "and e.date_registered <= now() "+
-                "and (e.date_registered_end > now() or e.date_registered_end IS NULL) and (p.id = ? or (p.nhs_number = ? and p.date_of_birth = ?))";
+                "and (p.id = ? or (p.nhs_number = ? and p.date_of_birth = ?))";
+
+
+        if (includeOnlyActivePatient){
+            sql.concat(" and (e.date_registered_end > now() or e.date_registered_end IS NULL)");
+        }
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, id);
@@ -885,7 +889,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    public PatientFull getPatientFull(String nhsNumber) throws Exception {
+    public PatientFull getPatientFull(String nhsNumber, boolean includeOnlyActivePatient) throws Exception {
         PatientFull result = null;
 
         String sql = "SELECT p.id,"+
@@ -923,7 +927,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "where c2.code = 'R' "+
                 "and p.date_of_death IS NULL "+
                 "and e.date_registered <= now() "+
-                "and (e.date_registered_end > now() or e.date_registered_end IS NULL) and (p.nhs_number = ?)";
+                "and (p.nhs_number = ?)";
+
+        if (includeOnlyActivePatient) {
+            sql.concat(" and (e.date_registered_end > now() or e.date_registered_end IS NULL)");
+        }
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, nhsNumber);

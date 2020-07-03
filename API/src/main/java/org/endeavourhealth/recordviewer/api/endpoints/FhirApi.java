@@ -59,6 +59,7 @@ public class FhirApi {
                 String nhsNumber = "0";
                 String dateOfBirth = "0";
                 boolean onlyDemographics = false;
+                boolean activePatientsOnly = false;
 
                 for (Parameter param : parameters) {
                     String paramName = param.getName();
@@ -72,11 +73,15 @@ public class FhirApi {
                         if (param.getPart().get(0) != null && param.getPart().get(0).getValueBoolean()) {
                             onlyDemographics = true;
                         }
+                    } else if (paramName.equals("activePatientsOnly")) {
+                        if (param.getPart().get(0) != null && param.getPart().get(0).getValueBoolean()) {
+                            activePatientsOnly = true;
+                        }
                     }
                 }
 
                 try {
-                    json = getFhirBundle(0, nhsNumber, dateOfBirth, onlyDemographics);
+                    json = getFhirBundle(0, nhsNumber, dateOfBirth, onlyDemographics, activePatientsOnly);
                 } catch (Exception e) {
                     throw new ResourceNotFoundException("Resource error:" + e);
                 }
@@ -93,10 +98,10 @@ public class FhirApi {
     }
 
     public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth) throws Exception {
-        return getFhirBundle(id, nhsNumber, dateOfBirth, false) ;
+        return getFhirBundle(id, nhsNumber, dateOfBirth, false, false) ;
     }
 
-    public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth, boolean onlyDemographics) throws Exception {
+    public JSONObject getFhirBundle(Integer id, String nhsNumber, String dateOfBirth, boolean onlyDemographics, boolean activePatientsOnly) throws Exception {
         organizationFhirMap = new HashMap<>();
         encounterFhirMap = new HashMap<>();
         patientCodingMap = new HashMap<>();
@@ -108,9 +113,9 @@ public class FhirApi {
         PatientFull patient = null;
 
         if (id>0 || !dateOfBirth.equals("0"))
-            patient = viewerDAL.getPatientFull(id, nhsNumber, dateOfBirth);
+            patient = viewerDAL.getPatientFull(id, nhsNumber, dateOfBirth, activePatientsOnly);
         else
-            patient = viewerDAL.getPatientFull(nhsNumber);
+            patient = viewerDAL.getPatientFull(nhsNumber, activePatientsOnly);
 
         if (patient == null)
             throw new ResourceNotFoundException("Patient resource with id = '" + nhsNumber + "' not found");
