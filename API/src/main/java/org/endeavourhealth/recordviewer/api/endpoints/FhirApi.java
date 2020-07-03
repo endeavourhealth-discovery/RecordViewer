@@ -550,10 +550,16 @@ public class FhirApi {
                         if(!scheduleIds.containsKey(appointmentFull.getScheduleId())) {
                             List<Reference> actorList = new ArrayList<Reference>();
                             scheduleResource = fhirAppointment.getScheduleResource(appointmentFull);
-                            actorList.add(new Reference(getOrganizationFhirObj(appointmentFull.getOrgId())));
+                            Reference organizationResource = new Reference(getOrganizationFhirObj(appointmentFull.getOrgId()));
+                            organizationResource.setDisplay("Organization");
+                            actorList.add(organizationResource);
                             if (appointmentFull.getPractitionerId()!=0) {
-                                actorList.add(new Reference(getPractitionerRoleResource(appointmentFull.getPractitionerId(), appointmentFull.getOrgId())));
-                                actorList.add(new Reference(getPractitionerResource(appointmentFull.getPractitionerId())));
+                                Reference practitionerRoleReference = new Reference(getPractitionerRoleResource(appointmentFull.getPractitionerId(), appointmentFull.getOrgId()));
+                                practitionerRoleReference.setDisplay("PractitionerRole");
+                                actorList.add(practitionerRoleReference);
+                                Reference practitionerReference = new Reference(getPractitionerResource(appointmentFull.getPractitionerId()));
+                                practitionerReference.setDisplay("Practitioner");
+                                actorList.add(practitionerReference);
                             }
                             scheduleResource.setActor(actorList);
                             bundle.addEntry().setResource(scheduleResource);
