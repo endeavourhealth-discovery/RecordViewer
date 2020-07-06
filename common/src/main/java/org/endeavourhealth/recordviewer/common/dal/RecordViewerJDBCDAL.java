@@ -288,7 +288,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId, Integer active) throws Exception {
         MedicationResult result = new MedicationResult();
 
-        String activeMedication = " and m.cancellation_data is not NULL ";
+        String activeMedication = " and m.cancellation_date is not NULL ";
 
         if (active==0)
             activeMedication = "";
