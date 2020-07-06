@@ -14,7 +14,6 @@ public class MedicationStatement {
 
 	public static org.hl7.fhir.dstu3.model.MedicationStatement getMedicationStatementResource(MedicationStatementFull medicationStatementResult) throws Exception {
 		String clinicalEffDate = replaceNull(medicationStatementResult.getDate());
-		int status = medicationStatementResult.getStatus();
 		String dose = replaceNull(medicationStatementResult.getDose());
 		String valueDateTime = replaceNull(medicationStatementResult.getValueDateTime());
 		UUID id = UUID.randomUUID();
@@ -52,11 +51,6 @@ public class MedicationStatement {
 		extensionList.add(extension1);
 		extensionList.add(extension2);
 		medicationStatement.setExtension(extensionList);
-
-		if(status == 1)
-			medicationStatement.setStatus(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.ACTIVE);
-		else
-			medicationStatement.setStatus(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.COMPLETED);
 
 		List<Dosage> dosageList = new ArrayList<Dosage>();
 		Dosage dosage = new Dosage();

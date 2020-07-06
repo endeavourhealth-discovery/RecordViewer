@@ -288,7 +288,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId, Integer active) throws Exception {
         MedicationResult result = new MedicationResult();
 
-        String activeMedication = " and m.is_active = 1 ";
+        String activeMedication = " and m.cancellation_data is not NULL ";
 
         if (active==0)
             activeMedication = "";
@@ -1329,7 +1329,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "select ms.id as msid, c.name, c.code, " +
                 "coalesce(ms.clinical_effective_date,'') as clinicalEffDt, " +
                 "coalesce(ms.patient_id,'') as patientId, " +
-                "coalesce(ms.is_active,'') as status, " +
                 "coalesce(ms.dose,'') as dose, " +
                 "coalesce(ms.quantity_value,'') as qValue, " +
                 "coalesce(ms.cancellation_date,'') as cancellation_date, " +
@@ -1363,7 +1362,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     .setName(resultSet.getString("name"))
                     .setCode(resultSet.getString("code"))
                     .setDate(resultSet.getString("clinicalEffDt"))
-                    .setStatus(resultSet.getInt("status"))
                     .setDose(resultSet.getString("dose"))
                     .setCancellationDate(resultSet.getString("cancellation_date"))
                     .setValueDateTime(resultSet.getString("valueDtTime"));
