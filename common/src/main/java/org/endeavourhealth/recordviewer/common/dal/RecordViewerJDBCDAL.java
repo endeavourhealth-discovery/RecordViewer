@@ -288,13 +288,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId, Integer active) throws Exception {
         MedicationResult result = new MedicationResult();
 
-        String activeMedication = " and m.cancellation_date is not NULL ";
+        String activeMedication = " and m.cancellation_date is NULL ";
 
         if (active==0)
             activeMedication = "";
 
         String sql = "SELECT m.id,m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity, " +
-                "CASE WHEN is_active = 1 THEN 'Active' " +
+                "CASE WHEN m.cancellation_date is NULL THEN 'Active' " +
 				"else 'Past' END as status,c2.name as type, " +
                 "max(coalesce(mo.clinical_effective_date,'')) as last_issue_date " +
                 "FROM medication_statement m " +
