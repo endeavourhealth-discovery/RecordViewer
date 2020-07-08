@@ -867,13 +867,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c2 on c2.dbid = e.registration_type_concept_id "+
                 "left join concept c3 on c3.dbid = p.ethnic_code_concept_id "+
                 "where c2.code = 'R' "+
-                "and p.date_of_death IS NULL "+
-                "and e.date_registered <= now() "+
                 "and (p.id = ? or (p.nhs_number = ? and p.date_of_birth = ?))";
 
 
         if (includeOnlyActivePatient){
-            sql.concat(" and (e.date_registered_end > now() or e.date_registered_end IS NULL)");
+            sql.concat(" and p.date_of_death IS NULL and e.date_registered <= now() and (e.date_registered_end > now() or e.date_registered_end IS NULL)");
         }
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
