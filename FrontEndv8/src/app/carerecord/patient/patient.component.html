@@ -1,28 +1,21 @@
 <div mat-dialog-title>
-  <mat-card-title>Find patient</mat-card-title>
+  Find patient
 </div>
 
-<mat-grid-list cols="6" rowHeight="2:1">
-  <mat-grid-tile>
+<div style="font-size: 14px">
     <mat-form-field appearance="outline">
       <mat-label>Patient ID</mat-label>
       <input matInput placeholder="Patient ID" [(ngModel)]="data.patientId">
     </mat-form-field>
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" style="margin-left: 10px">
       <mat-label>NHS number</mat-label>
       <input matInput placeholder="NHS Number" [(ngModel)]="nhsNumber" (keyup)="patientEntered($event)">
     </mat-form-field>
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" style="margin-left: 10px">
       <mat-label>Name(s)</mat-label>
       <input matInput placeholder="Name(s)" [(ngModel)]="name" (keyup)="patientEntered($event)">
     </mat-form-field>
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-form-field class="example-full-width" appearance="outline">
+    <mat-form-field class="example-full-width" appearance="outline" style="margin-left: 10px">
       <mat-label>Date of birth</mat-label>
       <input matInput [matDatepicker]="picker" placeholder="Date of Birth" [(ngModel)]="dob" (dateChange)="loadEvents()">
       <mat-datepicker-toggle matSuffix [for]="picker">
@@ -30,8 +23,7 @@
       </mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-  </mat-grid-tile>
-</mat-grid-list>
+</div>
 
 <div mat-dialog-content class="flex" fxLayout="row wrap" fxLayoutAlign="start">
 
