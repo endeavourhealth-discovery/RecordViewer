@@ -4,25 +4,25 @@
       <i style="margin-right: 20px" class="fad fa-user-injured"></i>
     </div>
     <mat-card-title>
-      <div>
-       <span [ngClass]="{'deceased': dod != null}">{{name}}</span>
-      <span class="precis">Age: {{age}}</span>
-      <span class="precis">Gender: {{gender}}</span>
-      <span class="precis">NHS: {{nhsNumber}}</span>
-      <span class="precis">Born: {{dob}}</span>
-      </div>
+      <table>
+        <tr>
+          <td class="precis" [ngClass]="{'deceased': dod != null}"><b>{{name}}</b></td>
+          <td class="precis">Gender: <b>{{gender}}</b></td>
+          <td class="precis">NHS: <b>{{nhsNumber}}</b></td>
+          <td class="precis">Born: <b>{{dob}} ({{age}})</b></td>
+        </tr>
+        <tr>
+          <td class="precis2"><b>{{address}}</b></td>
+          <td class="precis2">Usual GP: <b>{{usual_gp}}</b></td>
+          <td class="precis2">Organisation: <b>{{organisation}}</b></td>
+          <td class="precis2">Registration status: <b>{{registration}}</b></td>
+
+        </tr>
+      </table>
     </mat-card-title>
-    <mat-card-subtitle>
-      <div class="patient-row">
-        <div class="patient-column"><b>{{address}}</b></div>
-        <div class="patient-column">Usual GP: <b>{{usual_gp}}</b></div>
-        <div class="patient-column">Organisation: <b>{{organisation}}</b></div>
-        <div class="patient-column">Registration status: <b>{{registration}}</b></div>
-      </div>
-    </mat-card-subtitle>
     <mat-card-actions>
-     <button mat-raised-button style="margin-left: 10px" (click)="swapPatient()">Swap patient</button>
-      <button mat-raised-button style="margin-left: 20px" (click)="clearPatient()">Clear patient</button>
+      <button mat-flat-button color="accent" (click)="swapPatient()">Swap patient</button>
+      <button mat-button color="accent" (click)="clearPatient()">Clear patient</button>
     </mat-card-actions>
   </mat-card-header>
 </mat-card>
