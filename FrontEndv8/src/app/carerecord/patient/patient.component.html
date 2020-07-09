@@ -1,83 +1,78 @@
-<mat-card>
-  <mat-card-header class="header2">
-    <div mat-card-avatar>
-      <i class="fad fa-search"></i>
-    </div>
-    <mat-card-title>Find patient</mat-card-title>
-    <mat-card-subtitle>Use any of the criteria below to find the required patient</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <mat-grid-list cols="5" rowHeight="2:1">
-      <mat-grid-tile>
-        <mat-form-field appearance="outline">
-          <mat-label>Patient ID</mat-label>
-          <input matInput placeholder="Patient ID" [(ngModel)]="data.patientId">
-        </mat-form-field>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field appearance="outline">
-          <mat-label>NHS number</mat-label>
-          <input matInput placeholder="NHS Number" [(ngModel)]="nhsNumber" (keyup)="patientEntered($event)">
-        </mat-form-field>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field appearance="outline">
-          <mat-label>Name(s)</mat-label>
-          <input matInput placeholder="Name(s)" [(ngModel)]="name" (keyup)="patientEntered($event)">
-        </mat-form-field>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-form-field class="example-full-width" appearance="outline">
-          <mat-label>Date of birth</mat-label>
-          <input matInput [matDatepicker]="picker" placeholder="Date of Birth" [(ngModel)]="dob" (dateChange)="loadEvents()">
-          <mat-datepicker-toggle matSuffix [for]="picker">
-            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-          </mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </mat-grid-tile>
-    </mat-grid-list>
-    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
-        <ng-container matColumnDef="name/address">
-          <th mat-header-cell *matHeaderCellDef>Name / Address</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> <b>{{element.name}}</b><br/>{{element.address}}</td>
-        </ng-container>
-        <ng-container matColumnDef="dob/nhsNumber">
-          <th mat-header-cell *matHeaderCellDef>Date of birth / <br/>NHS number</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.dob}}<br/>{{element.nhsNumber}} </td>
-        </ng-container>
-        <ng-container matColumnDef="age/gender">
-          <th mat-header-cell *matHeaderCellDef>Age /<br/>Gender</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.age}}<br/>{{element.gender}} </td>
-        </ng-container>
-        <ng-container matColumnDef="usual_gp/organisation">
-          <th mat-header-cell *matHeaderCellDef>Usual GP / Organisation</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.usual_gp}}<br/>{{element.organisation}}</td>
-        </ng-container>
-        <ng-container matColumnDef="registration">
-          <th mat-header-cell *matHeaderCellDef>Registration status</th>
-          <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.registration}}</td>
-        </ng-container>
+<div mat-dialog-title>
+  <mat-card-title>Find patient</mat-card-title>
+</div>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr style="cursor: pointer" mat-row *matRowDef="let row; columns: displayedColumns;" [mat-dialog-close]="row.id"></tr>
-      </table>
-      <div>
-      </div>
-      <mat-paginator [length]="events?.length"
-                     [pageSize]="size"
-                     [pageIndex]="page"
-                     [showFirstLastButtons]="true"
-                     (page)="onPage($event)"
-                     fxFlex="100"
-                     fxFill>
-      </mat-paginator>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-raised-button (click)="onCancelClick()">Cancel</button>
-      <button mat-raised-button [mat-dialog-close]="data.patientId" cdkFocusInitial>Ok</button>
-    </div>
-  </mat-card-content>
+<mat-grid-list cols="6" rowHeight="2:1">
+  <mat-grid-tile>
+    <mat-form-field appearance="outline">
+      <mat-label>Patient ID</mat-label>
+      <input matInput placeholder="Patient ID" [(ngModel)]="data.patientId">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field appearance="outline">
+      <mat-label>NHS number</mat-label>
+      <input matInput placeholder="NHS Number" [(ngModel)]="nhsNumber" (keyup)="patientEntered($event)">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field appearance="outline">
+      <mat-label>Name(s)</mat-label>
+      <input matInput placeholder="Name(s)" [(ngModel)]="name" (keyup)="patientEntered($event)">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Date of birth</mat-label>
+      <input matInput [matDatepicker]="picker" placeholder="Date of Birth" [(ngModel)]="dob" (dateChange)="loadEvents()">
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </mat-grid-tile>
+</mat-grid-list>
 
-</mat-card>
+<div mat-dialog-content class="flex" fxLayout="row wrap" fxLayoutAlign="start">
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
+    <ng-container matColumnDef="name/address">
+      <th mat-header-cell *matHeaderCellDef>Name / Address</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> <b>{{element.name}}</b><br/>{{element.address}}</td>
+    </ng-container>
+    <ng-container matColumnDef="dob/nhsNumber">
+      <th mat-header-cell *matHeaderCellDef>Date of birth / <br/>NHS number</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.dob}}<br/>{{element.nhsNumber}} </td>
+    </ng-container>
+    <ng-container matColumnDef="age/gender">
+      <th mat-header-cell *matHeaderCellDef>Age /<br/>Gender</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.age}}<br/>{{element.gender}} </td>
+    </ng-container>
+    <ng-container matColumnDef="usual_gp/organisation">
+      <th mat-header-cell *matHeaderCellDef>Usual GP / Organisation</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.usual_gp}}<br/>{{element.organisation}}</td>
+    </ng-container>
+    <ng-container matColumnDef="registration">
+      <th mat-header-cell *matHeaderCellDef>Registration status</th>
+      <td mat-cell *matCellDef="let element" [ngClass]="{'deceased': element.dod != null}"> {{element.registration}}</td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr style="cursor: pointer" mat-row *matRowDef="let row; columns: displayedColumns;" [mat-dialog-close]="row.id"></tr>
+  </table>
+
+  <mat-paginator [length]="events?.length"
+                 [pageSize]="size"
+                 [pageIndex]="page"
+                 [showFirstLastButtons]="true"
+                 (page)="onPage($event)"
+                 fxFlex="100"
+                 fxFill>
+  </mat-paginator>
+
+</div>
+
+<div mat-dialog-actions align="end">
+  <button style="margin-right: 15px" mat-button color="accent" (click)="onCancelClick()">Cancel</button>
+  <button style="margin-right: 15px" mat-flat-button color="accent" [mat-dialog-close]="data.patientId" cdkFocusInitial>Ok</button>
+</div>
+

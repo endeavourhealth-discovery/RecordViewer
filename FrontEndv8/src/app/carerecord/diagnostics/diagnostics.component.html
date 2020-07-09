@@ -18,7 +18,7 @@
       <button style="margin-left: 20px" mat-raised-button (click)="loadEvents()">Search</button>
     </div>
 
-    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
 
         <ng-container matColumnDef="select">

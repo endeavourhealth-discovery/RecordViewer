@@ -10,7 +10,7 @@
   </mat-card-header>
   <mat-card-content>
     <div class="summary-column">
-      <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 mat-table-compact" *ngIf="events2" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:450px" mat-header-cell *matHeaderCellDef > <i class="fas fa-diagnoses" style="width:25px"></i> Active conditions / problems</th>
@@ -26,7 +26,7 @@
         <div style="height: 10px"></div>
       </div>
 
-      <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8 mat-table-compact" *ngIf="events3" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:450px" mat-header-cell *matHeaderCellDef><i class="fas fa-allergies" style="width:25px"></i>Allergies & intolerances</th>
@@ -44,7 +44,7 @@
     </div>
 
     <div class="summary-column">
-      <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8 mat-table-compact" *ngIf="events1" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:300px" mat-header-cell *matHeaderCellDef><i class="fas fa-pills" style="width:25px"></i>Current medication</th>
@@ -65,7 +65,7 @@
         <div style="height: 10px"></div>
       </div>
 
-      <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+      <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
         <table mat-table [dataSource]="dataSource4" class="mat-elevation-z8 mat-table-compact" *ngIf="events4" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:445px" mat-header-cell *matHeaderCellDef><i class="fas fa-exclamation-triangle" style="width:25px"></i>Warnings & Flags</th>
@@ -82,7 +82,7 @@
       </div>
     </div>
 
-    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource5" class="mat-elevation-z8 mat-table-compact" *ngIf="events5" fxFlex="100" fxFill>
 
         <ng-container matColumnDef="type">
@@ -107,7 +107,7 @@
       <div style="height: 10px"></div>
     </div>
 
-    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource6" class="mat-elevation-z8 mat-table-compact" *ngIf="events6" fxFlex="100" fxFill>
 
         <ng-container matColumnDef="select">

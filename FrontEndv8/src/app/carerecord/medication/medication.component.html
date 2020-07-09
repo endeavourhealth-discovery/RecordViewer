@@ -9,7 +9,7 @@
     <mat-card-subtitle>A record of acute and repeat medication that is being consumed by the patient. Also includes a list of past medication.</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="16px grid" fxLayoutAlign="start">
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
 
         <ng-container matColumnDef="name">
