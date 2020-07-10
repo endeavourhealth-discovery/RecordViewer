@@ -40,6 +40,7 @@ import {AppointmentComponent} from "./appointment/appointment.component";
 import {ReferralsComponent} from "./referrals/referrals.component";
 import {EncountersComponent} from "./encounters/encounters.component";
 import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
         BarChartModule,
         LineChartModule,
         AreaChartModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatTooltipModule
     ],
   entryComponents: [
     PatientComponent,

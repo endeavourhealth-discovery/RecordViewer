@@ -7,15 +7,15 @@
       <mat-label>Patient ID</mat-label>
       <input matInput placeholder="Patient ID" [(ngModel)]="data.patientId">
     </mat-form-field>
-    <mat-form-field appearance="outline" style="margin-left: 10px">
+    <mat-form-field appearance="outline" style="margin-left: 25px">
       <mat-label>NHS number</mat-label>
       <input matInput placeholder="NHS Number" [(ngModel)]="nhsNumber" (keyup)="patientEntered($event)">
     </mat-form-field>
-    <mat-form-field appearance="outline" style="margin-left: 10px">
+    <mat-form-field appearance="outline" style="margin-left: 25px">
       <mat-label>Name(s)</mat-label>
       <input matInput placeholder="Name(s)" [(ngModel)]="name" (keyup)="patientEntered($event)">
     </mat-form-field>
-    <mat-form-field class="example-full-width" appearance="outline" style="margin-left: 10px">
+    <mat-form-field class="example-full-width" appearance="outline" style="margin-left: 25px">
       <mat-label>Date of birth</mat-label>
       <input matInput [matDatepicker]="picker" placeholder="Date of Birth" [(ngModel)]="dob" (dateChange)="loadEvents()">
       <mat-datepicker-toggle matSuffix [for]="picker">
@@ -23,6 +23,9 @@
       </mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+    <button style="margin-left: 20px" mat-button (click)="loadEvents()" matTooltip="search">
+      <mat-icon style="font-size: 30px; margin-bottom: 5px" matSuffix>search</mat-icon>
+    </button>
 </div>
 
 <div mat-dialog-content class="flex" fxLayout="row wrap" fxLayoutAlign="start">

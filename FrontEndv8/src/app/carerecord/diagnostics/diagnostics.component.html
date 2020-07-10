@@ -45,8 +45,7 @@
         <ng-container matColumnDef="term">
           <th mat-header-cell *matHeaderCellDef>Diagnostic report</th>
           <td mat-cell *matCellDef="let element">
-            <i class="fad fa-analytics" (click)="showTrend(element.term)" style="width:25px;cursor:pointer">
-            <span class="text">click for trend chart</span> </i>
+            <i class="fad fa-analytics" (click)="showTrend(element.term)" style="width:25px;cursor:pointer" matTooltip="click for trend chart"></i>
             {{element.term}} </td>
         </ng-container>
         <ng-container matColumnDef="result">
