@@ -48,7 +48,7 @@ export class PrecisComponent implements OnInit {
 
   swapPatient() {
       const dialogRef = this.dialog.open(PatientComponent, {
-        height: '800px',
+        height: '750px',
         width: '1600px',
         data: {patientId: this.patientId}
       });
