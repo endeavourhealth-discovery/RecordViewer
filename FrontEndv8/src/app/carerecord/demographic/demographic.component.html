@@ -13,28 +13,28 @@
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Patient ID</mat-label>
-          <input matInput placeholder="Patient ID" [(ngModel)]="id">
+          <input matInput placeholder="Patient ID" [(ngModel)]="id" readonly="readonly">
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>NHS number</mat-label>
-          <input matInput placeholder="NHS number" [(ngModel)]="nhsNumber">
+          <input matInput placeholder="NHS number" [(ngModel)]="nhsNumber" readonly="readonly">
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Name</mat-label>
-          <input matInput placeholder="Name" [(ngModel)]="name">
+          <input matInput placeholder="Name" [(ngModel)]="name" readonly="readonly">
           <mat-icon matSuffix>account_circle</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Gender</mat-label>
-          <input matInput placeholder="Gender" [(ngModel)]="gender">
+          <input matInput placeholder="Gender" [(ngModel)]="gender" readonly="readonly">
           <mat-icon matSuffix>supervised_user_circle</mat-icon>
         </mat-form-field>
       </div>
@@ -42,14 +42,14 @@
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Date of birth</mat-label>
-          <input matInput placeholder="Date of birth" [(ngModel)]="dob">
+          <input matInput placeholder="Date of birth" [(ngModel)]="dob" readonly="readonly">
           <mat-icon matSuffix>today</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Date of death</mat-label>
-          <input matInput placeholder="Date of death" [(ngModel)]="dod">
+          <input matInput placeholder="Date of death" [(ngModel)]="dod" readonly="readonly">
           <mat-icon matSuffix>today</mat-icon>
         </mat-form-field>
       </div>
@@ -61,7 +61,7 @@
                     cdkTextareaAutosize
                     #autosize="cdkTextareaAutosize"
                     cdkAutosizeMinRows="1"
-                    cdkAutosizeMaxRows="4" [(ngModel)]="address">
+                    cdkAutosizeMaxRows="4" [(ngModel)]="address" readonly="readonly">
           </textarea>
           <mat-icon matSuffix>house</mat-icon>
         </mat-form-field>
@@ -70,35 +70,35 @@
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Mobile</mat-label>
-          <input matInput placeholder="Mobile" [(ngModel)]="mobile">
+          <input matInput placeholder="Mobile" [(ngModel)]="mobile" readonly="readonly">
           <mat-icon matSuffix>phone</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Registered organisation</mat-label>
-          <input matInput placeholder="Registered organisation" [(ngModel)]="orgname">
+          <input matInput placeholder="Registered organisation" [(ngModel)]="orgname" readonly="readonly">
           <mat-icon matSuffix>business</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Registration date</mat-label>
-          <input matInput placeholder="Registration date" [(ngModel)]="startdate">
+          <input matInput placeholder="Registration date" [(ngModel)]="startdate" readonly="readonly">
           <mat-icon matSuffix>today</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Usual GP</mat-label>
-          <input matInput placeholder="Usual GP" [(ngModel)]="usualgp">
+          <input matInput placeholder="Usual GP" [(ngModel)]="usualgp" readonly="readonly">
           <mat-icon matSuffix>person</mat-icon>
         </mat-form-field>
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Registration status</mat-label>
-          <input matInput placeholder="Registration status" [(ngModel)]="regtype">
+          <input matInput placeholder="Registration status" [(ngModel)]="regtype" readonly="readonly">
           <mat-icon matSuffix>today</mat-icon>
         </mat-form-field>
       </div>

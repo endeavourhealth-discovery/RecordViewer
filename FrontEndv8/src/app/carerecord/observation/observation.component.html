@@ -14,6 +14,7 @@
         <mat-form-field style="margin-left: 10px" appearance="outline">
           <mat-label>Search term</mat-label>
           <input matInput placeholder="Term" [(ngModel)]="term" (keyup)="termEntered($event)">
+          <mat-icon style="cursor: pointer" (click)="loadEvents()" matSuffix>search</mat-icon>
         </mat-form-field>
         <button style="margin-left: 20px" mat-raised-button (click)="loadEvents()">Search</button>
       </div>
