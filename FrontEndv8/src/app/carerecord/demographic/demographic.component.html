@@ -9,21 +9,8 @@
     <mat-card-subtitle>Full demographic information for the patient.</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-      <div class="demographics">
-        <mat-form-field appearance="outline">
-          <mat-label>Patient ID</mat-label>
-          <input matInput placeholder="Patient ID" [(ngModel)]="id" readonly="readonly">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </div>
-      <div class="demographics">
-        <mat-form-field appearance="outline">
-          <mat-label>NHS number</mat-label>
-          <input matInput placeholder="NHS number" [(ngModel)]="nhsNumber" readonly="readonly">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </div>
+
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="start">
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Name</mat-label>
@@ -46,17 +33,26 @@
           <mat-icon matSuffix>today</mat-icon>
         </mat-form-field>
       </div>
+    </div>
+    <br/>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="start">
       <div class="demographics">
         <mat-form-field appearance="outline">
-          <mat-label>Date of death</mat-label>
-          <input matInput placeholder="Date of death" [(ngModel)]="dod" readonly="readonly">
-          <mat-icon matSuffix>today</mat-icon>
+          <mat-label>Patient ID</mat-label>
+          <input matInput placeholder="Patient ID" [(ngModel)]="id" readonly="readonly">
+          <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
       </div>
-      <br/>
       <div class="demographics">
         <mat-form-field appearance="outline">
-          <mat-label>Current Address</mat-label>
+          <mat-label>NHS number</mat-label>
+          <input matInput placeholder="NHS number" [(ngModel)]="nhsNumber" readonly="readonly">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Current address</mat-label>
           <textarea matInput
                     cdkTextareaAutosize
                     #autosize="cdkTextareaAutosize"
@@ -66,7 +62,15 @@
           <mat-icon matSuffix>house</mat-icon>
         </mat-form-field>
       </div>
-      <br/>
+    </div>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="start">
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Date of death</mat-label>
+          <input matInput placeholder="Date of death" [(ngModel)]="dod" readonly="readonly">
+          <mat-icon matSuffix>today</mat-icon>
+        </mat-form-field>
+      </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Mobile</mat-label>
@@ -74,6 +78,16 @@
           <mat-icon matSuffix>phone</mat-icon>
         </mat-form-field>
       </div>
+      <div class="demographics">
+        <mat-form-field appearance="outline">
+          <mat-label>Usual GP</mat-label>
+          <input matInput placeholder="Usual GP" [(ngModel)]="usualgp" readonly="readonly">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+    <br/>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="start">
       <div class="demographics">
         <mat-form-field appearance="outline">
           <mat-label>Registered organisation</mat-label>
@@ -90,21 +104,12 @@
       </div>
       <div class="demographics">
         <mat-form-field appearance="outline">
-          <mat-label>Usual GP</mat-label>
-          <input matInput placeholder="Usual GP" [(ngModel)]="usualgp" readonly="readonly">
-          <mat-icon matSuffix>person</mat-icon>
-        </mat-form-field>
-      </div>
-      <div class="demographics">
-        <mat-form-field appearance="outline">
           <mat-label>Registration status</mat-label>
           <input matInput placeholder="Registration status" [(ngModel)]="regtype" readonly="readonly">
           <mat-icon matSuffix>today</mat-icon>
         </mat-form-field>
       </div>
-
     </div>
-
   </mat-card-content>
 </mat-card>
 
