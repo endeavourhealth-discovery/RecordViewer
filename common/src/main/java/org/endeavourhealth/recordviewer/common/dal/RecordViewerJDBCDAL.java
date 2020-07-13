@@ -863,7 +863,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id "+
-                "join person pe on pe.nhs_number = p.nhs_number "+
                 "join concept c2 on c2.dbid = e.registration_type_concept_id "+
                 "left join concept c3 on c3.dbid = p.ethnic_code_concept_id "+
                 "where "+
@@ -919,7 +918,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id "+
-                "join person pe on pe.nhs_number = p.nhs_number "+
                 "left join concept c3 on c3.dbid = p.ethnic_code_concept_id "+
                 "join concept c2 on c2.dbid = e.registration_type_concept_id "+
                 "where  "+
