@@ -1175,7 +1175,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setOrglocation(resultSet.getString("orglocation"))
                 .setOrgname(resultSet.getString("orgname"))
                 .setPractitionerId(resultSet.getLong("practitionerId"))
-                .setRegistrationEndDate(resultSet.getString("registeredEndDate"))
+                .setRegistrationEndDate(resultSet.getDate("registeredEndDate"))
                 .setRegistrationType(resultSet.getString("registrationType"))
                 .setStartdate(resultSet.getDate("startdate"))
                 .setRegistrationStatusValue(resultSet.getString("registrationStatusValue"))
