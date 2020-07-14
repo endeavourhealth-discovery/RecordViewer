@@ -16,6 +16,7 @@ public class EncountersSummary {
     private String type;
     private String location;
     private String practitioner;
+    private String orgName;
 
     public String getDate() { return date; }
     public EncountersSummary setDate(Date date) {
@@ -52,6 +53,15 @@ public class EncountersSummary {
     }
     public EncountersSummary setPractitioner(String practitioner) {
         this.practitioner = practitioner;
+        return this;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public EncountersSummary setOrgName(String orgName) {
+        this.orgName = orgName;
         return this;
     }
 

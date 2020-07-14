@@ -18,6 +18,7 @@ public class MedicationSummary {
     private String status;
     private String type;
     private String last;
+    private String orgName;
 
     public String getDate() {
         return date;
@@ -110,5 +111,14 @@ public class MedicationSummary {
         }
 
         return titleCase.toString();
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public MedicationSummary setOrgName(String orgName) {
+        this.orgName = orgName;
+        return this;
     }
 }

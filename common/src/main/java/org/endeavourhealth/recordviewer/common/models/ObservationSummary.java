@@ -13,6 +13,7 @@ public class ObservationSummary {
     private String date;
     private String status;
     private String name;
+    private String orgName;
 
     public String getDate() {
         return date;
@@ -55,6 +56,15 @@ public class ObservationSummary {
 
     public ObservationSummary setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public ObservationSummary setOrgName(String orgName) {
+        this.orgName = orgName;
         return this;
     }
 

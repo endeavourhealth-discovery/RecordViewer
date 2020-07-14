@@ -17,6 +17,7 @@ public class AppointmentSummary {
     private int duration;
     private int delay;
     private String status;
+    private String orgName;
 
     public String getType() {
         return type;
@@ -71,6 +72,15 @@ public class AppointmentSummary {
     }
     public AppointmentSummary setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public AppointmentSummary setOrgName(String orgName) {
+        this.orgName = orgName;
         return this;
     }
 

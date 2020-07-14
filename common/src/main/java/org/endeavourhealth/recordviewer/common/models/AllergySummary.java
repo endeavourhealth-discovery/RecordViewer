@@ -13,6 +13,7 @@ public class AllergySummary {
     private String date;
     private String status;
     private String name;
+    private String orgName;
 
     public String getDate() {
         return date;
@@ -67,5 +68,14 @@ public class AllergySummary {
         }
 
         return titleCase.toString();
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public AllergySummary setOrgName(String orgName) {
+        this.orgName = orgName;
+        return this;
     }
 }
