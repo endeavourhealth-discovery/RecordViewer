@@ -93,8 +93,16 @@ public class PatientFull {
         return registrationEndDate;
     }
 
-    public PatientFull setRegistrationEndDate(String registrationEndDate) {
-        this.registrationEndDate = registrationEndDate;
+   public PatientFull setRegistrationEndDate(Date red) {
+        try {
+            String pattern = "dd-MMM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            this.registrationEndDate = simpleDateFormat.format(red);
+        }
+        catch (Exception e) {
+
+        }
         return this;
     }
 

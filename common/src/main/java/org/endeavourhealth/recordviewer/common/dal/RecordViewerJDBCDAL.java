@@ -393,23 +393,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,c.name,org.name as orgname " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-<<<<<<< HEAD
                         "join organization org on org.id = o.organization_id "+
                         "where patient_id = ? and o.is_problem = 1 "+activeProblem+
-=======
-                        "where patient_id = ? and o.is_problem = 1 and o.is_review = 0  "+activeProblem+
->>>>>>> 5e011d25663b92a4ab4fdb9a4a19ff8202a0257a
                         "order by o.problem_end_date, o.clinical_effective_date DESC LIMIT ?,?";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
-<<<<<<< HEAD
                         "join organization org on org.id = o.organization_id "+
                         "where patient_id = ? and o.is_problem = 1 "+activeProblem;
-=======
-                        "where patient_id = ? and o.is_problem = 1 and o.is_review = 0  "+activeProblem;
->>>>>>> 5e011d25663b92a4ab4fdb9a4a19ff8202a0257a
+
                 break;
             case 2: // observations
                 sql = "SELECT o.clinical_effective_date as date,  " +
