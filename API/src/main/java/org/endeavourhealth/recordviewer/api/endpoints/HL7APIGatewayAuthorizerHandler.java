@@ -15,8 +15,7 @@ public class HL7APIGatewayAuthorizerHandler implements RequestHandler<TokenAutho
 
     RecordViewerJDBCDAL viewerDAL;
 
-    @Override
-    public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
+    public AuthPolicy handleRequestByPass(TokenAuthorizerContext input, Context context) {
 
         // bypass auth for test, will use method below once keycloak login available for client caller
 
@@ -40,8 +39,8 @@ public class HL7APIGatewayAuthorizerHandler implements RequestHandler<TokenAutho
         return new RecordViewerJDBCDAL();
     }
 
-
-    public AuthPolicy handleRequestLive(TokenAuthorizerContext input, Context context) {
+    @Override
+    public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
 
         String headerAuthToken = input.getAuthorizationToken();
         String userID = "";
@@ -71,7 +70,7 @@ public class HL7APIGatewayAuthorizerHandler implements RequestHandler<TokenAutho
                 viewerDAL = getRecordViewerObject();
                 foundFHIRPolicy = viewerDAL.applicationAccessProfile(userID, "hl7v2-api");
 
-                foundFHIRPolicy = true; // force OK until user had been set up in user manager for this client
+                //foundFHIRPolicy = true; // force OK until user had been set up in user manager for this client
 
             } else { // user is not authorized with this token
                 throw new RuntimeException("Unauthorized"); // Not authorized so send 401/403 Unauthorized response to the client
