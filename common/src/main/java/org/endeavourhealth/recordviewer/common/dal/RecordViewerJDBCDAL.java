@@ -887,7 +887,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(c3.description, '') as ethnicDescription," +
                 "coalesce(c2.description, '') as registrationStatusValue," +
                 "coalesce(e.registration_type_concept_id,'') as registrationType,"+
-                "coalesce(e.date_registered_end,'') as registeredEndDate,"+
+                "e.date_registered_end as registeredEndDate,"+
                 "coalesce(e.date_registered,'') as startdate,"+
                 "'HOME' as adduse,"+
                 "'' as otheraddresses "+
@@ -939,7 +939,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "coalesce(a.city,'') as city,"+
                 "coalesce(e.usual_gp_practitioner_id,'') as practitionerId,"+
                 "coalesce(e.registration_type_concept_id,'') as registrationType,"+
-                "coalesce(e.date_registered_end,'') as registeredEndDate,"+
+                "e.date_registered_end registeredEndDate,"+
                 "coalesce(a.postcode,'') as postcode," +
                 "coalesce(c3.description, '') as ethnicDescription," +
                 "coalesce(c2.description, '') as registrationStatusValue," +
