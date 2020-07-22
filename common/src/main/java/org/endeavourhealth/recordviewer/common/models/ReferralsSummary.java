@@ -46,7 +46,7 @@ public class ReferralsSummary {
         return priority;
     }
     public ReferralsSummary setPriority(String priority) {
-        this.priority = priority;
+        this.priority = priority.toLowerCase();
         return this;
     }
 

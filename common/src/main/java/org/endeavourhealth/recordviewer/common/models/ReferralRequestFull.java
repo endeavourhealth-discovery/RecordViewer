@@ -75,7 +75,7 @@ public class ReferralRequestFull {
     }
 
     public ReferralRequestFull setPriority(String priority) {
-        this.priority = priority;
+        this.priority = priority.toLowerCase();
         return this;
     }
 
