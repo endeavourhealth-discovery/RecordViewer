@@ -7,12 +7,23 @@ public class AppointmentFull {
     private long id;
     private long patientId;
     private long scheduleId;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public AppointmentFull setStatus(String status) {
+        this.status = status;
+        return this;
+    }
+
     private long orgId;
     private long practitionerId;
     private int actualDuration;
     private String startDate;
     private int plannedDuration;
     private String type;
+    private String status;
 
     public long getId() { return id; }
 

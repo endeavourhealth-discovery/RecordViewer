@@ -1575,8 +1575,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public List<AppointmentFull> getAppointmentFullList(List<Long> patientIds) throws Exception {
         List<AppointmentFull> result = null;
         String sql = "SELECT a.id, a.patient_id as patientId, a.schedule_id as sId, a.practitioner_id as prId, a.organization_id as oId, " +
-                "a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type" +
-                " FROM appointment a join schedule s on a.schedule_id = s.id where a.patient_id in (" + StringUtils.join(patientIds, ',') + ") ";
+                "a.actual_duration as actualDura, a.start_date as startDt, a.planned_duration as plannedDura, s.type,c.name as appointment_status " +
+                " FROM appointment a join schedule s on a.schedule_id = s.id" +
+                " join concept c on c.dbid = a.appointment_status_concept_id  where a.patient_id in (" + StringUtils.join(patientIds, ',') + ") ";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -1605,7 +1606,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     .setType(resultSet.getString("type"))
                     .setOrgId(resultSet.getLong("oId"))
                     .setPractitionerId(resultSet.getLong("prId"))
-                    .setScheduleId(resultSet.getLong("sId"));
+                    .setScheduleId(resultSet.getLong("sId"))
+                    .setStatus(resultSet.getString("appointment_status"));
 
             appointmentList.add(appointment);
         }
