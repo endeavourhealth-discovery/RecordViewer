@@ -17,9 +17,10 @@ public class Condition {
         { condition.setClinicalStatus(org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus.ACTIVE); }
         else {
             condition.setClinicalStatus(org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus.RESOLVED);
-            condition.setOnset(new org.hl7.fhir.dstu3.model.DateTimeType(conditionfull.getDate(), TemporalPrecisionEnum.SECOND, TimeZone.getDefault()));
-            condition.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-ProblemHeader-Condition-1");
-        }
+                 }
+        condition.setOnset(new org.hl7.fhir.dstu3.model.DateTimeType(conditionfull.getDate(), TemporalPrecisionEnum.SECOND, TimeZone.getDefault()));
+        condition.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-ProblemHeader-Condition-1");
+
         condition.addIdentifier()
                 .setValue(String.valueOf(conditionfull.getId()))
                 .setSystem(ResourceConstants.SYSTEM_ID);
