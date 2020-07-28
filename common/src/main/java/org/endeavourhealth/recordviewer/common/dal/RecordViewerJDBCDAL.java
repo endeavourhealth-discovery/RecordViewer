@@ -1737,9 +1737,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return found;
     }
 
-    public void saveHL7Message(String wrapper, String message) throws Exception {
-        String sql = "INSERT INTO hl7v2_inbound.imperial (date_received, message_wrapper, hl7_message) " +
-                "VALUES (?, ?, ?)";
+    public void saveHL7Message(String wrapper, String message, String payloadId) throws Exception {
+        String sql = "INSERT INTO hl7v2_inbound.imperial (date_received, message_wrapper, hl7_message, payload_id) " +
+                "VALUES (?, ?, ?, ?)";
 
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
@@ -1747,6 +1747,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             stmt.setTimestamp(1, now);
             stmt.setString(2, wrapper);
             stmt.setString(3, message);
+            stmt.setString(4, payloadId);
             stmt.executeUpdate();
         }
     }

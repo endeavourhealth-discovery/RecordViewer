@@ -9,5 +9,7 @@ CREATE TABLE `imperial` (
   `date_received` datetime DEFAULT NULL,
   `message_wrapper` text,
   `hl7_message` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `payload_id` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `payload_id_UNIQUE` (`payload_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;

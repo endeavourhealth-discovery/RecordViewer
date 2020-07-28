@@ -32,7 +32,7 @@ public class HL7Api {
                     String wrapper = mapper.writeValueAsString(jsonobj);
 
                     try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-                        viewerDAL.saveHL7Message(wrapper, request.getParams().getBody());
+                        viewerDAL.saveHL7Message(wrapper, request.getParams().getBody(), request.getParams().getId());
                     }
 
                     String test =  "{ \"Test Response\" : \" "+request.getParams().getResourceType()+" : Message Filed Successfully! \"}";
