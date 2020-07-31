@@ -29,7 +29,8 @@ public class AllergyIntolerance {
 		allergy.setId(UUID.randomUUID().toString());
         allergy.setCode(code);
 
-		allergy.setAssertedDate(allergyfull.getDate());
+		//allergy.setAssertedDate(allergyfull.getDate());
+		allergy.setOnset(new org.hl7.fhir.dstu3.model.DateTimeType(allergyfull.getDate()));
 
 		return allergy;
 	}
