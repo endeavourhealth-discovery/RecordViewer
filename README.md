@@ -1,4 +1,4 @@
-# Record Viewer/FHIR API
+# Record Viewer
 ![Version](https://s3.eu-west-2.amazonaws.com/endeavour-codebuild/badges/RecordViewer/version.svg)
 ![Build Status](https://s3.eu-west-2.amazonaws.com/endeavour-codebuild/badges/RecordViewer/build.svg)
 ![Unit Tests](https://s3.eu-west-2.amazonaws.com/endeavour-codebuild/badges/RecordViewer/unit-test.svg)

@@ -3,7 +3,6 @@ import {Routes} from '@angular/router';
 import {CareSummaryComponent} from './carerecord/care-summary/care-summary.component';
 import {AbstractMenuProvider, MenuOption} from 'dds-angular8';
 import {MedicationComponent} from "./carerecord/medication/medication.component";
-import {FhirComponent} from "./carerecord/fhir/fhir.component";
 import {DemographicComponent} from "./carerecord/demographic/demographic.component";
 import {ObservationComponent} from "./carerecord/observation/observation.component";
 import {AllergyComponent} from "./carerecord/allergy/allergy.component";
@@ -18,7 +17,6 @@ export class AppMenuService implements AbstractMenuProvider {
   static getRoutes(): Routes {
     return [
       {path: '', redirectTo: '/summary', pathMatch: 'full'},
-      {path: 'fhir', component: FhirComponent, data: {role: 'record-viewer:fhir'}},
       {path: 'demographic', component: DemographicComponent, data: {role: 'record-viewer'}},
       {path: 'allergy', component: AllergyComponent, data: {role: 'record-viewer'}},
       {path: 'summary', component: CareSummaryComponent, data: {role: 'record-viewer'}},
@@ -63,7 +61,6 @@ export class AppMenuService implements AbstractMenuProvider {
     {icon: 'fas fa-hospital-user', caption: 'Referral requests', state: 'referrals'},
     {icon: 'fas fa-user-friends', caption: 'Family history', state: 'family'},
     {icon: 'fas fa-syringe', caption: 'Immunisations', state: 'immunisation'},
-    {icon: 'fas fa-fire-alt', caption: 'FHIR Care Connect API', state: 'fhir'}
     ];
 
   getMenuOptions(): MenuOption[] {

@@ -236,65 +236,6 @@ public class CareRecordEndpoint {
         }
     }
 
-    @GET
-    @Path("/fhir")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFhir(@Context SecurityContext sc,
-                               @QueryParam("patientId") Integer patientId
-    ) throws Exception {
-        LOG.debug("getFhir");
-
-        FhirApi api = getFhirApi();
-        JSONObject json = api.getFhirBundle(patientId,"0", "0");
-        return Response
-                .ok()
-                .entity(json)
-                .build();
-    }
-
-    public FhirApi getFhirApi(){
-        return new FhirApi();
-    }
-
-
-    @POST
-    @Path("/fhir")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postFhir(@Context HttpServletRequest httpServletRequest) throws Exception {
-        LOG.debug("getFhir POST");
-
-        String request = extractRequestBody(httpServletRequest);
-        Gson g = new Gson();
-        Params p = g.fromJson(request, Params.class);
-        Request requestModel = new Request();
-        requestModel.setParams(p);
-        requestModel.setHttpMethod("POST");
-        FhirApi api = new FhirApi();
-        JSONObject result = (JSONObject) api.handleRequest(requestModel);
-        return Response
-                .ok()
-                .entity(result)
-                .build();
-    }
-
-
-    static String extractRequestBody(HttpServletRequest request) {
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
-            Scanner s = null;
-            try {
-                s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return s.hasNext() ? s.next() : "";
-        }
-        return "";
-    }
-
-
-
 }
 
 

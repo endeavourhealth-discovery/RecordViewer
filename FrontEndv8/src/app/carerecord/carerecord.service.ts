@@ -104,23 +104,6 @@ export class CareRecordService {
     return this.http.get('api/events/patientsummary', {params});
   }
 
-  getFhir(patientId?: number): Observable<any> {
-    let params = new HttpParams();
-    if (patientId) params = params.append('patientId', patientId.toString());
-
-    return this.http.get('api/events/fhir', {params});
-  }
-
-  getFilteredFhir(requestParams?: string): Observable<any> {
-    console.log('Inside getFilteredFHI')
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-      })
-    };
-    return this.http.post('api/events/fhir', requestParams, httpOptions);
-  }
-
   getDashboard(patientId:string, dateFrom: string, dateTo: string, term: string): Observable<any> {
     let params = new HttpParams();
 

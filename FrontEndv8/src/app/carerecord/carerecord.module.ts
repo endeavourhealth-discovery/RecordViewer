@@ -23,7 +23,6 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {FhirComponent} from "./fhir/fhir.component";
 import {MedicationComponent} from "./medication/medication.component";
 import {DemographicComponent} from "./demographic/demographic.component";
 import {PatientComponent} from "./patient/patient.component";
@@ -56,7 +55,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     EncountersComponent,
     DiagnosticsComponent,
     AllergyComponent,
-    FhirComponent],
+    ],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
