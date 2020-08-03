@@ -1,30 +1,12 @@
 package org.endeavourhealth.recordviewer.api.endpoints;
 
-import com.google.gson.Gson;
-import models.Params;
-import models.Request;
-import org.apache.http.HttpStatus;
-import org.endeavourhealth.core.database.dal.usermanager.caching.ApplicationPolicyCache;
-import org.endeavourhealth.core.database.dal.usermanager.caching.UserCache;
-import org.endeavourhealth.core.database.dal.usermanager.models.JsonApplicationPolicyAttribute;
 import org.endeavourhealth.recordviewer.common.dal.RecordViewerJDBCDAL;
 import org.endeavourhealth.recordviewer.common.models.*;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.*;
-import java.io.IOException;
-import java.util.*;
 
-import static javax.ws.rs.client.Entity.form;
 
 @Path("events")
 public class CareRecordEndpoint {
