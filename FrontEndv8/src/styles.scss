@@ -53,29 +53,6 @@ $teal-theme: mat-light-theme($teal-primary, $teal-accent, $teal-warn);
   @include theme-layout($teal-theme);
 }
 
-
-/*
-concept-definition {
-  background-color: aquamarine;
-}
-
-concept-expression {
-  background-color: lightgreen;
-}
-
-role-group {
-  background-color: lightcoral;
-}
-*/
-
-.header2 {
-  background-color: whitesmoke !important;
-}
-
-.header3 {
-  background-color: #D6EAF2 !important;
-}
-
 .summary-column
 {
   display: table-cell;
@@ -100,4 +77,37 @@ th {
   color: white !important;
   font-size: 14px !important;
 }
+
+div.layout-header span.title {
+  visibility: hidden;
+}
+
+div.layout-header span.title:after {
+  content: "Integrated Patient Care Record Viewer";
+  visibility: visible;
+  display: block;
+  position: absolute;
+  top: 16px;
+}
+
+/*.logo {
+  content: url("assets/chart.png");
+}*/
+
+div.logo-container span.title {
+  visibility: hidden;
+}
+
+div.logo-container span.title:after {
+  content: "Care Record Viewer";
+  visibility: visible;
+  display: block;
+  position: absolute;
+  top: 0px;
+}
+
+.tooltip {
+  font-size: 14px;
+}
+
 
