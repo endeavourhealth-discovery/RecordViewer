@@ -84,11 +84,11 @@ export class ObservationComponent implements OnInit {
     else if (this.eventType==7) {
       this.eventTypeTitle = "Diagnostic orders";
       this.subTitle = "A record of a request for a diagnostic investigation service to be performed";
-      this.icon = 'fa-x-ray';
+      this.icon = 'fa-microscope';
       this.dateTitle = "Effective date";
     }
     else if (this.eventType==8) {
-      this.eventTypeTitle = "Warnings & Flags";
+      this.eventTypeTitle = "Warnings & flags";
       this.subTitle = "Prospective warnings of potential issues when providing care to the patient";
       this.icon = 'fa-exclamation-triangle';
       this.dateTitle = "Effective date";
