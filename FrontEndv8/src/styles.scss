@@ -42,8 +42,8 @@ $dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
 }
 
 // Teal theme
-$teal-primary: mat-palette($mat-teal);
-$teal-accent: mat-palette($mat-pink, A200, A100, A400);
+$teal-primary: mat-palette($mat-light-blue);
+$teal-accent: mat-palette($mat-blue-gray, A200, A100, A400);
 $teal-warn: mat-palette($mat-red);
 
 $teal-theme: mat-light-theme($teal-primary, $teal-accent, $teal-warn);
@@ -58,7 +58,6 @@ $teal-theme: mat-light-theme($teal-primary, $teal-accent, $teal-warn);
   display: table-cell;
   padding-right: 30px;
   width: 999px;
-
 }
 
 .demographics
@@ -66,10 +65,6 @@ $teal-theme: mat-light-theme($teal-primary, $teal-accent, $teal-warn);
   padding: 10px;
   background-color: transparent;
 
-}
-.mat-card-content, .mat-paginator
-{
-  background-color: white !important;
 }
 
 th {
