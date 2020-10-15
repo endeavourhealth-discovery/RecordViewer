@@ -40,6 +40,7 @@ import {ReferralsComponent} from "./referrals/referrals.component";
 import {EncountersComponent} from "./encounters/encounters.component";
 import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {RegistriesComponent} from "./registries/registries.component";
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     EncountersComponent,
     DiagnosticsComponent,
     AllergyComponent,
+    RegistriesComponent
     ],
     imports: [
         BrowserModule,

@@ -1,0 +1,50 @@
+<mat-card>
+  <app-precis (patientChange)="loadEvents();">
+  </app-precis>
+  <mat-card-header>
+    <div mat-card-avatar>
+      <i class="fad fa-calendar-check"></i>
+    </div>
+    <mat-card-title>Patient registries</mat-card-title>
+    <mat-card-subtitle>A record of how well the patient is meeting the targets set by the disease registry.</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table-compact" *ngIf="events" fxFlex="100" fxFill>
+
+        <ng-container matColumnDef="registry">
+          <th mat-header-cell *matHeaderCellDef>Registry</th>
+          <td mat-cell *matCellDef="let element"> {{element.registry}} </td>
+        </ng-container>
+        <ng-container matColumnDef="indicator">
+          <th mat-header-cell *matHeaderCellDef>Registry indicator</th>
+          <td mat-cell *matCellDef="let element"> {{element.indicator}} </td>
+        </ng-container>
+        <ng-container matColumnDef="entryDate">
+          <th mat-header-cell *matHeaderCellDef>Date of entry</th>
+          <td mat-cell *matCellDef="let element"> {{element.entryDate}} </td>
+        </ng-container>
+        <ng-container matColumnDef="entryValue">
+          <th mat-header-cell *matHeaderCellDef>Value of entry</th>
+          <td mat-cell *matCellDef="let element"> {{element.entryValue}} </td>
+        </ng-container>
+        <ng-container matColumnDef="achieved">
+          <th mat-header-cell *matHeaderCellDef>Achieved</th>
+          <td [ngClass]="{ 'poor': element.achieved=='0', 'good': element.achieved=='1'}" mat-cell *matCellDef="let element">
+            <i *ngIf="element.achieved=='1'" class="fas fa-check fa-2x"></i><i *ngIf="element.achieved=='0'" class="fas fa-times fa-2x"></i> </td>
+        </ng-container>
+        <ng-container matColumnDef="notes">
+          <th mat-header-cell *matHeaderCellDef>Notes</th>
+          <td mat-cell *matCellDef="let element"> {{element.notes}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="'/events/' + row.dose"></tr>
+      </table>
+    <div>
+    </div>
+    </div>
+
+  </mat-card-content>
+
+</mat-card>

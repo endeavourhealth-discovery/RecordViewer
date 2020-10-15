@@ -235,6 +235,55 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return referralsSummary;
     }
 
+    public RegistriesResult getRegistriesResult(Integer page, Integer size, Integer patientId) throws Exception {
+        RegistriesResult result = new RegistriesResult();
+
+        String sql = "SELECT registry, indicator, entry_date, entry_value,achieved, notes " +
+                "FROM dashboards.patient_registries r " +
+                "where r.patient_id = ? " +
+                "order by r.registry, r.indicator, r.entry_date";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, patientId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                result.setResults(getRegistriesSummaryList(resultSet));
+            }
+        }
+
+        sql = "SELECT 999";
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                result.setLength(resultSet.getInt(1));
+            }
+        }
+
+        return result;
+    }
+
+    private List<RegistriesSummary> getRegistriesSummaryList(ResultSet resultSet) throws SQLException {
+        List<RegistriesSummary> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(getRegistriesSummary(resultSet));
+        }
+
+        return result;
+    }
+
+    public static RegistriesSummary getRegistriesSummary(ResultSet resultSet) throws SQLException {
+        RegistriesSummary registriesSummary = new RegistriesSummary();
+        registriesSummary
+                .setEntryDate(resultSet.getDate("entry_date"))
+                .setRegistry(resultSet.getString("registry"))
+                .setIndicator(resultSet.getString("indicator"))
+                .setEntryValue(resultSet.getString("entry_value"))
+                .setNotes(resultSet.getString("notes"))
+                .setAchieved(resultSet.getString("achieved"));
+        return registriesSummary;
+    }
+
+
     public AppointmentResult getAppointmentResult(Integer page, Integer size, Integer patientId) throws Exception {
         AppointmentResult result = new AppointmentResult();
 

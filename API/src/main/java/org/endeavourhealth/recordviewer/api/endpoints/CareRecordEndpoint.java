@@ -95,6 +95,26 @@ public class CareRecordEndpoint {
     }
 
     @GET
+    @Path("/registries")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRegistries(@Context SecurityContext sc,
+                                 @QueryParam("page") Integer page,
+                                 @QueryParam("size") Integer size,
+                                 @QueryParam("patientId") Integer patientId) throws Exception {
+        LOG.debug("getRegistries");
+
+        try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
+            RegistriesResult result = viewerDAL.getRegistriesResult(page, size, patientId);
+
+            return Response
+                    .ok()
+                    .entity(result)
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/medication")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
