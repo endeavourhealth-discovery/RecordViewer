@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Routes} from '@angular/router';
 import {CareSummaryComponent} from './carerecord/care-summary/care-summary.component';
-import {AbstractMenuProvider, MenuOption} from 'dds-angular8';
 import {MedicationComponent} from "./carerecord/medication/medication.component";
 import {DemographicComponent} from "./carerecord/demographic/demographic.component";
 import {ObservationComponent} from "./carerecord/observation/observation.component";
@@ -11,6 +10,7 @@ import {ReferralsComponent} from "./carerecord/referrals/referrals.component";
 import {EncountersComponent} from "./carerecord/encounters/encounters.component";
 import {DiagnosticsComponent} from "./carerecord/diagnostics/diagnostics.component";
 import {RegistriesComponent} from "./carerecord/registries/registries.component";
+import {AbstractMenuProvider, MenuOption} from "dds-angular8";
 
 @Injectable()
 export class AppMenuService implements AbstractMenuProvider {
