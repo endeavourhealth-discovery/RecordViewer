@@ -53,6 +53,14 @@ $teal-theme: mat-light-theme($teal-primary, $teal-accent, $teal-warn);
   @include theme-layout($teal-theme);
 }
 
+.filter
+{
+  margin-top: 0px;
+  padding: 0px;
+  background-color: transparent;
+  font-size:12px;
+}
+
 .summary-column
 {
   display: table-cell;
@@ -83,6 +91,7 @@ div.layout-header span.title:after {
   display: block;
   position: absolute;
   top: 16px;
+  font-size: 20px;
 }
 
 /*.logo {

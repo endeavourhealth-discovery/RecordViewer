@@ -76,7 +76,7 @@ export class DiagnosticsComponent {
     }
 
     const dialogRef = this.dialog.open(TrendComponent, {
-      height: '850px',
+      height: '820px',
       width: '1600px',
       data: {patientId: this.precisComponentReference.patientId, term: term}
     });

@@ -230,8 +230,8 @@ export class CareSummaryComponent implements OnInit {
     }
 
     const dialogRef = this.dialog.open(TrendComponent, {
-      height: '780px',
-      width: '1400px',
+      height: '820px',
+      width: '1600px',
       data: {patientId: this.precisComponentReference.patientId, term: term}
     });
 

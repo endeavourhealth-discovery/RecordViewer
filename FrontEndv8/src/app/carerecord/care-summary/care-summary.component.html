@@ -12,7 +12,7 @@
 
     <div class="summary-column" style="width:800px">
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-        <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 mat-table-compact" *ngIf="events2" fxFlex="100" fxFill>
+        <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8" *ngIf="events2" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:400px" mat-header-cell *matHeaderCellDef > <i class="fas fa-diagnoses" style="width:25px"></i> Active conditions / problems</th>
             <td mat-cell *matCellDef="let element"> <i class="fad fa-clinic-medical" style="width:25px" matTooltipPosition="right" matTooltip="Source of data: {{element.orgName}}"></i> {{element.name}} </td>
@@ -28,7 +28,7 @@
       </div>
 
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-        <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8 mat-table-compact" *ngIf="events3" fxFlex="100" fxFill>
+        <table mat-table [dataSource]="dataSource3" class="mat-elevation-z8" *ngIf="events3" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:400px" mat-header-cell *matHeaderCellDef><i class="fas fa-allergies" style="width:25px"></i>Allergies & intolerances</th>
             <td mat-cell *matCellDef="let element"> <i class="fad fa-clinic-medical" style="width:25px" matTooltipPosition="right" matTooltip="Source of data: {{element.orgName}}"></i> {{element.name}} </td>
@@ -45,7 +45,7 @@
 
 
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-        <table mat-table [dataSource]="dataSource6" class="mat-elevation-z8 mat-table-compact" *ngIf="events6" fxFlex="100" fxFill>
+        <table mat-table [dataSource]="dataSource6" class="mat-elevation-z8" *ngIf="events6" fxFlex="100" fxFill>
           <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef>
               <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -88,7 +88,7 @@
     <div class="summary-column" style="width:1200px">
 
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-        <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8 mat-table-compact" *ngIf="events1" fxFlex="100" fxFill>
+        <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8" *ngIf="events1" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:250px" mat-header-cell *matHeaderCellDef><i class="fas fa-pills" style="width:25px"></i>Current medication</th>
             <td mat-cell *matCellDef="let element"> <i class="fad fa-clinic-medical" style="width:25px" matTooltipPosition="right" matTooltip="Source of data: {{element.orgName}}"></i> {{element.name}} </td>
@@ -109,7 +109,7 @@
       </div>
 
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-        <table mat-table [dataSource]="dataSource5" class="mat-elevation-z8 mat-table-compact" *ngIf="events5" fxFlex="100" fxFill>
+        <table mat-table [dataSource]="dataSource5" class="mat-elevation-z8" *ngIf="events5" fxFlex="100" fxFill>
           <ng-container matColumnDef="type">
             <th style="width:300px" mat-header-cell *matHeaderCellDef><i class="fas fa-users-medical" style="width:25px"></i>Recent encounters</th>
             <td mat-cell *matCellDef="let element"> <i class="fad fa-clinic-medical" style="width:25px" matTooltipPosition="right" matTooltip="Source of data: {{element.orgName}}"></i> {{element.type}} </td>
@@ -133,7 +133,7 @@
       </div>
 
       <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-        <table mat-table [dataSource]="dataSource4" class="mat-elevation-z8 mat-table-compact" *ngIf="events4" fxFlex="100" fxFill>
+        <table mat-table [dataSource]="dataSource4" class="mat-elevation-z8" *ngIf="events4" fxFlex="100" fxFill>
           <ng-container matColumnDef="name">
             <th style="width:445px" mat-header-cell *matHeaderCellDef><i class="fas fa-exclamation-triangle" style="width:25px"></i>Warnings & Flags</th>
             <td mat-cell *matCellDef="let element"> <i class="fad fa-clinic-medical" style="width:25px" matTooltipPosition="right" matTooltip="Source of data: {{element.orgName}}"></i> {{element.name}} </td>

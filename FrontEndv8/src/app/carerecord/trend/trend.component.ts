@@ -16,7 +16,7 @@ export interface DialogData {
 })
 
 export class TrendComponent {
-  view: any[] = [1300, 500];
+  view: any[] = [1300, 550];
   chartResults: any[];
   dateFrom: string = '1900-01-01';
   dateTo: string = this.formatDate(new Date());
