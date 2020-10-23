@@ -412,7 +412,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setName(resultSet.getString("name"))
                 .setStatus(resultSet.getString("status"))
                 .setType(resultSet.getString("type"))
-                .setLast(resultSet.getString("last_issue_date"))
+                .setLast(resultSet.getDate("last_issue_date"))
                 .setOrgName(resultSet.getString("orgname"));
         return medicationSummary;
     }

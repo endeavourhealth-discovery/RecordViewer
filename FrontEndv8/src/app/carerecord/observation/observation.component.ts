@@ -51,20 +51,20 @@ export class ObservationComponent implements OnInit {
     }
     else if (this.eventType==2) {
       this.eventTypeTitle = "Observations";
-      this.subTitle = "Measurements and simple assertions made about a patient";
+      this.subTitle = "Measurements and simple assertions made about the selected patient";
       this.icon = 'fa-monitor-heart-rate';
       this.dateTitle = "Effective date";
       this.showSearch = true;
     }
     else if (this.eventType==3) {
       this.eventTypeTitle = "Procedures";
-      this.subTitle = "Details of procedures performed on a patient";
+      this.subTitle = "Details of procedures performed on the selected patient";
       this.icon = 'fa-procedures';
       this.dateTitle = "Effective date";
     }
     else if (this.eventType==4) {
       this.eventTypeTitle = "Family history";
-      this.subTitle = "Significant health conditions for a person related to the patient relevant in the context of care for the patient";
+      this.subTitle = "Significant health conditions for a person related to the patient relevant in the context of care for the selected patient";
       this.icon = 'fa-user-friends';
       this.dateTitle = "Effective date";
     }
@@ -89,7 +89,7 @@ export class ObservationComponent implements OnInit {
     }
     else if (this.eventType==8) {
       this.eventTypeTitle = "Warnings & flags";
-      this.subTitle = "Prospective warnings of potential issues when providing care to the patient";
+      this.subTitle = "Prospective warnings of potential issues when providing care to the selected patient";
       this.icon = 'fa-exclamation-triangle';
       this.dateTitle = "Effective date";
       this.displayedColumns = ['name','status', 'date'];

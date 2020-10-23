@@ -69,6 +69,7 @@ export class CareSummaryComponent implements OnInit {
   size6: number = 10;
   displayedColumns6: string[] = ['select', 'term', 'result', 'date'];
   term6: string = '';
+  diagnostics: boolean = true;
 
   constructor(
     private carerecordService: CareRecordService,
@@ -179,6 +180,9 @@ export class CareSummaryComponent implements OnInit {
   displayDiagnostics(events: any) {
     this.events6 = events;
     this.dataSource6 = new MatTableDataSource(events.results);
+    if (events.results == '') {
+      this.diagnostics = false;
+    }
   }
 
   onPage1(event: PageEvent) {

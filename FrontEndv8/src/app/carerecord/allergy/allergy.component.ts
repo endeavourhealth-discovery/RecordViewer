@@ -33,7 +33,7 @@ export class AllergyComponent {
 
   loadEvents() {
     this.eventTypeTitle = "Allergies & intolerances";
-    this.subTitle = "A record of a clinical assessment of an allergy or intolerance.";
+    this.subTitle = "The clinical assessment of the selected patient's allergies or intolerances.";
     this.icon = 'warning';
 
     this.events = null;

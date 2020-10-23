@@ -90,8 +90,16 @@ public class MedicationSummary {
         return last;
     }
 
-    public MedicationSummary setLast(String last) {
-        this.last = last;
+    public MedicationSummary setLast(Date last) {
+        try {
+            String pattern = "dd-MMM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            this.last = simpleDateFormat.format(last);
+        }
+        catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
         return this;
     }
 
