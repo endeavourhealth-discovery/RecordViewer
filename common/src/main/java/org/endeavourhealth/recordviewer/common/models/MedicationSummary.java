@@ -19,6 +19,8 @@ public class MedicationSummary {
     private String type;
     private String last;
     private String orgName;
+    private String practitioner;
+    private String cancellationDate;
 
     public String getDate() {
         return date;
@@ -34,6 +36,32 @@ public class MedicationSummary {
         catch (Exception e) {
             LOG.error(e.getMessage());
         }
+        return this;
+    }
+
+    public String getCancellationDate() {
+        return cancellationDate;
+    }
+
+    public MedicationSummary setCancellationDate(Date cancellationDate) {
+        try {
+            String pattern = "dd-MMM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            this.cancellationDate = simpleDateFormat.format(cancellationDate);
+        }
+        catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return this;
+    }
+
+    public String getPractitioner() {
+        return practitioner;
+    }
+
+    public MedicationSummary setPractitioner(String practitioner) {
+        this.practitioner = practitioner;
         return this;
     }
 

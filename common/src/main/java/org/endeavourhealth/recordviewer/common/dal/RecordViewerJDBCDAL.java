@@ -357,12 +357,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT m.id,m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity,org.name as orgname, " +
                 "CASE WHEN m.cancellation_date is NULL THEN 'Active' " +
 				"else 'Past' END as status,c2.name as type, " +
-                "max(coalesce(mo.clinical_effective_date,'')) as last_issue_date " +
+                "max(coalesce(mo.clinical_effective_date,'')) as last_issue_date,cancellation_date,pr.name as practitioner " +
                 "FROM medication_statement m " +
                 "join medication_order mo on m.id = mo.medication_statement_id " +
                 "join concept c on c.dbid = m.non_core_concept_id " +
                 "join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
                 "join organization org on org.id = m.organization_id "+
+                "join practitioner pr on pr.id = m.practitioner_id "+
                 "where m.patient_id = ? "+activeMedication+" group by m.id " +
                 "order by status,type,m.clinical_effective_date DESC LIMIT ?,?";
 
@@ -413,6 +414,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setStatus(resultSet.getString("status"))
                 .setType(resultSet.getString("type"))
                 .setLast(resultSet.getDate("last_issue_date"))
+                .setCancellationDate(resultSet.getDate("cancellation_date"))
+                .setPractitioner(resultSet.getString("practitioner"))
                 .setOrgName(resultSet.getString("orgname"));
         return medicationSummary;
     }
