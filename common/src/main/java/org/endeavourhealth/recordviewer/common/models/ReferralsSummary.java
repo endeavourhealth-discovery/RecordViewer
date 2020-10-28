@@ -19,6 +19,7 @@ public class ReferralsSummary {
     private String mode;
     private String speciality;
     private String orgName;
+    private String practitioner;
 
     public String getDate() { return date; }
     public ReferralsSummary setDate(Date date) {
@@ -80,6 +81,15 @@ public class ReferralsSummary {
 
     public ReferralsSummary setOrgName(String orgName) {
         this.orgName = orgName;
+        return this;
+    }
+
+    public String getPractitioner() {
+        return practitioner;
+    }
+
+    public ReferralsSummary setPractitioner(String practitioner) {
+        this.practitioner = practitioner;
         return this;
     }
 

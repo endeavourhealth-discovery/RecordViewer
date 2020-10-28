@@ -17,6 +17,7 @@ public class DiagnosticsSummary {
     private String result;
     private String codeId;
     private String orgName;
+    private String practitioner;
 
     public String getDate() { return date; }
     public DiagnosticsSummary setDate(Date date) {
@@ -62,6 +63,15 @@ public class DiagnosticsSummary {
 
     public DiagnosticsSummary setOrgName(String orgName) {
         this.orgName = orgName;
+        return this;
+    }
+
+    public String getPractitioner() {
+        return practitioner;
+    }
+
+    public DiagnosticsSummary setPractitioner(String practitioner) {
+        this.practitioner = practitioner;
         return this;
     }
 

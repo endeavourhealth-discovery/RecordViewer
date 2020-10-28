@@ -14,6 +14,8 @@ public class ObservationSummary {
     private String status;
     private String name;
     private String orgName;
+    private String practitioner;
+    private String problemEndDate;
 
     public String getDate() {
         return date;
@@ -25,6 +27,23 @@ public class ObservationSummary {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.date = simpleDateFormat.format(date);
+        }
+        catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return this;
+    }
+
+    public String getProblemEndDate() {
+        return problemEndDate;
+    }
+
+    public ObservationSummary setProblemEndDate(Date problemEndDate) {
+        try {
+            String pattern = "dd-MMM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            this.problemEndDate = simpleDateFormat.format(problemEndDate);
         }
         catch (Exception e) {
             LOG.error(e.getMessage());
@@ -56,6 +75,15 @@ public class ObservationSummary {
 
     public ObservationSummary setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public String getPractitioner() {
+        return practitioner;
+    }
+
+    public ObservationSummary setPractitioner(String practitioner) {
+        this.practitioner = practitioner;
         return this;
     }
 
