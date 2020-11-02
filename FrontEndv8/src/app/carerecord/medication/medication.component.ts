@@ -4,15 +4,25 @@ import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-medication',
   templateUrl: './medication.component.html',
-  styleUrls: ['./medication.component.scss']
+  styleUrls: ['./medication.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
+
 })
 export class MedicationComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
+  expandedElement: MedicationComponent | null;
 
   events: any;
   dataSource: MatTableDataSource<any>;
@@ -20,7 +30,7 @@ export class MedicationComponent {
   size: number = 12;
   active: number = 0;
 
-  displayedColumns: string[] = ['name', 'dose', 'quantity', 'status', 'type', 'date', 'last'];
+  displayedColumns: string[] = ['name', 'dose', 'status', 'date', 'expandArrow'];
 
   constructor(
     private carerecordService: CareRecordService,

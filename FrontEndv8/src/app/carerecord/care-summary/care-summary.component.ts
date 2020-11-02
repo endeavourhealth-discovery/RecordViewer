@@ -9,16 +9,26 @@ import {MatDialog} from "@angular/material/dialog";
 import {SelectionModel} from '@angular/cdk/collections';
 import {ActivatedRoute} from "@angular/router";
 import {Globals} from "../globals";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-care-summary',
   templateUrl: './care-summary.component.html',
-  styleUrls: ['./care-summary.component.scss']
+  styleUrls: ['./care-summary.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
+
 export class CareSummaryComponent implements OnInit {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
   selection = new SelectionModel<any>(true, []);
+  expandedElement: CareSummaryComponent | null;
 
   globals: Globals;
 
@@ -28,7 +38,7 @@ export class CareSummaryComponent implements OnInit {
   page1: number = 0;
   size1: number = 999;
   active1: number = 1;
-  displayedColumns1: string[] = ['name','type','last'];
+  displayedColumns1: string[] = ['name', 'expandArrow'];
 
   // conditions
   events2: any;
@@ -36,7 +46,7 @@ export class CareSummaryComponent implements OnInit {
   page2: number = 0;
   size2: number = 999;
   active2: number = 1;
-  displayedColumns2: string[] = ['name', 'date'];
+  displayedColumns2: string[] = ['name', 'expandArrow'];
   term2: string = '';
 
   // allergies
@@ -44,7 +54,7 @@ export class CareSummaryComponent implements OnInit {
   dataSource3: MatTableDataSource<any>;
   page3: number = 0;
   size3: number = 999;
-  displayedColumns3: string[] = ['name','date'];
+  displayedColumns3: string[] = ['name','expandArrow'];
 
   // warnings
   events4: any;
@@ -52,7 +62,7 @@ export class CareSummaryComponent implements OnInit {
   page4: number = 0;
   size4: number = 999;
   active4: number = 1;
-  displayedColumns4: string[] = ['name','date'];
+  displayedColumns4: string[] = ['name','expandArrow'];
   term4: string = '';
 
   // encounters
@@ -60,14 +70,14 @@ export class CareSummaryComponent implements OnInit {
   dataSource5: MatTableDataSource<any>;
   page5: number = 0;
   size5: number = 5;
-  displayedColumns5: string[] = ['type', 'location', 'practitioner','date'];
+  displayedColumns5: string[] = ['type', 'location', 'date', 'expandArrow'];
 
   // health status
   events6: any;
   dataSource6: MatTableDataSource<any>;
   page6: number = 0;
   size6: number = 10;
-  displayedColumns6: string[] = ['select', 'term', 'result', 'date'];
+  displayedColumns6: string[] = ['select', 'term', 'result', 'date', 'expandArrow'];
   term6: string = '';
   diagnostics: boolean = true;
 

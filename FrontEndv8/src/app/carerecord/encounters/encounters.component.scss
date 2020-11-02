@@ -1,1 +1,43 @@
+.header-align-right{
+  display: flex;
+  padding: 21px 0;
+  justify-content: flex-end;
+}
 
+tr.expanded-detail-row {
+  height: 0;
+}
+
+tr.expanded-element-row:not(.expanded-expanded-row):hover {
+  background: lightgray;
+}
+
+tr.expanded-element-row:not(.expanded-expanded-row):active {
+  background: #efefef;
+}
+
+.expanded-element-row td {
+  border-bottom-width: 0;
+}
+
+.expanded-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.expanded-element-description {
+  padding: 16px;
+}
+
+.expanded-element-description-attribution {
+  opacity: 0.5;
+}
+
+.expanded-table {
+  border-collapse: separate;
+  border-spacing: 25px 5px;
+  td {
+    padding-left: 50px;
+    padding-top: 5px;
+  }
+}

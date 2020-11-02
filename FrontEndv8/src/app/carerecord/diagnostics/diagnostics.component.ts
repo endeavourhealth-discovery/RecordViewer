@@ -7,15 +7,24 @@ import {PrecisComponent} from "../precis/precis.component";
 import {TrendComponent} from "../trend/trend.component";
 import {MatDialog} from "@angular/material/dialog";
 import {SelectionModel} from '@angular/cdk/collections';
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-diagnostics',
   templateUrl: './diagnostics.component.html',
-  styleUrls: ['./diagnostics.component.scss']
+  styleUrls: ['./diagnostics.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class DiagnosticsComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
+  expandedElement: DiagnosticsComponent | null;
 
   selection = new SelectionModel<any>(true, []);
 
@@ -25,7 +34,7 @@ export class DiagnosticsComponent {
   size: number = 12;
   term: string = '';
 
-  displayedColumns: string[] = ["select", "term", "result", "date"];
+  displayedColumns: string[] = ["select", "term", "result", "date", "expandArrow"];
 
   constructor(
     private carerecordService: CareRecordService,

@@ -4,22 +4,31 @@ import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-encounters',
   templateUrl: './encounters.component.html',
-  styleUrls: ['./encounters.component.scss']
+  styleUrls: ['./encounters.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class EncountersComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
+  expandedElement: EncountersComponent | null;
 
   events: any;
   dataSource: MatTableDataSource<any>;
   page: number = 0;
   size: number = 12;
 
-  displayedColumns: string[] = ["type", "location", "practitioner","date"];
+  displayedColumns: string[] = ["type", "location", "practitioner","date", "expandArrow"];
 
   constructor(
     private carerecordService: CareRecordService,

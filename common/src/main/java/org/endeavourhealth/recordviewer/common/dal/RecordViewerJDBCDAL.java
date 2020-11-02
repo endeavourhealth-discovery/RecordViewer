@@ -526,7 +526,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%')"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
                 break;
             case 6: // procedure requests
-                sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,'' as problem_end_date  " +
+                sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date  " +
                         "FROM procedure_request p " +
                         "join concept c on c.dbid = p.non_core_concept_id " +
                         "join concept c2 on c2.dbid = p.status_concept_id " +
@@ -559,7 +559,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             case 8: // warnings & flags
                 sql = "SELECT effective_date as date, flag_text as name,org.name as orgname,  " +
                         "CASE WHEN is_active = 1 THEN 'Active' " +
-                        "ELSE 'Past' END as status,'' as practitioner,'' as problem_end_date " +
+                        "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date " +
                         "FROM flag p " +
                         "join organization org on org.id = p.organization_id "+
                         "where patient_id = ? "+activeWarning+" order by status, effective_date DESC LIMIT ?,?";

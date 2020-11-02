@@ -5,15 +5,24 @@ import {LoggerService} from 'dds-angular8';
 import {PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
 import {ActivatedRoute} from "@angular/router";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-allergy',
   templateUrl: './allergy.component.html',
-  styleUrls: ['./allergy.component.scss']
+  styleUrls: ['./allergy.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class AllergyComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
+  expandedElement: AllergyComponent | null;
 
   events: any;
   dataSource: MatTableDataSource<any>;
@@ -23,7 +32,7 @@ export class AllergyComponent {
   subTitle: string;
   icon: string;
 
-  displayedColumns: string[] = ['name', 'date'];
+  displayedColumns: string[] = ['name', 'date' , 'expandArrow'];
 
   constructor(
     private route: ActivatedRoute,
