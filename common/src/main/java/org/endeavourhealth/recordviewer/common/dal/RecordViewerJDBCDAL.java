@@ -936,7 +936,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sqlCount = "";
 
         sql = "SELECT a.clinical_effective_date as date, " +
-                "'Active' as status,c.name,org.name as orgname,pr.practitioner " +
+                "'Active' as status,c.name,org.name as orgname,pr.name as practitioner " +
                 "FROM allergy_intolerance a " +
                 "join concept c on c.dbid = a.non_core_concept_id \n"+
                 "join organization org on org.id = a.organization_id "+
