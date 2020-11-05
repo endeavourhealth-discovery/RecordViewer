@@ -936,10 +936,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sqlCount = "";
 
         sql = "SELECT a.clinical_effective_date as date, " +
-                "'Active' as status,c.name,org.name as orgname " +
+                "'Active' as status,c.name,org.name as orgname,pr.practitioner " +
                 "FROM allergy_intolerance a " +
                 "join concept c on c.dbid = a.non_core_concept_id \n"+
                 "join organization org on org.id = a.organization_id "+
+                "join practitioner pr on pr.id = a.practitioner_id "+
                 "where patient_id = ? order by a.clinical_effective_date DESC LIMIT ?,?";
 
         sqlCount = "SELECT count(1) \n" +
@@ -983,6 +984,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setDate(resultSet.getDate("date"))
                 .setStatus(resultSet.getString("status"))
                 .setName(resultSet.getString("name"))
+                .setPractitioner(resultSet.getString("practitioner"))
                 .setOrgName(resultSet.getString("orgname"));
         return allergySummary;
     }

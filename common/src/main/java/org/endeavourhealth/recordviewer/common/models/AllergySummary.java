@@ -14,6 +14,7 @@ public class AllergySummary {
     private String status;
     private String name;
     private String orgName;
+    private String practitioner;
 
     public String getDate() {
         return date;
@@ -29,6 +30,15 @@ public class AllergySummary {
         catch (Exception e) {
             LOG.error(e.getMessage());
         }
+        return this;
+    }
+
+    public String getPractitioner() {
+        return practitioner;
+    }
+
+    public AllergySummary setPractitioner(String practitioner) {
+        this.practitioner = practitioner;
         return this;
     }
 
