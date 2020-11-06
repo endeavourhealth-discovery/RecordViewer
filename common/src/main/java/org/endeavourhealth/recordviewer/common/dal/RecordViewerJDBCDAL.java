@@ -13,13 +13,18 @@ import java.util.*;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-    public DiagnosticsResult getDiagnosticsResult(Integer page, Integer size, Integer patientId, String term) throws Exception {
+    public DiagnosticsResult getDiagnosticsResult(Integer patientId, String term, Integer summaryMode) throws Exception {
         DiagnosticsResult result = new DiagnosticsResult();
 
         String sqlTerm = "";
+        String limit = "";
 
         if (!term.equals("")) {
             sqlTerm = " and c.name like ? ";
+        }
+
+        if (summaryMode==1) {
+            limit = " LIMIT 10";
         }
 
         String sql = "SELECT o.clinical_effective_date as date, c.name as term,org.name as orgname, " +
@@ -30,14 +35,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join practitioner pr on pr.id = o.practitioner_id "+
                 "where patient_id = ? " +
                 "and o.result_value_units is not null "+sqlTerm+
-                "order by o.clinical_effective_date DESC LIMIT ?,?";
-
+                "order by o.clinical_effective_date DESC"+limit;
 
         if (term.equals("")) {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, patientId);
-                statement.setInt(2, page * 12);
-                statement.setInt(3, size);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getDiagnosticsSummaryList(resultSet));
                 }
@@ -46,8 +48,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, patientId);
                 statement.setString(2, "%"+term+"%");
-                statement.setInt(3, page * 12);
-                statement.setInt(4, size);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getDiagnosticsSummaryList(resultSet));
                 }
@@ -106,8 +106,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return diagnosticsSummary;
     }
 
-    public EncountersResult getEncountersResult(Integer page, Integer size, Integer patientId) throws Exception {
+    public EncountersResult getEncountersResult(Integer patientId, Integer summaryMode) throws Exception {
         EncountersResult result = new EncountersResult();
+
+        String limit = "";
+
+        if (summaryMode==1) {
+            limit = " LIMIT 5";
+        }
 
         String sql = "SELECT clinical_effective_date as date, ct.encounter_type, o.name as location, p.name as practitioner,org.name as orgname " +
                 "FROM encounter e " +
@@ -117,15 +123,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join organization o on o.id = e.service_provider_organization_id " +
                 "join organization org on org.id = e.organization_id "+
                 "where patient_id = ? " +
-                "order by clinical_effective_date desc " +
-                "limit ?,?";
-
-
+                "order by clinical_effective_date desc"+limit;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*12);
-            statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getEncountersSummaryList(resultSet));
             }
@@ -172,7 +173,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return encountersSummary;
     }
 
-    public ReferralsResult getReferralsResult(Integer page, Integer size, Integer patientId) throws Exception {
+    public ReferralsResult getReferralsResult(Integer patientId) throws Exception {
         ReferralsResult result = new ReferralsResult();
 
         String sql = "SELECT clinical_effective_date as date, o.name as recipient, c1.name as priority, c2.name as type,mode, c3.name as speciality, org.name as orgname,pr.name as practitioner " +
@@ -184,13 +185,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join organization org on org.id = r.organization_id " +
                 "join practitioner pr on pr.id = r.practitioner_id " +
                 "where patient_id = ? " +
-                "order by clinical_effective_date desc " +
-                "limit ?,?";
+                "order by clinical_effective_date desc";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*12);
-            statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getReferralsSummaryList(resultSet));
             }
@@ -288,7 +286,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     }
 
 
-    public AppointmentResult getAppointmentResult(Integer page, Integer size, Integer patientId) throws Exception {
+    public AppointmentResult getAppointmentResult(Integer patientId) throws Exception {
         AppointmentResult result = new AppointmentResult();
 
         String sql = "SELECT s.type as schedule_type, s.location, a.start_date, planned_duration, patient_delay, c.name as appointment_status,org.name as orgname " +
@@ -297,14 +295,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c on c.dbid = a.appointment_status_concept_id " +
                 "join organization org on org.id = a.organization_id "+
                 "where patient_id = ? " +
-                "order by start_date desc, location, schedule_type, a.id " +
-                "limit ?,?";
-
+                "order by start_date desc, location, schedule_type, a.id";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*12);
-            statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getAppointmentSummaryList(resultSet));
             }
@@ -350,13 +344,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return appointmentSummary;
     }
 
-    public MedicationResult getMedicationResult(Integer page, Integer size, Integer patientId, Integer active) throws Exception {
+    public MedicationResult getMedicationResult(Integer patientId, Integer active, Integer summaryMode) throws Exception {
         MedicationResult result = new MedicationResult();
 
         String activeMedication = " and m.cancellation_date is NULL ";
+        String limit = "";
 
         if (active==0)
             activeMedication = "";
+
+        if (summaryMode==1) {
+            limit = " LIMIT 999";
+        }
 
         String sql = "SELECT m.id,m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity,org.name as orgname, " +
                 "CASE WHEN m.cancellation_date is NULL THEN 'Active' " +
@@ -369,12 +368,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join organization org on org.id = m.organization_id "+
                 "join practitioner pr on pr.id = m.practitioner_id "+
                 "where m.patient_id = ? "+activeMedication+" group by m.id " +
-                "order by status,type,m.clinical_effective_date DESC LIMIT ?,?";
+                "order by status,type,m.clinical_effective_date DESC" + limit;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*12);
-            statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getMedicationSummaryList(resultSet));
             }
@@ -424,7 +421,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationSummary;
     }
 
-    public ObservationResult getObservationResult(Integer page, Integer size, Integer patientId, Integer eventType, Integer active, String term) throws Exception {
+    public ObservationResult getObservationResult(Integer patientId, Integer eventType, Integer active, String term, Integer summaryMode) throws Exception {
         ObservationResult result = new ObservationResult();
 
         String sql = "";
@@ -432,6 +429,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String activeWarning = " and is_active = 1 ";
         String sqlCount = "";
         String sqlTerm = "";
+        String limit = "";
 
         if (active==0) {
             activeProblem = "";
@@ -440,6 +438,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         if (!term.equals("")) {
             sqlTerm = " and c.name like ? ";
+        }
+
+        if (summaryMode == 1) {
+            limit = " LIMIT 999";
         }
 
         switch(eventType) {
@@ -452,7 +454,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
                         "where patient_id = ? and o.is_problem = 1 and o.is_review = 0 "+activeProblem+
-                        "order by o.problem_end_date, o.clinical_effective_date DESC LIMIT ?,?";
+                        "order by o.problem_end_date, o.clinical_effective_date DESC"+limit;
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -470,7 +472,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join practitioner pr on pr.id = o.practitioner_id "+
                         "where patient_id = ? "+
                         "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%FH:%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm+
-                        "order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -487,7 +489,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and c.name like '%procedure%' order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? and c.name like '%procedure%' order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -502,7 +504,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and (c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? and (c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -517,7 +519,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -532,7 +534,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c2 on c2.dbid = p.status_concept_id " +
                         "join organization org on org.id = p.organization_id "+
                         "join practitioner pr on pr.id = p.practitioner_id "+
-                        "where patient_id = ? order by clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? order by clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) " +
                         "FROM procedure_request p " +
@@ -548,7 +550,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = p.non_core_concept_id " +
                         "join organization org on org.id = p.organization_id "+
                         "join practitioner pr on pr.id = p.practitioner_id "+
-                        "where patient_id = ? order by clinical_effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? order by clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM diagnostic_order p \n" +
@@ -562,7 +564,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date " +
                         "FROM flag p " +
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ? "+activeWarning+" order by status, effective_date DESC LIMIT ?,?";
+                        "where patient_id = ? "+activeWarning+" order by status, effective_date DESC"+limit;
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM flag p \n" +
@@ -576,8 +578,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         if (term.equals("")) {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, patientId);
-                statement.setInt(2, page * 12);
-                statement.setInt(3, size);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getObservationSummaryList(resultSet));
                 }
@@ -586,8 +586,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, patientId);
                 statement.setString(2, "%"+term+"%");
-                statement.setInt(3, page * 12);
-                statement.setInt(4, size);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getObservationSummaryList(resultSet));
                 }
@@ -929,11 +927,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return patientSummary;
     }
 
-    public AllergyResult getAllergyResult(Integer page, Integer size, Integer patientId) throws Exception {
+    public AllergyResult getAllergyResult(Integer patientId, Integer summaryMode) throws Exception {
         AllergyResult result = new AllergyResult();
 
         String sql = "";
         String sqlCount = "";
+        String limit = "";
+
+        if (summaryMode==1) {
+            limit = " LIMIT 999";
+        }
 
         sql = "SELECT a.clinical_effective_date as date, " +
                 "'Active' as status,c.name,org.name as orgname,pr.name as practitioner " +
@@ -941,7 +944,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c on c.dbid = a.non_core_concept_id \n"+
                 "join organization org on org.id = a.organization_id "+
                 "join practitioner pr on pr.id = a.practitioner_id "+
-                "where patient_id = ? order by a.clinical_effective_date DESC LIMIT ?,?";
+                "where patient_id = ? order by a.clinical_effective_date DESC"+limit;
+
 
         sqlCount = "SELECT count(1) \n" +
                 "FROM allergy_intolerance a \n" +
@@ -951,8 +955,6 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
-            statement.setInt(2, page*12);
-            statement.setInt(3, size);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getAllergySummaryList(resultSet));
             }

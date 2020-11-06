@@ -10,22 +10,19 @@ export class CareRecordService {
 
   constructor(private http: HttpClient) { }
 
-  getMedication(page?: number, size?: number, patientId?: number, active?: number): Observable<any> {
-    console.log("page: "+page+", size: "+size);
+  getMedication(patientId?: number, active?: number, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
-    params = params.append('page', page.toString());
-    params = params.append('size', size.toString());
+
     params = params.append('patientId', patientId.toString());
     params = params.append('active', active.toString());
+    params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/medication', {params});
   }
 
-  getReferrals(page?: number, size?: number, patientId?: number): Observable<any> {
-    console.log("page: "+page+", size: "+size);
+  getReferrals(patientId?: number): Observable<any> {
     let params = new HttpParams();
-    params = params.append('page', page.toString());
-    params = params.append('size', size.toString());
+
     params = params.append('patientId', patientId.toString());
 
     return this.http.get('api/events/referrals', {params});
@@ -41,56 +38,50 @@ export class CareRecordService {
     return this.http.get('api/events/registries', {params});
   }
 
-  getEncounters(page?: number, size?: number, patientId?: number): Observable<any> {
-    console.log("page: "+page+", size: "+size);
+  getEncounters(patientId?: number, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
-    params = params.append('page', page.toString());
-    params = params.append('size', size.toString());
+
     params = params.append('patientId', patientId.toString());
+    params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/encounters', {params});
   }
 
-  getDiagnostics(page?: number, size?: number, patientId?: number, term?: string): Observable<any> {
-    console.log("page: "+page+", size: "+size);
+  getDiagnostics(patientId?: number, term?: string, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
-    params = params.append('page', page.toString());
-    params = params.append('size', size.toString());
+
     params = params.append('patientId', patientId.toString());
     params = params.append('term', term.toString());
+    params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/diagnostics', {params});
   }
 
-  getAppointment(page?: number, size?: number, patientId?: number): Observable<any> {
-    console.log("page: "+page+", size: "+size);
+  getAppointment(patientId?: number): Observable<any> {
     let params = new HttpParams();
-    params = params.append('page', page.toString());
-    params = params.append('size', size.toString());
+
     params = params.append('patientId', patientId.toString());
 
     return this.http.get('api/events/appointment', {params});
   }
 
-  getObservation(page?: number, size?: number, patientId?: number, eventType?: number, active?: number, term?: string): Observable<any> {
-    console.log("page: "+page+", size: "+size);
+  getObservation(patientId?: number, eventType?: number, active?: number, term?: string, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
-    params = params.append('page', page.toString());
-    params = params.append('size', size.toString());
+
     params = params.append('patientId', patientId.toString());
     params = params.append('eventType', eventType.toString());
     params = params.append('active', active.toString());
     params = params.append('term', term.toString());
+    params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/observation', {params});
   }
 
-  getAllergy(page?: number, size?: number, patientId?: number): Observable<any> {
-    console.log("page: "+page+", size: "+size);
+  getAllergy(patientId?: number, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
-    params = params.append('page', page.toString());
-    params = params.append('size', size.toString());
+
     params = params.append('patientId', patientId.toString());
+    params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/allergy', {params});
   }

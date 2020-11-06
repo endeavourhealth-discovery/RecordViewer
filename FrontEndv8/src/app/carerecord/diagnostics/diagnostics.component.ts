@@ -2,12 +2,13 @@ import {Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
-import {PageEvent} from '@angular/material/paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
 import {TrendComponent} from "../trend/trend.component";
 import {MatDialog} from "@angular/material/dialog";
 import {SelectionModel} from '@angular/cdk/collections';
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-diagnostics',
@@ -21,55 +22,43 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
     ]),
   ]
 })
+
 export class DiagnosticsComponent {
   // @ts-ignore
   @ViewChild(PrecisComponent) precisComponentReference;
   expandedElement: DiagnosticsComponent | null;
-
   selection = new SelectionModel<any>(true, []);
+  summaryMode: number = 0;
 
   events: any;
   dataSource: MatTableDataSource<any>;
-  page: number = 0;
-  size: number = 12;
   term: string = '';
 
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   displayedColumns: string[] = ["select", "term", "result", "date", "expandArrow"];
 
   constructor(
     private carerecordService: CareRecordService,
     private dialog: MatDialog,
-    private log: LoggerService
-    ) { }
+    private log: LoggerService) {}
 
   loadEvents() {
-    this.selection.clear();
-
     this.events = null;
-
-    this.carerecordService.getDiagnostics(this.page, this.size, this.precisComponentReference.patientId, this.term)
+    this.carerecordService.getDiagnostics(this.precisComponentReference.patientId, this.term, this.summaryMode)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
       );
-  }
 
-  termEntered(event) {
-    if (event.key === "Enter") {
-      this.loadEvents();
-    }
+    this.selection.clear();
   }
 
   displayEvents(events: any) {
-    console.log(events);
     this.events = events;
     this.dataSource = new MatTableDataSource(events.results);
-  }
-
-  onPage(event: PageEvent) {
-    this.page = event.pageIndex;
-    this.size = event.pageSize;
-    this.loadEvents();
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   showTrend(term: string) {
@@ -114,4 +103,12 @@ export class DiagnosticsComponent {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
 }

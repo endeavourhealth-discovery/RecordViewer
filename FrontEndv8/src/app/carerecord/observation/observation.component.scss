@@ -46,3 +46,11 @@ tr.expanded-element-row:not(.expanded-expanded-row):active {
   padding: 21px 0;
   justify-content: flex-end;
 }
+
+::ng-deep .mat-sort-header-arrow {
+  color: white;
+}
+
+mat-paginator {
+  width: 100%;
+}

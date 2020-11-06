@@ -9,30 +9,38 @@
     <mat-card-subtitle>A booking of a healthcare event among patient(s), practitioner(s), related person(s).</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="flex" fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="events" fxFlex="100" fxFill multiTemplateDataRows>
+
+    <div class="filter">
+      <mat-form-field style="width:300px; margin-left: 10px" class="expanded-full-width" appearance="outline">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filter" #input>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row wrap" fxLayout.xs="column"  fxLayoutAlign="start">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" [hidden]="!events" fxFlex="100" fxFill multiTemplateDataRows matSort>
         <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Schedule type</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Schedule type</th>
           <td mat-cell *matCellDef="let element">{{element.type}}</td>
         </ng-container>
         <ng-container matColumnDef="location">
-          <th mat-header-cell *matHeaderCellDef>Location</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Location</th>
           <td mat-cell *matCellDef="let element"> {{element.location}} </td>
         </ng-container>
         <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date of appointment</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of appointment</th>
           <td mat-cell *matCellDef="let element"> {{element.date}} </td>
         </ng-container>
         <ng-container matColumnDef="duration">
-          <th mat-header-cell *matHeaderCellDef>Appointment duration</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment duration</th>
           <td mat-cell *matCellDef="let element"> {{element.duration}} min</td>
         </ng-container>
         <ng-container matColumnDef="delay">
-          <th mat-header-cell *matHeaderCellDef>Delay time</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Delay time</th>
           <td mat-cell *matCellDef="let element" [ngClass]="{ 'late': element.delay > 0}"> {{element.delay}} min</td>
         </ng-container>
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Appointment status</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment status</th>
           <td mat-cell *matCellDef="let element" [ngClass]="{ 'cancelled': element.status == 'Cancelled', 'noShow': element.status == 'No Show', 'fulfilled': element.status == 'Fulfilled'}"> {{element.status}} </td>
         </ng-container>
 
@@ -64,16 +72,7 @@
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="expanded-detail-row" [routerLink]="'/events/' + row.dose"></tr>
       </table>
-    <div>
-    </div>
-      <mat-paginator [length]="events?.length"
-                     [pageSize]="size"
-                     [pageIndex]="page"
-                     [showFirstLastButtons]="true"
-                     (page)="onPage($event)"
-                     fxFlex="100"
-                     fxFill>
-      </mat-paginator>
+      <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
     </div>
 
   </mat-card-content>

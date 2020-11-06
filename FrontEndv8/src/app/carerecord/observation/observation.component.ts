@@ -2,10 +2,11 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {CareRecordService} from '../carerecord.service';
 import {LoggerService} from 'dds-angular8';
-import {PageEvent} from '@angular/material/paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {PrecisComponent} from "../precis/precis.component";
 import {ActivatedRoute} from "@angular/router";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-observation',
@@ -26,8 +27,6 @@ export class ObservationComponent implements OnInit {
 
   events: any;
   dataSource: MatTableDataSource<any>;
-  page: number = 0;
-  size: number = 12;
   eventType: number;
   eventTypeTitle: string;
   dateTitle: string;
@@ -36,6 +35,7 @@ export class ObservationComponent implements OnInit {
   active: number = 0;
   term: string = '';
   showSearch: boolean = false;
+  summaryMode: number = 0;
 
   conditions: boolean = false;
   observations: boolean = false;
@@ -46,7 +46,8 @@ export class ObservationComponent implements OnInit {
   diagnosticOrders: boolean = false;
   warningsFlags: boolean = false;
 
-
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
   displayedColumns: string[] = ['name', 'date', 'expandArrow'];
 
   constructor(
@@ -124,27 +125,27 @@ export class ObservationComponent implements OnInit {
 
     this.events = null;
 
-    this.carerecordService.getObservation(this.page, this.size, this.precisComponentReference.patientId, this.eventType, this.active, this.term)
+    this.carerecordService.getObservation(this.precisComponentReference.patientId, this.eventType, this.active, this.term, this.summaryMode)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
       );
   }
 
-  termEntered(event) {
-    if (event.key === "Enter") {
-      this.loadEvents();
-    }
-  }
-
   displayEvents(events: any) {
     this.events = events;
     this.dataSource = new MatTableDataSource(events.results);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
-  onPage(event: PageEvent) {
-    this.page = event.pageIndex;
-    this.size = event.pageSize;
-    this.loadEvents();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
+
 }

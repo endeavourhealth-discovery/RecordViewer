@@ -38,14 +38,13 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDiagnostics(@Context SecurityContext sc,
-                                  @QueryParam("page") Integer page,
-                                  @QueryParam("size") Integer size,
                                   @QueryParam("patientId") Integer patientId,
-                                  @QueryParam("term") String term) throws Exception {
+                                  @QueryParam("term") String term,
+                                  @QueryParam("summaryMode") Integer summaryMode) throws Exception {
         LOG.debug("getDiagnostics");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            DiagnosticsResult result = viewerDAL.getDiagnosticsResult(page, size, patientId, term);
+            DiagnosticsResult result = viewerDAL.getDiagnosticsResult(patientId, term, summaryMode);
 
             return Response
                     .ok()
@@ -59,13 +58,12 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEncounters(@Context SecurityContext sc,
-                                 @QueryParam("page") Integer page,
-                                 @QueryParam("size") Integer size,
-                                 @QueryParam("patientId") Integer patientId) throws Exception {
+                                 @QueryParam("patientId") Integer patientId,
+                                 @QueryParam("summaryMode") Integer summaryMode) throws Exception {
         LOG.debug("getEncounters");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            EncountersResult result = viewerDAL.getEncountersResult(page, size, patientId);
+            EncountersResult result = viewerDAL.getEncountersResult(patientId, summaryMode);
 
             return Response
                     .ok()
@@ -79,13 +77,11 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReferrals(@Context SecurityContext sc,
-                                  @QueryParam("page") Integer page,
-                                  @QueryParam("size") Integer size,
                                   @QueryParam("patientId") Integer patientId) throws Exception {
         LOG.debug("getReferrals");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            ReferralsResult result = viewerDAL.getReferralsResult(page, size, patientId);
+            ReferralsResult result = viewerDAL.getReferralsResult(patientId);
 
             return Response
                     .ok()
@@ -119,14 +115,13 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMedication(@Context SecurityContext sc,
-                                  @QueryParam("page") Integer page,
-                                  @QueryParam("size") Integer size,
                                   @QueryParam("patientId") Integer patientId,
-                                  @QueryParam("active") Integer active) throws Exception {
+                                  @QueryParam("active") Integer active,
+                                  @QueryParam("summaryMode") Integer summaryMode) throws Exception {
         LOG.debug("getMedication");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            MedicationResult result = viewerDAL.getMedicationResult(page, size, patientId, active);
+            MedicationResult result = viewerDAL.getMedicationResult(patientId, active, summaryMode);
 
             return Response
                     .ok()
@@ -140,13 +135,11 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAppointment(@Context SecurityContext sc,
-                                  @QueryParam("page") Integer page,
-                                  @QueryParam("size") Integer size,
                                   @QueryParam("patientId") Integer patientId) throws Exception {
         LOG.debug("getAppointment");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            AppointmentResult result = viewerDAL.getAppointmentResult(page, size, patientId);
+            AppointmentResult result = viewerDAL.getAppointmentResult(patientId);
 
             return Response
                     .ok()
@@ -160,16 +153,15 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getObservation(@Context SecurityContext sc,
-                                   @QueryParam("page") Integer page,
-                                   @QueryParam("size") Integer size,
                                    @QueryParam("patientId") Integer patientId,
                                    @QueryParam("eventType") Integer eventType,
                                    @QueryParam("active") Integer active,
-                                   @QueryParam("term") String term) throws Exception {
+                                   @QueryParam("term") String term,
+                                   @QueryParam("summaryMode") Integer summaryMode) throws Exception {
         LOG.debug("getObservation");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            ObservationResult result = viewerDAL.getObservationResult(page, size, patientId, eventType, active, term);
+            ObservationResult result = viewerDAL.getObservationResult(patientId, eventType, active, term, summaryMode);
 
             return Response
                     .ok()
@@ -183,13 +175,12 @@ public class CareRecordEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllergy(@Context SecurityContext sc,
-                               @QueryParam("page") Integer page,
-                               @QueryParam("size") Integer size,
-                               @QueryParam("patientId") Integer patientId) throws Exception {
+                               @QueryParam("patientId") Integer patientId,
+                               @QueryParam("summaryMode") Integer summaryMode) throws Exception {
         LOG.debug("getAllergy");
 
         try (RecordViewerJDBCDAL viewerDAL = new RecordViewerJDBCDAL()) {
-            AllergyResult result = viewerDAL.getAllergyResult(page, size, patientId);
+            AllergyResult result = viewerDAL.getAllergyResult(patientId, summaryMode);
 
             return Response
                     .ok()
