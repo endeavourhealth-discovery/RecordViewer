@@ -36,16 +36,12 @@ export class CareSummaryComponent implements OnInit {
   // medication
   events1: any;
   dataSource1: MatTableDataSource<any>;
-  page1: number = 0;
-  size1: number = 999;
   active1: number = 1;
   displayedColumns1: string[] = ['name', 'expandArrow'];
 
   // conditions
   events2: any;
   dataSource2: MatTableDataSource<any>;
-  page2: number = 0;
-  size2: number = 999;
   active2: number = 1;
   displayedColumns2: string[] = ['name', 'expandArrow'];
   term2: string = '';
@@ -53,15 +49,11 @@ export class CareSummaryComponent implements OnInit {
   // allergies
   events3: any;
   dataSource3: MatTableDataSource<any>;
-  page3: number = 0;
-  size3: number = 999;
   displayedColumns3: string[] = ['name','expandArrow'];
 
   // warnings
   events4: any;
   dataSource4: MatTableDataSource<any>;
-  page4: number = 0;
-  size4: number = 999;
   active4: number = 1;
   displayedColumns4: string[] = ['name','expandArrow'];
   term4: string = '';
@@ -69,15 +61,11 @@ export class CareSummaryComponent implements OnInit {
   // encounters
   events5: any;
   dataSource5: MatTableDataSource<any>;
-  page5: number = 0;
-  size5: number = 5;
   displayedColumns5: string[] = ['type', 'location', 'date', 'expandArrow'];
 
   // health status
   events6: any;
   dataSource6: MatTableDataSource<any>;
-  page6: number = 0;
-  size6: number = 10;
   displayedColumns6: string[] = ['select', 'term', 'result', 'date', 'expandArrow'];
   term6: string = '';
   diagnostics: boolean = true;
@@ -194,42 +182,6 @@ export class CareSummaryComponent implements OnInit {
     if (events.results == '') {
       this.diagnostics = false;
     }
-  }
-
-  onPage1(event: PageEvent) {
-    this.page1 = event.pageIndex;
-    this.size1 = event.pageSize;
-    this.loadMedication();
-  }
-
-  onPage2(event: PageEvent) {
-    this.page2 = event.pageIndex;
-    this.size2 = event.pageSize;
-    this.loadConditions();
-  }
-
-  onPage3(event: PageEvent) {
-    this.page3 = event.pageIndex;
-    this.size3 = event.pageSize;
-    this.loadAllergies();
-  }
-
-  onPage4(event: PageEvent) {
-    this.page4 = event.pageIndex;
-    this.size4 = event.pageSize;
-    this.loadWarnings();
-  }
-
-  onPage5(event: PageEvent) {
-    this.page5 = event.pageIndex;
-    this.size5 = event.pageSize;
-    this.loadEncounters();
-  }
-
-  onPage6(event: PageEvent) {
-    this.page6 = event.pageIndex;
-    this.size6 = event.pageSize;
-    this.loadDiagnostics();
   }
 
   showTrend(term: string) {
