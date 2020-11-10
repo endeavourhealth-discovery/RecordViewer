@@ -289,7 +289,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     public AppointmentResult getAppointmentResult(Integer patientId) throws Exception {
         AppointmentResult result = new AppointmentResult();
 
-        String sql = "SELECT s.type as schedule_type, s.location, a.start_date, planned_duration, patient_delay, c.name as appointment_status,org.name as orgname " +
+        String sql = "SELECT s.type as schedule_type, s.location, a.start_date, planned_duration, patient_delay, org.name as orgname, " +
+                "CASE WHEN c.name = 'No Show' THEN 'Did not attend' WHEN c.name = 'Fulfilled' THEN 'Attended' ELSE c.name END as appointment_status " +
                 "FROM appointment a " +
                 "join schedule s on s.id = a.schedule_id " +
                 "join concept c on c.dbid = a.appointment_status_concept_id " +
