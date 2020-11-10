@@ -19,7 +19,7 @@ export class RegistriesComponent {
   page: number = 0;
   size: number = 12;
 
-  displayedColumns: string[] = ["registry",  "indicator",  "entryDate", "entryValue", "achieved", "notes"];
+  displayedColumns: string[] = ["registry", "achieved",  "indicator",  "entryDate", "entryValue", "notes"];
 
   constructor(
     private carerecordService: CareRecordService,

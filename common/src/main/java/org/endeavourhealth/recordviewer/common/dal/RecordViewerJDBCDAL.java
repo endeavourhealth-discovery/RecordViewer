@@ -243,7 +243,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT registry, indicator, entry_date, entry_value,achieved, notes " +
                 "FROM dashboards.patient_registries r " +
                 "where r.patient_id = ? " +
-                "order by r.registry, r.indicator, r.entry_date";
+                "order by achieved, r.registry, r.indicator, r.entry_date";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, patientId);
