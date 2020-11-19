@@ -41,6 +41,7 @@ import {EncountersComponent} from "./encounters/encounters.component";
 import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {RegistriesComponent} from "./registries/registries.component";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import {RegistriesComponent} from "./registries/registries.component";
         LineChartModule,
         AreaChartModule,
         ReactiveFormsModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatTabsModule
     ],
   entryComponents: [
     PatientComponent,

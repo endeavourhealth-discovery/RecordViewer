@@ -27,15 +27,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             limit = " LIMIT 10";
         }
 
-        String sql = "SELECT o.clinical_effective_date as date, c.name as term,org.name as orgname, " +
-                "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result, non_core_concept_id as codeId, pr.name as practitioner " +
-                "FROM observation o  " +
+        String sql = "SELECT o.clinical_effective_date as date, c2.name as battery, c.name as term,org.name as orgname, " +
+                "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result, o.non_core_concept_id as codeId, pr.name as practitioner " +
+                "FROM observation o " +
+                "left join observation o2 on o2.id = o.parent_observation_id " +
                 "join concept c on c.dbid = o.non_core_concept_id " +
-                "join organization org on org.id = o.organization_id "+
-                "join practitioner pr on pr.id = o.practitioner_id "+
-                "where patient_id = ? " +
+                "left join concept c2 on c2.dbid = o2.non_core_concept_id " +
+                "join organization org on org.id = o.organization_id " +
+                "join practitioner pr on pr.id = o.practitioner_id " +
+                "where o.patient_id = ? " +
                 "and o.result_value_units is not null "+sqlTerm+
-                "order by o.clinical_effective_date DESC"+limit;
+                "order by o.clinical_effective_date DESC, c2.name, c.name"+limit;
 
         if (term.equals("")) {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -101,7 +103,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setResult(resultSet.getString("result"))
                 .setCodeId(resultSet.getString("codeId"))
                 .setPractitioner(resultSet.getString("practitioner"))
-                .setOrgName(resultSet.getString("orgname"));
+                .setOrgName(resultSet.getString("orgname"))
+                .setBattery(resultSet.getString("battery"));
 
         return diagnosticsSummary;
     }

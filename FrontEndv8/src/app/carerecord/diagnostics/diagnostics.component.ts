@@ -36,7 +36,7 @@ export class DiagnosticsComponent {
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort: MatSort;
-  displayedColumns: string[] = ["select", "term", "result", "date", "expandArrow"];
+  displayedColumns: string[] = ["select", "battery", "term", "result", "date", "expandArrow"];
 
   constructor(
     private carerecordService: CareRecordService,
@@ -56,7 +56,21 @@ export class DiagnosticsComponent {
 
   displayEvents(events: any) {
     this.events = events;
-    this.dataSource = new MatTableDataSource(events.results);
+
+    let batteryList = [];
+    let prevFolder = '';
+    let thisFolder = '';
+    events.results.forEach( (item, index) => {
+      thisFolder = events.results[index].battery;
+      if (thisFolder==prevFolder) {
+        events.results[index].battery = '↳';
+      }
+      batteryList.push(events.results[index]);
+      if (events.results[index].battery!='↳')
+        prevFolder = events.results[index].battery;
+    });
+
+    this.dataSource = new MatTableDataSource(batteryList);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
