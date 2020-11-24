@@ -36,7 +36,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join organization org on org.id = o.organization_id " +
                 "join practitioner pr on pr.id = o.practitioner_id " +
                 "where o.patient_id = ? " +
-                "and o.result_value_units is not null "+sqlTerm+
+                "and (o.result_value_units is not null or o.result_value is not null or o.result_date is not null or o.result_text is not null or o.result_concept_id is not null) "+sqlTerm+
                 "order by o.clinical_effective_date DESC, c2.name, c.name"+limit;
 
         if (term.equals("")) {
@@ -61,7 +61,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c on c.dbid = o.non_core_concept_id " +
                 "join organization org on org.id = o.organization_id "+
                 "where patient_id = ? "+
-                "and o.result_value_units is not null "+sqlTerm;
+                "and (o.result_value_units is not null or o.result_value is not null or o.result_date is not null or o.result_text is not null or o.result_concept_id is not null) "+sqlTerm;
 
 
         if (term.equals("")) {
@@ -471,65 +471,81 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 sql = "SELECT o.clinical_effective_date as date,  " +
                         "'' as status,concat(c.name,' ',coalesce(o.result_value,''),' ',coalesce(o.result_value_units,'')) as name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
                         "where patient_id = ? "+
-                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%FH:%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm+
+                        "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
+                        "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
+                        "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
+                        "and ccv.code_category_id not in (21) and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        "and o.is_problem = 0 "+sqlTerm+
                         "order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "where patient_id = ? "+
-                        "and c.name not like '%procedure%' and c.name not like '%family history%' and c.name not like '%FH:%' and c.name not like '%immunisation%' and c.name not like '%vaccination%' and o.is_problem = 0 "+sqlTerm;
+                        "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
+                        "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
+                        "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
+                        "and ccv.code_category_id not in (21) and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        "and o.is_problem = 0 "+sqlTerm;
 
                 break;
             case 3: // procedures
                 sql = "SELECT o.clinical_effective_date as date," +
                         "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and c.name like '%procedure%' order by o.clinical_effective_date DESC";
+                        "where patient_id = ? and (ccv.code_category_id in (37) or c.name like '%procedure%') order by o.clinical_effective_date DESC";
 
-                sqlCount = "SELECT count(1) \n" +
-                        "FROM observation o \n" +
+                sqlCount = "SELECT count(1) " +
+                        "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? and c.name like '%procedure%'"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ? and (ccv.code_category_id in (37) or c.name like '%procedure%')";
                 break;
             case 4: // family history
                 sql = "SELECT o.clinical_effective_date as date," +
                         "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and (c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
+                        "where patient_id = ? and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? and (c.name like '%family history%' or c.name like '%FH:%')"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ? and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%')";
                 break;
             case 5: // immunisations
                 sql = "SELECT o.clinical_effective_date as date," +
                         "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC";
+                        "where patient_id = ? and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? and (c.name like '%immunisation%' or c.name like '%vaccination%')"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ? and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%')";
                 break;
             case 6: // procedure requests
                 sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date  " +
@@ -545,7 +561,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = p.non_core_concept_id " +
                         "join concept c2 on c2.dbid = p.status_concept_id " +
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ?"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ?";
                 break;
             case 7: // diagnostics order
                 sql = "SELECT clinical_effective_date as date, c.name as name, " +
@@ -560,7 +576,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "FROM diagnostic_order p \n" +
                         "join concept c on c.dbid = p.non_core_concept_id "+
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ?"; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ?";
                 break;
             case 8: // warnings & flags
                 sql = "SELECT effective_date as date, flag_text as name,org.name as orgname,  " +
@@ -573,7 +589,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 sqlCount = "SELECT count(1) \n" +
                         "FROM flag p \n" +
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ? "+activeWarning; // TODO PLACEHOLDER UNTIL VALUE SETS AUTHORED
+                        "where patient_id = ? "+activeWarning;
                 break;
             default:
                 // code block
