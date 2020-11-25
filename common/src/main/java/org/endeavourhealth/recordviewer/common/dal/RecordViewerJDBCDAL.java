@@ -452,7 +452,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             case 1: // conditions
                 sql = "SELECT o.clinical_effective_date as date, " +
                         "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
-                        "ELSE 'Past' END as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date " +
+                        "ELSE 'Past' END as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "join organization org on org.id = o.organization_id "+
@@ -501,7 +501,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 3: // procedures
                 sql = "SELECT o.clinical_effective_date as date," +
-                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
+                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
@@ -518,7 +518,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 4: // family history
                 sql = "SELECT o.clinical_effective_date as date," +
-                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
+                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
@@ -535,7 +535,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 5: // immunisations
                 sql = "SELECT o.clinical_effective_date as date," +
-                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
+                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
@@ -551,7 +551,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "where patient_id = ? and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%')";
                 break;
             case 6: // procedure requests
-                sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date  " +
+                sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date,'' as category  " +
                         "FROM procedure_request p " +
                         "join concept c on c.dbid = p.non_core_concept_id " +
                         "join concept c2 on c2.dbid = p.status_concept_id " +
@@ -568,7 +568,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 7: // diagnostics order
                 sql = "SELECT clinical_effective_date as date, c.name as name, " +
-                        "'' as status,org.name as orgname,pr.name as practitioner,p.problem_end_date  " +
+                        "'' as status,org.name as orgname,pr.name as practitioner,p.problem_end_date,'' as category  " +
                         "FROM diagnostic_order p " +
                         "join concept c on c.dbid = p.non_core_concept_id " +
                         "join organization org on org.id = p.organization_id "+
@@ -584,7 +584,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             case 8: // warnings & flags
                 sql = "SELECT effective_date as date, flag_text as name,org.name as orgname,  " +
                         "CASE WHEN is_active = 1 THEN 'Active' " +
-                        "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date " +
+                        "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date,'' as category " +
                         "FROM flag p " +
                         "join organization org on org.id = p.organization_id "+
                         "where patient_id = ? "+activeWarning+" order by status, effective_date DESC"+limit;

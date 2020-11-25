@@ -76,6 +76,7 @@ export class ObservationComponent implements OnInit {
       this.icon = 'fa-monitor-heart-rate';
       this.dateTitle = "Effective date";
       this.showSearch = true;
+      this.displayedColumns = ['name', 'category', 'date', 'expandArrow'];
       this.observations = true;
     }
     else if (this.eventType==3) {
