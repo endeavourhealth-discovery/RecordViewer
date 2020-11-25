@@ -468,11 +468,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
                 break;
             case 2: // observations
-                sql = "SELECT o.clinical_effective_date as date,  " +
-                        "'' as status,concat(c.name,' ',coalesce(o.result_value,''),' ',coalesce(o.result_value_units,'')) as name,org.name as orgname,pr.name as practitioner,o.problem_end_date  " +
+                sql = "SELECT o.clinical_effective_date as date, " +
+                        "'' as status,concat(c.name,' ',coalesce(o.result_value,''),' ',coalesce(o.result_value_units,'')) as name," +
+                        "org.name as orgname,pr.name as practitioner,o.problem_end_date,cc.description as category " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
+                        "join code_category cc on cc.id = ccv.code_category_id "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
                         "where patient_id = ? "+
@@ -487,6 +489,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
+                        "join code_category cc on cc.id = ccv.code_category_id "+
                         "join organization org on org.id = o.organization_id "+
                         "where patient_id = ? "+
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
@@ -652,7 +655,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setName(resultSet.getString("name"))
                 .setPractitioner(resultSet.getString("practitioner"))
                 .setProblemEndDate(resultSet.getDate("problem_end_date"))
-                .setOrgName(resultSet.getString("orgname"));
+                .setOrgName(resultSet.getString("orgname"))
+                .setCategory(resultSet.getString("category"));
         return observationSummary;
     }
 

@@ -16,6 +16,7 @@ public class ObservationSummary {
     private String orgName;
     private String practitioner;
     private String problemEndDate;
+    private String category;
 
     public String getDate() {
         return date;
@@ -112,5 +113,14 @@ public class ObservationSummary {
         }
 
         return titleCase.toString();
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public ObservationSummary setCategory(String category) {
+        this.category = category;
+        return this;
     }
 }
