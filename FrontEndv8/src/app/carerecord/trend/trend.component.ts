@@ -5,7 +5,7 @@ import {LoggerService} from 'dds-angular8';
 import {FormControl} from '@angular/forms';
 
 export interface DialogData {
-  patientId: string;
+  nhsNumber: string;
   term: string;
 }
 
@@ -42,7 +42,7 @@ export class TrendComponent {
   gradient: boolean = true;
   logarithmic: boolean = true;
 
-  patientId: string;
+  nhsNumber: string;
   term: string;
 
   colorScheme = {
@@ -57,7 +57,7 @@ export class TrendComponent {
     private log: LoggerService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
 
-    this.patientId = data.patientId;
+    this.nhsNumber = data.nhsNumber;
     this.term = data.term;
   }
 
@@ -78,7 +78,7 @@ export class TrendComponent {
       values = this.selected;
     }
 
-    this.carerecordService.getDashboard(this.patientId, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), values)
+    this.carerecordService.getDashboard(this.nhsNumber, this.formatDate(this.dateFrom), this.formatDate(this.dateTo), values)
       .subscribe(result => {
 
         this.chartResults = result.results;

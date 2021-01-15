@@ -82,7 +82,7 @@ export class CareSummaryComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams
       .subscribe(params => {
-          this.globals.patientId = params['patient_id'] || this.globals.patientId;
+          this.globals.nhsNumber = params['nhsNumber'] || this.globals.nhsNumber;
       });
   }
 
@@ -99,7 +99,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadMedication() {
     this.events1 = null;
-    this.carerecordService.getMedication(this.precisComponentReference.patientId, this.active1, this.summaryMode)
+    this.carerecordService.getMedication(this.precisComponentReference.nhsNumber, this.active1, this.summaryMode)
       .subscribe(
         (result) => this.displayMedication(result),
         (error) => this.log.error(error)
@@ -108,7 +108,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadAllergies() {
     this.events3 = null;
-    this.carerecordService.getAllergy(this.precisComponentReference.patientId, this.summaryMode)
+    this.carerecordService.getAllergy(this.precisComponentReference.nhsNumber, this.summaryMode)
       .subscribe(
         (result) => this.displayAllergies(result),
         (error) => this.log.error(error)
@@ -117,7 +117,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadConditions() {
     this.events2 = null;
-    this.carerecordService.getObservation(this.precisComponentReference.patientId, 1, this.active2, this.term2, this.summaryMode)
+    this.carerecordService.getObservation(this.precisComponentReference.nhsNumber, 1, this.active2, this.term2, this.summaryMode)
       .subscribe(
         (result) => this.displayConditions(result),
         (error) => this.log.error(error)
@@ -126,7 +126,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadWarnings() {
     this.events4 = null;
-    this.carerecordService.getObservation(this.precisComponentReference.patientId, 8, this.active4, this.term4, this.summaryMode)
+    this.carerecordService.getObservation(this.precisComponentReference.nhsNumber, 8, this.active4, this.term4, this.summaryMode)
       .subscribe(
         (result) => this.displayWarnings(result),
         (error) => this.log.error(error)
@@ -135,7 +135,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadEncounters() {
     this.events5 = null;
-    this.carerecordService.getEncounters(this.precisComponentReference.patientId, this.summaryMode)
+    this.carerecordService.getEncounters(this.precisComponentReference.nhsNumber, this.summaryMode)
       .subscribe(
         (result) => this.displayEncounters(result),
         (error) => this.log.error(error)
@@ -144,7 +144,7 @@ export class CareSummaryComponent implements OnInit {
 
   loadDiagnostics() {
     this.events6 = null;
-    this.carerecordService.getDiagnostics(this.precisComponentReference.patientId, this.term6, this.summaryMode)
+    this.carerecordService.getDiagnostics(this.precisComponentReference.nhsNumber, this.term6, this.summaryMode)
       .subscribe(
         (result) => this.displayDiagnostics(result),
         (error) => this.log.error(error)
@@ -199,7 +199,7 @@ export class CareSummaryComponent implements OnInit {
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '820px',
       width: '1600px',
-      data: {patientId: this.precisComponentReference.patientId, term: term}
+      data: {nhsNumber: this.precisComponentReference.nhsNumber, term: term}
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -10,65 +10,65 @@ export class CareRecordService {
 
   constructor(private http: HttpClient) { }
 
-  getMedication(patientId?: number, active?: number, summaryMode?: number): Observable<any> {
+  getMedication(nhsNumber?: string, active?: number, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
     params = params.append('active', active.toString());
     params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/medication', {params});
   }
 
-  getReferrals(patientId?: number): Observable<any> {
+  getReferrals(nhsNumber?: string): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
 
     return this.http.get('api/events/referrals', {params});
   }
 
-  getRegistries(page?: number, size?: number, patientId?: number): Observable<any> {
+  getRegistries(page?: number, size?: number, nhsNumber?: string): Observable<any> {
     console.log("page: "+page+", size: "+size);
     let params = new HttpParams();
     params = params.append('page', page.toString());
     params = params.append('size', size.toString());
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
 
     return this.http.get('api/events/registries', {params});
   }
 
-  getEncounters(patientId?: number, summaryMode?: number): Observable<any> {
+  getEncounters(nhsNumber?: string, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
     params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/encounters', {params});
   }
 
-  getDiagnostics(patientId?: number, term?: string, summaryMode?: number): Observable<any> {
+  getDiagnostics(nhsNumber?: string, term?: string, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
     params = params.append('term', term.toString());
     params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/diagnostics', {params});
   }
 
-  getAppointment(patientId?: number): Observable<any> {
+  getAppointment(nhsNumber?: string): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
 
     return this.http.get('api/events/appointment', {params});
   }
 
-  getObservation(patientId?: number, eventType?: number, active?: number, term?: string, summaryMode?: number): Observable<any> {
+  getObservation(nhsNumber?: string, eventType?: number, active?: number, term?: string, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
     params = params.append('eventType', eventType.toString());
     params = params.append('active', active.toString());
     params = params.append('term', term.toString());
@@ -77,10 +77,10 @@ export class CareRecordService {
     return this.http.get('api/events/observation', {params});
   }
 
-  getAllergy(patientId?: number, summaryMode?: number): Observable<any> {
+  getAllergy(nhsNumber?: string, summaryMode?: number): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId.toString());
+    params = params.append('nhsNumber', nhsNumber);
     params = params.append('summaryMode', summaryMode.toString());
 
     return this.http.get('api/events/allergy', {params});
@@ -92,23 +92,24 @@ export class CareRecordService {
     params = params.append('page', page.toString());
     params = params.append('size', size.toString());
     params = params.append('name', name.toString());
-    params = params.append('nhsNumber', nhsNumber.toString());
+    params = params.append('nhsNumber', nhsNumber);
     params = params.append('dob', dob.toString());
 
     return this.http.get('api/events/patients', {params});
   }
 
-  getPatientSummary(patientId?: number): Observable<any> {
+  getPatientSummary(nhsNumber?: string): Observable<any> {
     let params = new HttpParams();
-    if (patientId) params = params.append('patientId', patientId.toString());
+
+    if (nhsNumber) params = params.append('nhsNumber', nhsNumber);
 
     return this.http.get('api/events/patientsummary', {params});
   }
 
-  getDashboard(patientId:string, dateFrom: string, dateTo: string, term: string): Observable<any> {
+  getDashboard(nhsNumber:string, dateFrom: string, dateTo: string, term: string): Observable<any> {
     let params = new HttpParams();
 
-    params = params.append('patientId', patientId);
+    params = params.append('nhsNumber', nhsNumber);
     params = params.append('dateFrom', dateFrom);
     params = params.append('dateTo', dateTo);
     params = params.append('term', term);

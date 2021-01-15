@@ -126,7 +126,7 @@ export class ObservationComponent implements OnInit {
 
     this.events = null;
 
-    this.carerecordService.getObservation(this.precisComponentReference.patientId, this.eventType, this.active, this.term, this.summaryMode)
+    this.carerecordService.getObservation(this.precisComponentReference.nhsNumber, this.eventType, this.active, this.term, this.summaryMode)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

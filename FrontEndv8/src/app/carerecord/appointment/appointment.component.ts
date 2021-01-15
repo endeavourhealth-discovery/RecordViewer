@@ -39,7 +39,7 @@ export class AppointmentComponent {
   loadEvents() {
     this.events = null;
 
-    this.carerecordService.getAppointment(this.precisComponentReference.patientId)
+    this.carerecordService.getAppointment(this.precisComponentReference.nhsNumber)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

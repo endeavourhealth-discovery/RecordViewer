@@ -39,7 +39,7 @@ export class ReferralsComponent {
 
   loadEvents() {
     this.events = null;
-    this.carerecordService.getReferrals(this.precisComponentReference.patientId)
+    this.carerecordService.getReferrals(this.precisComponentReference.nhsNumber)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

@@ -32,7 +32,7 @@ export class DemographicComponent {
   ) { }
 
   loadPatient() {
-    this.carerecordService.getPatientSummary(this.precisComponentReference.patientId)
+    this.carerecordService.getPatientSummary(this.precisComponentReference.nhsNumber)
       .subscribe(
         (result) => this.setPatient(result),
         (error) => this.log.error(error)

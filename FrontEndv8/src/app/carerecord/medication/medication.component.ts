@@ -41,7 +41,7 @@ export class MedicationComponent {
   loadEvents() {
     this.events = null;
 
-    this.carerecordService.getMedication(this.precisComponentReference.patientId, this.active, this.summaryMode)
+    this.carerecordService.getMedication(this.precisComponentReference.nhsNumber, this.active, this.summaryMode)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

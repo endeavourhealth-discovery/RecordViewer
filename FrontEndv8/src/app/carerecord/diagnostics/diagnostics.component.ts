@@ -45,7 +45,7 @@ export class DiagnosticsComponent {
 
   loadEvents() {
     this.events = null;
-    this.carerecordService.getDiagnostics(this.precisComponentReference.patientId, this.term, this.summaryMode)
+    this.carerecordService.getDiagnostics(this.precisComponentReference.nhsNumber, this.term, this.summaryMode)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)
@@ -90,7 +90,7 @@ export class DiagnosticsComponent {
     const dialogRef = this.dialog.open(TrendComponent, {
       height: '820px',
       width: '1600px',
-      data: {patientId: this.precisComponentReference.patientId, term: term}
+      data: {nhsNumber: this.precisComponentReference.nhsNumber, term: term}
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -40,7 +40,7 @@ export class EncountersComponent {
   loadEvents() {
     this.events = null;
 
-    this.carerecordService.getEncounters(this.precisComponentReference.patientId, this.summaryMode)
+    this.carerecordService.getEncounters(this.precisComponentReference.nhsNumber, this.summaryMode)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

@@ -15,11 +15,10 @@ export class PrecisComponent implements OnInit {
   globals: Globals;
   summaryMode: number = 0;
 
-  patientId: number = 0;
+  nhsNumber: string = "";
   name: string = "";
   dob: string = "";
   dod: string = "";
-  nhsNumber: string = "";
   address: string = "";
   gender: string;
   age: string = "";
@@ -27,7 +26,7 @@ export class PrecisComponent implements OnInit {
   organisation: string = "";
   registration: string = "";
 
-  @Output() patientChange: EventEmitter<number> = new EventEmitter();
+  @Output() patientChange: EventEmitter<string> = new EventEmitter();
 
   constructor(
     private carerecordService: CareRecordService,
@@ -39,9 +38,9 @@ export class PrecisComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.patientId = this.globals.patientId;
+    this.nhsNumber = this.globals.nhsNumber;
 
-    if (this.patientId==0)
+    if (this.nhsNumber=="0")
       this.swapPatient();
     else
       this.loadPatient();
@@ -51,19 +50,19 @@ export class PrecisComponent implements OnInit {
       const dialogRef = this.dialog.open(PatientComponent, {
         height: '820px',
         width: '1600px',
-        data: {patientId: this.patientId}
+        data: {nhsNumber: this.nhsNumber}
       });
 
       dialogRef.afterClosed().subscribe(result => {
         if (result)
-          this.patientId = result;
+          this.nhsNumber = result;
         this.loadPatient();
       });
   }
 
   clearPatient() {
-    this.patientId = -1;
-    this.carerecordService.getPatientSummary(this.patientId)
+    this.nhsNumber = "0";
+    this.carerecordService.getPatientSummary(this.nhsNumber)
       .subscribe(
         (result) => this.setPatient(result),
         (error) => this.log.error(error)
@@ -71,7 +70,7 @@ export class PrecisComponent implements OnInit {
   }
 
   loadPatient() {
-    this.carerecordService.getPatientSummary(this.patientId)
+    this.carerecordService.getPatientSummary(this.nhsNumber)
       .subscribe(
         (result) => this.setPatient(result),
         (error) => this.log.error(error)
@@ -90,23 +89,23 @@ export class PrecisComponent implements OnInit {
     this.organisation = patient.organisation;
     this.registration = patient.registration;
 
-    this.patientChange.emit(this.patientId);
-    this.globals.patientId = this.patientId;
+    this.patientChange.emit(this.nhsNumber);
+    this.globals.nhsNumber = this.nhsNumber;
 
     // get warnings for menu badge
-    this.carerecordService.getObservation(this.patientId, 8, 1, '', this.summaryMode)
+    this.carerecordService.getObservation(this.nhsNumber, 8, 1, '', this.summaryMode)
       .subscribe(
         (result) => this.menuProvider.setMenuBadge(5, result.length.toString()),
         (error) => this.log.error(error)
       );
     // get allergies for menu badge
-    this.carerecordService.getAllergy(this.patientId, this.summaryMode)
+    this.carerecordService.getAllergy(this.nhsNumber, this.summaryMode)
       .subscribe(
         (result) => this.menuProvider.setMenuBadge(4, result.length.toString()),
         (error) => this.log.error(error)
       );
     // get conditions for menu badge
-    this.carerecordService.getObservation(this.patientId, 1, 1, '', this.summaryMode)
+    this.carerecordService.getObservation(this.nhsNumber, 1, 1, '', this.summaryMode)
       .subscribe(
         (result) => this.menuProvider.setMenuBadge(2, result.length.toString()),
         (error) => this.log.error(error)

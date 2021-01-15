@@ -29,7 +29,7 @@ export class RegistriesComponent {
   loadEvents() {
     this.events = null;
     console.log("page: "+this.page+", size: "+this.size);
-    this.carerecordService.getRegistries(this.page, this.size, this.precisComponentReference.patientId)
+    this.carerecordService.getRegistries(this.page, this.size, this.precisComponentReference.nhsNumber)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

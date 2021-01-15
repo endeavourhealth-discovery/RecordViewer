@@ -1,6 +1,8 @@
 package org.endeavourhealth.recordviewer.common.dal;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
+import org.endeavourhealth.common.config.ConfigManager;
 import org.endeavourhealth.recordviewer.common.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +15,67 @@ import java.util.*;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
-    public DiagnosticsResult getDiagnosticsResult(Integer patientId, String term, Integer summaryMode) throws Exception {
+    private String getRunMode() throws Exception {
+        String runMode = "";
+        try {
+            ConfigManager.Initialize("record-viewer");
+            JsonNode jsonTestNHSIdMappings = ConfigManager.getConfigurationAsJson("run_mode");
+            runMode = jsonTestNHSIdMappings.get("mode").asText();
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            throw new Exception("No run_mode in config");
+        }
+        return runMode;
+    }
+
+    private String getMappedTestNHSNumber(String nhsNumberIn) throws Exception {
+        ConfigManager.Initialize("record-viewer");
+        JsonNode jsonTestNHSIdMappings = ConfigManager.getConfigurationAsJson("run_mode");
+        JsonNode nhsMappingsNodes = jsonTestNHSIdMappings.get("nhs_mappings");
+        String mappedNHSNumber = "0";
+        if (nhsMappingsNodes != null) {
+            for (int i = 0; i < nhsMappingsNodes.size(); i++) {
+                JsonNode nhsMappingNode = nhsMappingsNodes.get(i);
+                String anonymisedNHSNumber = nhsMappingNode.get("anonymised").asText();
+                if(nhsNumberIn != null && nhsNumberIn.equals(anonymisedNHSNumber)) {
+                    mappedNHSNumber = nhsMappingNode.get("mapped").asText();
+                    return mappedNHSNumber;
+                }
+            }
+        }
+        if (mappedNHSNumber.equals("0")) {
+            LOG.error("NHS number " + nhsNumberIn + " passed in is not in the mapping config");
+        }
+        return "0";
+    }
+
+    private String getReverseMappedTestNHSNumber(String nhsNumberIn) throws Exception {
+        ConfigManager.Initialize("record-viewer");
+        JsonNode jsonTestNHSIdMappings = ConfigManager.getConfigurationAsJson("run_mode");
+        JsonNode nhsMappingsNodes = jsonTestNHSIdMappings.get("nhs_mappings");
+        String anonymisedNHSNumber = "0";
+        if (nhsMappingsNodes != null) {
+            for (int i = 0; i < nhsMappingsNodes.size(); i++) {
+                JsonNode nhsMappingNode = nhsMappingsNodes.get(i);
+                String mappedNHSNumber = nhsMappingNode.get("mapped").asText();
+                if(nhsNumberIn != null && nhsNumberIn.equals(mappedNHSNumber)) {
+                    anonymisedNHSNumber = nhsMappingNode.get("anonymised").asText();
+                    return anonymisedNHSNumber;
+                }
+            }
+        }
+        if (anonymisedNHSNumber.equals("0")) {
+            LOG.error("NHS number " + nhsNumberIn + " passed in is not in the mapping config");
+        }
+        return "0";
+    }
+
+    public DiagnosticsResult getDiagnosticsResult(String nhsNumber, String term, Integer summaryMode) throws Exception {
         DiagnosticsResult result = new DiagnosticsResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String sqlTerm = "";
         String limit = "";
@@ -35,20 +96,21 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "left join concept c2 on c2.dbid = o2.non_core_concept_id " +
                 "join organization org on org.id = o.organization_id " +
                 "join practitioner pr on pr.id = o.practitioner_id " +
-                "where o.patient_id = ? " +
+                "join patient pat on pat.id = o.patient_id " +
+                "where pat.nhs_number = ? " +
                 "and (o.result_value_units is not null or o.result_value is not null or o.result_date is not null or o.result_text is not null or o.result_concept_id is not null) "+sqlTerm+
                 "order by o.clinical_effective_date DESC, c2.name, c.name"+limit;
 
         if (term.equals("")) {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getDiagnosticsSummaryList(resultSet));
                 }
             }
         } else {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 statement.setString(2, "%"+term+"%");
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getDiagnosticsSummaryList(resultSet));
@@ -60,13 +122,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "FROM observation o " +
                 "join concept c on c.dbid = o.non_core_concept_id " +
                 "join organization org on org.id = o.organization_id "+
-                "where patient_id = ? "+
+                "join patient pat on pat.id = o.patient_id " +
+                "where pat.nhs_number = ? " +
                 "and (o.result_value_units is not null or o.result_value is not null or o.result_date is not null or o.result_text is not null or o.result_concept_id is not null) "+sqlTerm;
 
 
         if (term.equals("")) {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     resultSet.next();
                     result.setLength(resultSet.getInt(1));
@@ -74,7 +137,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             }
         } else {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 statement.setString(2, "%"+term+"%");
                 try (ResultSet resultSet = statement.executeQuery()) {
                     resultSet.next();
@@ -109,8 +172,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return diagnosticsSummary;
     }
 
-    public EncountersResult getEncountersResult(Integer patientId, Integer summaryMode) throws Exception {
+    public EncountersResult getEncountersResult(String nhsNumber, Integer summaryMode) throws Exception {
         EncountersResult result = new EncountersResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String limit = "";
 
@@ -125,11 +192,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join practitioner p on p.id = e.practitioner_id " +
                 "join organization o on o.id = e.service_provider_organization_id " +
                 "join organization org on org.id = e.organization_id "+
-                "where patient_id = ? " +
+                "join patient pat on pat.id = e.patient_id " +
+                "where pat.nhs_number = ? " +
                 "order by clinical_effective_date desc"+limit;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getEncountersSummaryList(resultSet));
             }
@@ -142,10 +210,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join practitioner p on p.id = e.practitioner_id " +
                 "join organization o on o.id = e.service_provider_organization_id " +
                 "join organization org on org.id = e.organization_id "+
-                "where patient_id = ?";
+                "join patient pat on pat.id = e.patient_id " +
+                "where pat.nhs_number = ? ";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 result.setLength(resultSet.getInt(1));
@@ -176,8 +245,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return encountersSummary;
     }
 
-    public ReferralsResult getReferralsResult(Integer patientId) throws Exception {
+    public ReferralsResult getReferralsResult(String nhsNumber) throws Exception {
         ReferralsResult result = new ReferralsResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String sql = "SELECT clinical_effective_date as date, o.name as recipient, c1.name as priority, c2.name as type,mode, c3.name as speciality, org.name as orgname,pr.name as practitioner " +
                 "FROM referral_request r " +
@@ -187,11 +260,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c3 on c3.dbid = r.non_core_concept_id " +
                 "join organization org on org.id = r.organization_id " +
                 "join practitioner pr on pr.id = r.practitioner_id " +
-                "where patient_id = ? " +
+                "join patient pat on pat.id = r.patient_id " +
+                "where pat.nhs_number = ? " +
                 "order by clinical_effective_date desc";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getReferralsSummaryList(resultSet));
             }
@@ -204,10 +278,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c2 on c2.dbid = r.referral_request_type_concept_id " +
                 "join concept c3 on c3.dbid = r.non_core_concept_id " +
                 "join organization org on org.id = r.organization_id " +
-                "where patient_id = ?";
+                "join patient pat on pat.id = r.patient_id " +
+                "where pat.nhs_number = ? ";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 result.setLength(resultSet.getInt(1));
@@ -240,8 +315,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return referralsSummary;
     }
 
-    public RegistriesResult getRegistriesResult(Integer page, Integer size, Integer patientId) throws Exception {
+    public RegistriesResult getRegistriesResult(Integer page, Integer size, String nhsNumber) throws Exception {
         RegistriesResult result = new RegistriesResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String sql = "SELECT registry, indicator, entry_date, entry_value,achieved, notes " +
                 "FROM dashboards.patient_registries r " +
@@ -249,7 +328,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "order by achieved, r.registry, r.indicator, r.entry_date";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getRegistriesSummaryList(resultSet));
             }
@@ -289,8 +368,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     }
 
 
-    public AppointmentResult getAppointmentResult(Integer patientId) throws Exception {
+    public AppointmentResult getAppointmentResult(String nhsNumber) throws Exception {
         AppointmentResult result = new AppointmentResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String sql = "SELECT s.type as schedule_type, s.location, a.start_date, planned_duration, patient_delay, org.name as orgname, " +
                 "CASE WHEN c.name = 'No Show' THEN 'Did not attend' WHEN c.name = 'Fulfilled' THEN 'Attended' ELSE c.name END as appointment_status " +
@@ -298,11 +381,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join schedule s on s.id = a.schedule_id " +
                 "join concept c on c.dbid = a.appointment_status_concept_id " +
                 "join organization org on org.id = a.organization_id "+
-                "where patient_id = ? " +
+                "join patient pat on pat.id = a.patient_id " +
+                "where pat.nhs_number = ? " +
                 "order by start_date desc, location, schedule_type, a.id";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getAppointmentSummaryList(resultSet));
             }
@@ -313,10 +397,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join schedule s on s.id = a.schedule_id " +
                 "join concept c on c.dbid = a.appointment_status_concept_id " +
                 "join organization org on org.id = a.organization_id "+
-                "where patient_id = ?";
+                "join patient pat on pat.id = a.patient_id " +
+                "where pat.nhs_number = ? ";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 result.setLength(resultSet.getInt(1));
@@ -348,8 +433,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return appointmentSummary;
     }
 
-    public MedicationResult getMedicationResult(Integer patientId, Integer active, Integer summaryMode) throws Exception {
+    public MedicationResult getMedicationResult(String nhsNumber, Integer active, Integer summaryMode) throws Exception {
         MedicationResult result = new MedicationResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String activeMedication = " and m.cancellation_date is NULL ";
         String limit = "";
@@ -371,11 +460,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
                 "join organization org on org.id = m.organization_id "+
                 "join practitioner pr on pr.id = m.practitioner_id "+
-                "where m.patient_id = ? "+activeMedication+" group by m.id " +
+                "join patient pat on pat.id = m.patient_id " +
+                "where pat.nhs_number = ? " + activeMedication+" group by m.id " +
                 "order by status,type,m.clinical_effective_date DESC" + limit;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getMedicationSummaryList(resultSet));
             }
@@ -387,10 +477,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c on c.dbid = m.non_core_concept_id " +
                 "join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
                 "join organization org on org.id = m.organization_id "+
-                "where m.patient_id = ? "+activeMedication;
+                "join patient pat on pat.id = m.patient_id " +
+                "where pat.nhs_number = ? " +activeMedication;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 result.setLength(resultSet.getInt(1));
@@ -425,8 +516,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return medicationSummary;
     }
 
-    public ObservationResult getObservationResult(Integer patientId, Integer eventType, Integer active, String term, Integer summaryMode) throws Exception {
+    public ObservationResult getObservationResult(String nhsNumber, Integer eventType, Integer active, String term, Integer summaryMode) throws Exception {
         ObservationResult result = new ObservationResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String sql = "";
         String activeProblem = " and o.problem_end_date IS NULL ";
@@ -457,14 +552,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and o.is_problem = 1 and o.is_review = 0 "+activeProblem+
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and o.is_problem = 1 and o.is_review = 0 "+activeProblem+
                         "order by o.problem_end_date, o.clinical_effective_date DESC"+limit;
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? and o.is_problem = 1 and o.is_review = 0 "+activeProblem;
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and o.is_problem = 1 and o.is_review = 0 "+activeProblem;
 
                 break;
             case 2: // observations
@@ -477,7 +576,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join code_category cc on cc.id = ccv.code_category_id "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? "+
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
                         "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
                         "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
@@ -491,7 +591,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join code_category cc on cc.id = ccv.code_category_id "+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? "+
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
                         "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
                         "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
@@ -507,14 +608,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and (ccv.code_category_id in (37) or c.name like '%procedure%') order by o.clinical_effective_date DESC";
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and (ccv.code_category_id in (37) or c.name like '%procedure%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) " +
                         "FROM observation o " +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? and (ccv.code_category_id in (37) or c.name like '%procedure%')";
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and (ccv.code_category_id in (37) or c.name like '%procedure%')";
                 break;
             case 4: // family history
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -524,14 +629,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%')";
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%')";
                 break;
             case 5: // immunisations
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -541,14 +650,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
                         "join practitioner pr on pr.id = o.practitioner_id "+
-                        "where patient_id = ? and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC";
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
                         "join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "join organization org on org.id = o.organization_id "+
-                        "where patient_id = ? and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%')";
+                        "join patient pat on pat.id = o.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%')";
                 break;
             case 6: // procedure requests
                 sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date,'' as category  " +
@@ -557,14 +670,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c2 on c2.dbid = p.status_concept_id " +
                         "join organization org on org.id = p.organization_id "+
                         "join practitioner pr on pr.id = p.practitioner_id "+
-                        "where patient_id = ? order by clinical_effective_date DESC";
+                        "join patient pat on pat.id = p.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " order by clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) " +
                         "FROM procedure_request p " +
                         "join concept c on c.dbid = p.non_core_concept_id " +
                         "join concept c2 on c2.dbid = p.status_concept_id " +
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ?";
+                        "join patient pat on pat.id = p.patient_id " +
+                        "where pat.nhs_number = ? ";
                 break;
             case 7: // diagnostics order
                 sql = "SELECT clinical_effective_date as date, c.name as name, " +
@@ -573,13 +689,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "join concept c on c.dbid = p.non_core_concept_id " +
                         "join organization org on org.id = p.organization_id "+
                         "join practitioner pr on pr.id = p.practitioner_id "+
-                        "where patient_id = ? order by clinical_effective_date DESC";
+                        "join patient pat on pat.id = p.patient_id " +
+                        "where pat.nhs_number = ? " +
+                        " order by clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM diagnostic_order p \n" +
                         "join concept c on c.dbid = p.non_core_concept_id "+
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ?";
+                        "join patient pat on pat.id = p.patient_id " +
+                        "where pat.nhs_number = ? ";
                 break;
             case 8: // warnings & flags
                 sql = "SELECT effective_date as date, flag_text as name,org.name as orgname,  " +
@@ -587,12 +706,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date,'' as category " +
                         "FROM flag p " +
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ? "+activeWarning+" order by status, effective_date DESC"+limit;
+                        "join patient pat on pat.id = p.patient_id " +
+                        "where pat.nhs_number = ? " +activeWarning+" order by status, effective_date DESC"+limit;
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM flag p \n" +
                         "join organization org on org.id = p.organization_id "+
-                        "where patient_id = ? "+activeWarning;
+                        "join patient pat on pat.id = p.patient_id " +
+                        "where pat.nhs_number = ? "+activeWarning;
                 break;
             default:
                 // code block
@@ -600,14 +721,14 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         if (term.equals("")) {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getObservationSummaryList(resultSet));
                 }
             }
         } else {
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 statement.setString(2, "%"+term+"%");
                 try (ResultSet resultSet = statement.executeQuery()) {
                     result.setResults(getObservationSummaryList(resultSet));
@@ -617,7 +738,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         if (term.equals("")) {
             try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     resultSet.next();
                     result.setLength(resultSet.getInt(1));
@@ -625,7 +746,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             }
         } else {
             try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
-                statement.setInt(1, patientId);
+                statement.setString(1, nhsNumber);
                 statement.setString(2, "%"+term+"%");
                 try (ResultSet resultSet = statement.executeQuery()) {
                     resultSet.next();
@@ -661,6 +782,11 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     }
 
     public PatientResult getPatientResult(Integer page, Integer size, String name, String nhsNumber, String dob) throws Exception {
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
+
         PatientResult result = new PatientResult();
         String sql = "";
 
@@ -894,7 +1020,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    private List<PatientSummary> getPatientSummaryList(ResultSet resultSet) throws SQLException {
+    private List<PatientSummary> getPatientSummaryList(ResultSet resultSet) throws Exception {
         List<PatientSummary> result = new ArrayList<>();
         while (resultSet.next()) {
             result.add(getPatientSummary(resultSet));
@@ -903,7 +1029,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    public PatientSummary getPatientSummary(Integer patientId) throws Exception {
+    public PatientSummary getPatientSummary(String nhsNumber) throws Exception {
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
+
         PatientSummary result = new PatientSummary();
 
         String sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
@@ -918,10 +1049,10 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join organization o on o.id = p.organization_id " +
                 "join concept con on con.dbid = e.registration_type_concept_id " +
                 "left join patient_contact pc on pc.patient_id = p.id and pc.type_concept_id = 1335362 and pc.use_concept_id = 1335371 "+
-                "where p.id = ?";
+                "where p.nhs_number = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next())
                     result = getPatientSummary(resultSet);
@@ -931,28 +1062,56 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return result;
     }
 
-    public static PatientSummary getPatientSummary(ResultSet resultSet) throws SQLException {
+    public PatientSummary getPatientSummary(ResultSet resultSet) throws Exception {
         PatientSummary patientSummary = new PatientSummary();
-        patientSummary
-                .setId(resultSet.getString("id"))
-                .setName(resultSet.getString("name"))
-                .setDob(resultSet.getDate("date_of_birth"))
-                .setDod(resultSet.getDate("date_of_death"))
-                .setNhsNumber(resultSet.getString("nhs_number"))
-                .setGender(resultSet.getString("gender"))
-                .setAge(resultSet.getString("age"))
-                .setAddress(resultSet.getString("address"))
-                .setUsual_gp(resultSet.getString("usual_gp"))
-                .setOrganisation(resultSet.getString("orgname"))
-                .setStart_date(resultSet.getString("startdate"))
-                .setMobile(resultSet.getString("mobile"))
-                .setRegistration(resultSet.getString("reg_type"));
+
+        String nhsNumber = resultSet.getString("nhs_number");
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getReverseMappedTestNHSNumber(nhsNumber);
+            patientSummary
+                    .setId("0")
+                    .setName("XXXX")
+                    .setDob(null)
+                    .setDod(null)
+                    .setNhsNumber(nhsNumber)
+                    .setGender("XX")
+                    .setAge("0")
+                    .setAddress("XXXX")
+                    .setUsual_gp("XXXX")
+                    .setOrganisation("XXXX")
+                    .setStart_date(null)
+                    .setMobile("XXXX")
+                    .setRegistration("XXXX");
+        }
+        else {
+            patientSummary
+                    .setId(resultSet.getString("id"))
+                    .setName(resultSet.getString("name"))
+                    .setDob(resultSet.getDate("date_of_birth"))
+                    .setDod(resultSet.getDate("date_of_death"))
+                    .setNhsNumber(nhsNumber)
+                    .setGender(resultSet.getString("gender"))
+                    .setAge(resultSet.getString("age"))
+                    .setAddress(resultSet.getString("address"))
+                    .setUsual_gp(resultSet.getString("usual_gp"))
+                    .setOrganisation(resultSet.getString("orgname"))
+                    .setStart_date(resultSet.getString("startdate"))
+                    .setMobile(resultSet.getString("mobile"))
+                    .setRegistration(resultSet.getString("reg_type"));
+
+        }
+
 
         return patientSummary;
     }
 
-    public AllergyResult getAllergyResult(Integer patientId, Integer summaryMode) throws Exception {
+    public AllergyResult getAllergyResult(String nhsNumber, Integer summaryMode) throws Exception {
         AllergyResult result = new AllergyResult();
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         String sql = "";
         String sqlCount = "";
@@ -968,24 +1127,27 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join concept c on c.dbid = a.non_core_concept_id \n"+
                 "join organization org on org.id = a.organization_id "+
                 "join practitioner pr on pr.id = a.practitioner_id "+
-                "where patient_id = ? order by a.clinical_effective_date DESC"+limit;
+                "join patient pat on pat.id = a.patient_id " +
+                "where pat.nhs_number = ? " +
+                " order by a.clinical_effective_date DESC"+limit;
 
 
         sqlCount = "SELECT count(1) \n" +
                 "FROM allergy_intolerance a \n" +
                 "join concept c on c.dbid = a.non_core_concept_id \n"+
                 "join organization org on org.id = a.organization_id "+
-                "where patient_id = ?";
+                "join patient pat on pat.id = a.patient_id " +
+                "where pat.nhs_number = ? ";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 result.setResults(getAllergySummaryList(resultSet));
             }
         }
 
         try (PreparedStatement statement = conn.prepareStatement(sqlCount)) {
-            statement.setInt(1, patientId);
+            statement.setString(1, nhsNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
                 result.setLength(resultSet.getInt(1));
@@ -1015,8 +1177,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         return allergySummary;
     }
 
-    public ChartResult getDashboard(String patientId, String dateFrom, String dateTo, String term) throws Exception {
+    public ChartResult getDashboard(String nhsNumber, String dateFrom, String dateTo, String term) throws Exception {
         List<String> terms = Arrays.asList(term.split("\\s*,\\s*"));
+
+        if (getRunMode().equals("test")) {
+            nhsNumber = getMappedTestNHSNumber(nhsNumber);
+        }
 
         ChartResult result = new ChartResult();
         String sql = "";
@@ -1031,15 +1197,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT c.name as name, clinical_effective_date as series_name, result_value as series_value FROM observation o " +
                     "join concept c on c.dbid = o.non_core_concept_id " +
+                    "join patient pat on pat.id = o.patient_id " +
                     "where c.name = ? " +
-                    "and patient_id = ? " +
+                    "and pat.nhs_number = ? " +
                     "and clinical_effective_date between ? and ? and result_value is not null and result_value != '' order by clinical_effective_date";
 
             i++;
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, t);
-                statement.setString(2, patientId);
+                statement.setString(2, nhsNumber);
                 statement.setString(3, dateFrom);
                 statement.setString(4, dateTo);
                 try (ResultSet resultSet = statement.executeQuery()) {

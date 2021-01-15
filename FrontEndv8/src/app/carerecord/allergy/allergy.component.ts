@@ -50,7 +50,7 @@ export class AllergyComponent {
 
     this.events = null;
 
-    this.carerecordService.getAllergy(this.precisComponentReference.patientId, this.summaryMode)
+    this.carerecordService.getAllergy(this.precisComponentReference.nhsNumber, this.summaryMode)
       .subscribe(
         (result) => this.displayEvents(result),
         (error) => this.log.error(error)

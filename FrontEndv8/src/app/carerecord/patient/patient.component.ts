@@ -6,7 +6,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {PageEvent} from "@angular/material/paginator";
 
 export interface DialogData {
-  patientId: string;
+  nhsNumber: string;
 }
 
 @Component({
@@ -21,7 +21,7 @@ export class PatientComponent {
   page: number = 0;
   size: number = 10;
   name: string = '';
-  nhsNumber: string = '';
+  nhsNumber: string = '0';
   dob: string = '';
 
   displayedColumns: string[] = ['name/address', 'dob/nhsNumber', 'age/gender', 'usual_gp/organisation', 'registration'];
@@ -52,6 +52,8 @@ export class PatientComponent {
   }
 
   patientEntered(event) {
+    if (this.name!="")
+      this.nhsNumber = "";
     if (event.key === "Enter") {
       this.loadEvents();
     }
