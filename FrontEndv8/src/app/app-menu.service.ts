@@ -43,7 +43,7 @@ export class AppMenuService implements AbstractMenuProvider {
   }
 
   getApplicationTitle(): string {
-    return 'Integrated Patient Care Record Viewer';
+    return 'Record Viewer';
   }
 
   menu: MenuOption[] = [
