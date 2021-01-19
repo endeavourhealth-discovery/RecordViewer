@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+files:
+  - source: /target/API-0.0.1
+    destination: //opt/tomcat/webapps/record-viewer
+hooks:
+  BeforeInstall:
+    - location: cleanup
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: permissions
+      timeout: 300
+      runas: root

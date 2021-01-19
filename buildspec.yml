@@ -28,7 +28,5 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
-    - appspec.yml
-    - aws_scripts/**/*
     - FrontEnd/frontend
     - API/api

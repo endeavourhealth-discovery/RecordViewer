@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: /dist
+    destination: //usr/share/nginx/html/record-viewer
+hooks:
+  BeforeInstall:
+    - location: cleanup
+      timeout: 300
+      runas: root
