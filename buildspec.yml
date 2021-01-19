@@ -30,3 +30,4 @@ artifacts:
   files:
     - FrontEndv8/frontend
     - API/api
+  discard-paths: yes
