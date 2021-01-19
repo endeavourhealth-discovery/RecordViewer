@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /dist
+  - source: /dist/FrontEndv8
     destination: //usr/share/nginx/html/record-viewer
 hooks:
   BeforeInstall:
