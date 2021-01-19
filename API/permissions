@@ -1,0 +1,1 @@
+chown -R tomcat:tomcat /opt/tomcat/webapps/record-viewer
