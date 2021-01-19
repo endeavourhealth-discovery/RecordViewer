@@ -23,10 +23,10 @@ phases:
       - mv frontend.zip frontend
       - echo Packaging core
       - cd ../API
-      - zip -r api.zip appspec.yml cleanup permissions target/API-0.0.1/
+      - zip -r api.zip appspec.yml cleanup permissions target/api
       - mv api.zip api
       - echo Build completed on `date`
 artifacts:
   files:
-    - FrontEnd/frontend
+    - FrontEndv8/frontend
     - API/api
