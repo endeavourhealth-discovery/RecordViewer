@@ -261,7 +261,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         EncountersSummary encountersSummary = new EncountersSummary();
         encountersSummary
                 .setDate(resultSet.getDate("date"))
-                .setType(resultSet.getString("ct.encounter_type"))
+                .setType(resultSet.getString("encounter_type"))
                 .setLocation(resultSet.getString("location"))
                 .setPractitioner(resultSet.getString("practitioner"))
                 .setOrgName(resultSet.getString("orgname"));
