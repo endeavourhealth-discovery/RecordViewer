@@ -197,7 +197,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             limit = " LIMIT 5";
         }
 
-        String sql = "SELECT clinical_effective_date as date, ct.encounter_type, o.name as location, p.name as practitioner,org.name as orgname " +
+        String sql = "SELECT clinical_effective_date as date, coalesce(ct.encounter_type,'Administration') as encounter_type, o.name as location, p.name as practitioner,org.name as orgname " +
                 "FROM encounter e " +
                 "left join concept c on c.dbid = e.non_core_concept_id " +
                 "left join consultation_types ct on ct.original_code = c.id " +
