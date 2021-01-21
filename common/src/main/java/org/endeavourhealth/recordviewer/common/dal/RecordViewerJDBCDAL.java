@@ -92,12 +92,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result, o.non_core_concept_id as codeId, pr.name as practitioner " +
                 "FROM observation o " +
                 "left join observation o2 on o2.id = o.parent_observation_id " +
-                "join concept c on c.dbid = o.non_core_concept_id " +
+                "left join concept c on c.dbid = o.non_core_concept_id " +
                 "left join concept c2 on c2.dbid = o2.non_core_concept_id " +
-                "join organization org on org.id = o.organization_id " +
-                "join practitioner pr on pr.id = o.practitioner_id " +
-                "join patient pat on pat.id = o.patient_id " +
+                "left join organization org on org.id = o.organization_id " +
+                "left join practitioner pr on pr.id = o.practitioner_id " +
+                "left join patient pat on pat.id = o.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                 "where pat.nhs_number = ? " +
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                 "and (o.result_value_units is not null or o.result_value is not null or o.result_date is not null or o.result_text is not null or o.result_concept_id is not null) "+sqlTerm+
                 "order by o.clinical_effective_date DESC, c2.name, c.name"+limit;
 
@@ -120,10 +126,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         sql = "SELECT count(1) " +
                 "FROM observation o " +
-                "join concept c on c.dbid = o.non_core_concept_id " +
-                "join organization org on org.id = o.organization_id "+
-                "join patient pat on pat.id = o.patient_id " +
+                "left join concept c on c.dbid = o.non_core_concept_id " +
+                "left join organization org on org.id = o.organization_id "+
+                "left join patient pat on pat.id = o.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                 "where pat.nhs_number = ? " +
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                 "and (o.result_value_units is not null or o.result_value is not null or o.result_date is not null or o.result_text is not null or o.result_concept_id is not null) "+sqlTerm;
 
 
@@ -187,13 +199,19 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         String sql = "SELECT clinical_effective_date as date, ct.encounter_type, o.name as location, p.name as practitioner,org.name as orgname " +
                 "FROM encounter e " +
-                "join concept c on c.dbid = e.non_core_concept_id " +
-                "join consultation_types ct on ct.original_code = c.id " +
-                "join practitioner p on p.id = e.practitioner_id " +
-                "join organization o on o.id = e.service_provider_organization_id " +
-                "join organization org on org.id = e.organization_id "+
-                "join patient pat on pat.id = e.patient_id " +
+                "left join concept c on c.dbid = e.non_core_concept_id " +
+                "left join consultation_types ct on ct.original_code = c.id " +
+                "left join practitioner p on p.id = e.practitioner_id " +
+                "left join organization o on o.id = e.service_provider_organization_id " +
+                "left join organization org on org.id = e.organization_id "+
+                "left join patient pat on pat.id = e.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                 "where pat.nhs_number = ? " +
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                 "order by clinical_effective_date desc"+limit;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -205,13 +223,19 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         sql = "SELECT count(1) " +
                 "FROM encounter e " +
-                "join concept c on c.dbid = e.non_core_concept_id " +
-                "join consultation_types ct on ct.original_code = c.id " +
-                "join practitioner p on p.id = e.practitioner_id " +
-                "join organization o on o.id = e.service_provider_organization_id " +
-                "join organization org on org.id = e.organization_id "+
-                "join patient pat on pat.id = e.patient_id " +
-                "where pat.nhs_number = ? ";
+                "left join concept c on c.dbid = e.non_core_concept_id " +
+                "left join consultation_types ct on ct.original_code = c.id " +
+                "left join practitioner p on p.id = e.practitioner_id " +
+                "left join organization o on o.id = e.service_provider_organization_id " +
+                "left join organization org on org.id = e.organization_id "+
+                "left join patient pat on pat.id = e.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                "where pat.nhs_number = ? "+
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL)";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, nhsNumber);
@@ -252,16 +276,22 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             nhsNumber = getMappedTestNHSNumber(nhsNumber);
         }
 
-        String sql = "SELECT clinical_effective_date as date, o.name as recipient, c1.name as priority, c2.name as type,mode, c3.name as speciality, org.name as orgname,pr.name as practitioner " +
+        String sql = "SELECT clinical_effective_date as date, coalesce(o.name,'') as recipient, coalesce(c1.name,'') as priority, coalesce(c2.name,'') as type,mode, coalesce(c3.name,'') as speciality, org.name as orgname,pr.name as practitioner " +
                 "FROM referral_request r " +
-                "join organization o on o.id = r.recipient_organization_id " +
-                "join concept c1 on c1.dbid = r.referral_request_priority_concept_id " +
-                "join concept c2 on c2.dbid = r.referral_request_type_concept_id " +
-                "join concept c3 on c3.dbid = r.non_core_concept_id " +
-                "join organization org on org.id = r.organization_id " +
-                "join practitioner pr on pr.id = r.practitioner_id " +
-                "join patient pat on pat.id = r.patient_id " +
+                "left join organization o on o.id = r.recipient_organization_id " +
+                "left join concept c1 on c1.dbid = r.referral_request_priority_concept_id " +
+                "left join concept c2 on c2.dbid = r.referral_request_type_concept_id " +
+                "left join concept c3 on c3.dbid = r.non_core_concept_id " +
+                "left join organization org on org.id = r.organization_id " +
+                "left join practitioner pr on pr.id = r.practitioner_id " +
+                "left join patient pat on pat.id = r.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                 "where pat.nhs_number = ? " +
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                 "order by clinical_effective_date desc";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -273,13 +303,20 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         sql = "SELECT count(1) " +
                 "FROM referral_request r " +
-                "join organization o on o.id = r.recipient_organization_id " +
-                "join concept c1 on c1.dbid = r.referral_request_priority_concept_id " +
-                "join concept c2 on c2.dbid = r.referral_request_type_concept_id " +
-                "join concept c3 on c3.dbid = r.non_core_concept_id " +
-                "join organization org on org.id = r.organization_id " +
-                "join patient pat on pat.id = r.patient_id " +
-                "where pat.nhs_number = ? ";
+                "left join organization o on o.id = r.recipient_organization_id " +
+                "left join concept c1 on c1.dbid = r.referral_request_priority_concept_id " +
+                "left join concept c2 on c2.dbid = r.referral_request_type_concept_id " +
+                "left join concept c3 on c3.dbid = r.non_core_concept_id " +
+                "left join organization org on org.id = r.organization_id " +
+                "left join patient pat on pat.id = r.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                "where pat.nhs_number = ? "+
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) ";
+
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, nhsNumber);
@@ -378,11 +415,17 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT s.type as schedule_type, s.location, a.start_date, planned_duration, patient_delay, org.name as orgname, " +
                 "CASE WHEN c.name = 'No Show' THEN 'Did not attend' WHEN c.name = 'Fulfilled' THEN 'Attended' ELSE c.name END as appointment_status " +
                 "FROM appointment a " +
-                "join schedule s on s.id = a.schedule_id " +
-                "join concept c on c.dbid = a.appointment_status_concept_id " +
-                "join organization org on org.id = a.organization_id "+
-                "join patient pat on pat.id = a.patient_id " +
+                "left join schedule s on s.id = a.schedule_id " +
+                "left join concept c on c.dbid = a.appointment_status_concept_id " +
+                "left join organization org on org.id = a.organization_id "+
+                "left join patient pat on pat.id = a.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                 "where pat.nhs_number = ? " +
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                 "order by start_date desc, location, schedule_type, a.id";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -394,11 +437,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         sql = "SELECT count(1) " +
                 "FROM appointment a " +
-                "join schedule s on s.id = a.schedule_id " +
-                "join concept c on c.dbid = a.appointment_status_concept_id " +
-                "join organization org on org.id = a.organization_id "+
-                "join patient pat on pat.id = a.patient_id " +
-                "where pat.nhs_number = ? ";
+                "left join schedule s on s.id = a.schedule_id " +
+                "left join concept c on c.dbid = a.appointment_status_concept_id " +
+                "left join organization org on org.id = a.organization_id "+
+                "left join patient pat on pat.id = a.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                "where pat.nhs_number = ? "+
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) ";
+
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, nhsNumber);
@@ -453,15 +503,22 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT m.id,m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity,org.name as orgname, " +
                 "CASE WHEN m.cancellation_date is NULL THEN 'Active' " +
 				"else 'Past' END as status,c2.name as type, " +
-                "max(coalesce(mo.clinical_effective_date,'')) as last_issue_date,cancellation_date,pr.name as practitioner " +
+                "max(mo.clinical_effective_date) as last_issue_date,cancellation_date,pr.name as practitioner " +
                 "FROM medication_statement m " +
-                "join medication_order mo on m.id = mo.medication_statement_id " +
-                "join concept c on c.dbid = m.non_core_concept_id " +
-                "join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
-                "join organization org on org.id = m.organization_id "+
-                "join practitioner pr on pr.id = m.practitioner_id "+
-                "join patient pat on pat.id = m.patient_id " +
-                "where pat.nhs_number = ? " + activeMedication+" group by m.id " +
+                "left join medication_order mo on m.id = mo.medication_statement_id " +
+                "left join concept c on c.dbid = m.non_core_concept_id " +
+                "left join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
+                "left join organization org on org.id = m.organization_id "+
+                "left join practitioner pr on pr.id = m.practitioner_id "+
+                "left join patient pat on pat.id = m.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                "where pat.nhs_number = ? " + activeMedication+" " +
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() " +
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) " +
+                "group by m.id " +
                 "order by status,type,m.clinical_effective_date DESC" + limit;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -473,12 +530,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         sql = "SELECT count(distinct(m.id)) \n" +
                 "FROM medication_statement m \n" +
-                "join medication_order mo on m.id = mo.medication_statement_id " +
-                "join concept c on c.dbid = m.non_core_concept_id " +
-                "join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
-                "join organization org on org.id = m.organization_id "+
-                "join patient pat on pat.id = m.patient_id " +
-                "where pat.nhs_number = ? " +activeMedication;
+                "left join medication_order mo on m.id = mo.medication_statement_id " +
+                "left join concept c on c.dbid = m.non_core_concept_id " +
+                "left join concept c2 on c2.dbid = m.authorisation_type_concept_id " +
+                "left join organization org on org.id = m.organization_id "+
+                "left join patient pat on pat.id = m.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                "where pat.nhs_number = ? " +activeMedication+" "+
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) ";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, nhsNumber);
@@ -549,20 +612,32 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
                         "ELSE 'Past' END as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "join organization org on org.id = o.organization_id "+
-                        "join practitioner pr on pr.id = o.practitioner_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join practitioner pr on pr.id = o.practitioner_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " and o.is_problem = 1 and o.is_review = 0 "+activeProblem+
                         "order by o.problem_end_date, o.clinical_effective_date DESC"+limit;
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
-                        "join organization org on org.id = o.organization_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " and o.is_problem = 1 and o.is_review = 0 "+activeProblem;
 
                 break;
@@ -571,13 +646,19 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "'' as status,concat(c.name,' ',coalesce(o.result_value,''),' ',coalesce(o.result_value_units,'')) as name," +
                         "org.name as orgname,pr.name as practitioner,o.problem_end_date,coalesce(cc.description,'') as category " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
                         "left join code_category cc on cc.id = ccv.code_category_id "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join practitioner pr on pr.id = o.practitioner_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join practitioner pr on pr.id = o.practitioner_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
                         "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
                         "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
@@ -587,12 +668,18 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
-                        "join code_category cc on cc.id = ccv.code_category_id "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join code_category cc on cc.id = ccv.code_category_id "+
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
                         "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
                         "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
@@ -604,20 +691,28 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 sql = "SELECT o.clinical_effective_date as date," +
                         "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join practitioner pr on pr.id = o.practitioner_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join practitioner pr on pr.id = o.practitioner_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " and (ccv.code_category_id in (37) or c.name like '%procedure%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
                         " and (ccv.code_category_id in (37) or c.name like '%procedure%')";
                 break;
@@ -625,95 +720,157 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 sql = "SELECT o.clinical_effective_date as date," +
                         "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join practitioner pr on pr.id = o.practitioner_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join practitioner pr on pr.id = o.practitioner_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%')";
                 break;
             case 5: // immunisations
                 sql = "SELECT o.clinical_effective_date as date," +
                         "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
                         "FROM observation o " +
-                        "join concept c on c.dbid = o.non_core_concept_id "+
+                        "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join practitioner pr on pr.id = o.practitioner_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join practitioner pr on pr.id = o.practitioner_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
-                        "join concept c on c.dbid = o.non_core_concept_id \n"+
+                        "left join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
-                        "join organization org on org.id = o.organization_id "+
-                        "join patient pat on pat.id = o.patient_id " +
+                        "left join organization org on org.id = o.organization_id "+
+                        "left join patient pat on pat.id = o.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%')";
                 break;
             case 6: // procedure requests
                 sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date,'' as category  " +
                         "FROM procedure_request p " +
-                        "join concept c on c.dbid = p.non_core_concept_id " +
-                        "join concept c2 on c2.dbid = p.status_concept_id " +
-                        "join organization org on org.id = p.organization_id "+
-                        "join practitioner pr on pr.id = p.practitioner_id "+
-                        "join patient pat on pat.id = p.patient_id " +
+                        "left join concept c on c.dbid = p.non_core_concept_id " +
+                        "left join concept c2 on c2.dbid = p.status_concept_id " +
+                        "left join organization org on org.id = p.organization_id "+
+                        "left join practitioner pr on pr.id = p.practitioner_id "+
+                        "left join patient pat on pat.id = p.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " order by clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) " +
                         "FROM procedure_request p " +
-                        "join concept c on c.dbid = p.non_core_concept_id " +
-                        "join concept c2 on c2.dbid = p.status_concept_id " +
-                        "join organization org on org.id = p.organization_id "+
-                        "join patient pat on pat.id = p.patient_id " +
-                        "where pat.nhs_number = ? ";
+                        "left join concept c on c.dbid = p.non_core_concept_id " +
+                        "left join concept c2 on c2.dbid = p.status_concept_id " +
+                        "left join organization org on org.id = p.organization_id "+
+                        "left join patient pat on pat.id = p.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                        "where pat.nhs_number = ? "+
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) ";
                 break;
             case 7: // diagnostics order
                 sql = "SELECT clinical_effective_date as date, c.name as name, " +
                         "'' as status,org.name as orgname,pr.name as practitioner,p.problem_end_date,'' as category  " +
                         "FROM diagnostic_order p " +
-                        "join concept c on c.dbid = p.non_core_concept_id " +
-                        "join organization org on org.id = p.organization_id "+
-                        "join practitioner pr on pr.id = p.practitioner_id "+
-                        "join patient pat on pat.id = p.patient_id " +
+                        "left join concept c on c.dbid = p.non_core_concept_id " +
+                        "left join organization org on org.id = p.organization_id "+
+                        "left join practitioner pr on pr.id = p.practitioner_id "+
+                        "left join patient pat on pat.id = p.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         " order by clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM diagnostic_order p \n" +
-                        "join concept c on c.dbid = p.non_core_concept_id "+
-                        "join organization org on org.id = p.organization_id "+
-                        "join patient pat on pat.id = p.patient_id " +
-                        "where pat.nhs_number = ? ";
+                        "left join concept c on c.dbid = p.non_core_concept_id "+
+                        "left join organization org on org.id = p.organization_id "+
+                        "left join patient pat on pat.id = p.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                        "where pat.nhs_number = ? "+
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) ";
                 break;
             case 8: // warnings & flags
                 sql = "SELECT effective_date as date, flag_text as name,org.name as orgname,  " +
                         "CASE WHEN is_active = 1 THEN 'Active' " +
                         "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date,'' as category " +
                         "FROM flag p " +
-                        "join organization org on org.id = p.organization_id "+
-                        "join patient pat on pat.id = p.patient_id " +
-                        "where pat.nhs_number = ? " +activeWarning+" order by status, effective_date DESC"+limit;
+                        "left join organization org on org.id = p.organization_id "+
+                        "left join patient pat on pat.id = p.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                        "where pat.nhs_number = ? " +activeWarning+" " +
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
+                        "order by status, effective_date DESC"+limit;
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM flag p \n" +
-                        "join organization org on org.id = p.organization_id "+
-                        "join patient pat on pat.id = p.patient_id " +
-                        "where pat.nhs_number = ? "+activeWarning;
+                        "left join organization org on org.id = p.organization_id "+
+                        "left join patient pat on pat.id = p.patient_id " +
+                        "left join episode_of_care ep on ep.patient_id = pat.id "+
+                        "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                        "where pat.nhs_number = ? "+activeWarning+" "+
+                        "and pat.date_of_death IS NULL "+
+                        "and ec.id = 'FHIR_RT_R' "+
+                        "and ep.date_registered <= now() "+
+                        "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) ";
+
                 break;
             default:
                 // code block
@@ -800,12 +957,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
                     "FROM patient p " +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.date_of_birth = ? order by p.last_name, p.first_names LIMIT ?,?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -819,12 +976,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT count(1) " +
                     "FROM patient p \n" +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.date_of_birth like ?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -841,12 +998,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
                     "FROM patient p " +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.last_name like ? and p.date_of_birth = ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -862,12 +1019,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT count(1) " +
                     "FROM patient p \n" +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.last_name like ? and p.date_of_birth = ?) or p.nhs_number = ?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -886,12 +1043,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
                     "FROM patient p " +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ? and date_of_birth = ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -908,12 +1065,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT count(1) " +
                     "FROM patient p \n" +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ? and date_of_birth = ?) or p.nhs_number = ?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -933,12 +1090,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
                     "FROM patient p " +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.last_name like ? or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -953,12 +1110,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT count(1) " +
                     "FROM patient p \n" +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.last_name like ? or p.nhs_number = ?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -977,12 +1134,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
                     "FROM patient p " +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -998,12 +1155,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
             sql = "SELECT count(1) " +
                     "FROM patient p \n" +
-                    "join patient_address a on a.id = p.current_address_id " +
-                    "join concept c on c.dbid = p.gender_concept_id " +
-                    "join episode_of_care e on e.patient_id = p.id " +
+                    "left join patient_address a on a.id = p.current_address_id " +
+                    "left join concept c on c.dbid = p.gender_concept_id " +
+                    "left join episode_of_care e on e.patient_id = p.id " +
                     "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                    "join organization o on o.id = p.organization_id " +
-                    "join concept con on con.dbid = e.registration_type_concept_id " +
+                    "left join organization o on o.id = p.organization_id " +
+                    "left join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ?";
 
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -1042,12 +1199,12 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                 "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, pc.value as mobile " +
                 "FROM patient p " +
-                "join patient_address a on a.id = p.current_address_id " +
-                "join concept c on c.dbid = p.gender_concept_id " +
-                "join episode_of_care e on e.patient_id = p.id " +
+                "left join patient_address a on a.id = p.current_address_id " +
+                "left join concept c on c.dbid = p.gender_concept_id " +
+                "left join episode_of_care e on e.patient_id = p.id " +
                 "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
-                "join organization o on o.id = p.organization_id " +
-                "join concept con on con.dbid = e.registration_type_concept_id " +
+                "left join organization o on o.id = p.organization_id " +
+                "left join concept con on con.dbid = e.registration_type_concept_id " +
                 "left join patient_contact pc on pc.patient_id = p.id and pc.type_concept_id = 1335362 and pc.use_concept_id = 1335371 "+
                 "where p.nhs_number = ?";
 
@@ -1124,20 +1281,32 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         sql = "SELECT a.clinical_effective_date as date, " +
                 "'Active' as status,c.name,org.name as orgname,pr.name as practitioner " +
                 "FROM allergy_intolerance a " +
-                "join concept c on c.dbid = a.non_core_concept_id \n"+
-                "join organization org on org.id = a.organization_id "+
-                "join practitioner pr on pr.id = a.practitioner_id "+
-                "join patient pat on pat.id = a.patient_id " +
+                "left join concept c on c.dbid = a.non_core_concept_id \n"+
+                "left join organization org on org.id = a.organization_id "+
+                "left join practitioner pr on pr.id = a.practitioner_id "+
+                "left join patient pat on pat.id = a.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                 "where pat.nhs_number = ? " +
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                 " order by a.clinical_effective_date DESC"+limit;
 
 
         sqlCount = "SELECT count(1) \n" +
                 "FROM allergy_intolerance a \n" +
-                "join concept c on c.dbid = a.non_core_concept_id \n"+
-                "join organization org on org.id = a.organization_id "+
-                "join patient pat on pat.id = a.patient_id " +
-                "where pat.nhs_number = ? ";
+                "left join concept c on c.dbid = a.non_core_concept_id \n"+
+                "left join organization org on org.id = a.organization_id "+
+                "left join patient pat on pat.id = a.patient_id " +
+                "left join episode_of_care ep on ep.patient_id = pat.id "+
+                "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
+                "where pat.nhs_number = ? "+
+                "and pat.date_of_death IS NULL "+
+                "and ec.id = 'FHIR_RT_R' "+
+                "and ep.date_registered <= now() "+
+                "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) ";
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, nhsNumber);
@@ -1196,10 +1365,16 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             chartItem.setName(t);
 
             sql = "SELECT c.name as name, clinical_effective_date as series_name, result_value as series_value FROM observation o " +
-                    "join concept c on c.dbid = o.non_core_concept_id " +
-                    "join patient pat on pat.id = o.patient_id " +
+                    "left join concept c on c.dbid = o.non_core_concept_id " +
+                    "left join patient pat on pat.id = o.patient_id " +
+                    "left join episode_of_care ep on ep.patient_id = pat.id "+
+                    "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                     "where c.name = ? " +
                     "and pat.nhs_number = ? " +
+                    "and pat.date_of_death IS NULL "+
+                    "and ec.id = 'FHIR_RT_R' "+
+                    "and ep.date_registered <= now() "+
+                    "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                     "and clinical_effective_date between ? and ? and result_value is not null and result_value != '' order by clinical_effective_date";
 
             i++;
