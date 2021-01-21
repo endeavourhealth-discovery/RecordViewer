@@ -803,7 +803,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.date_of_birth = ? order by p.last_name, p.first_names LIMIT ?,?";
@@ -822,7 +822,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.date_of_birth like ?";
@@ -844,7 +844,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.last_name like ? and p.date_of_birth = ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
@@ -865,7 +865,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.last_name like ? and p.date_of_birth = ?) or p.nhs_number = ?";
@@ -889,7 +889,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ? and date_of_birth = ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
@@ -911,7 +911,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ? and date_of_birth = ?) or p.nhs_number = ?";
@@ -936,7 +936,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.last_name like ? or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
@@ -956,7 +956,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where p.last_name like ? or p.nhs_number = ?";
@@ -980,7 +980,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ? order by p.last_name, p.first_names LIMIT ?,?";
@@ -1001,7 +1001,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                     "join patient_address a on a.id = p.current_address_id " +
                     "join concept c on c.dbid = p.gender_concept_id " +
                     "join episode_of_care e on e.patient_id = p.id " +
-                    "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                    "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                     "join organization o on o.id = p.organization_id " +
                     "join concept con on con.dbid = e.registration_type_concept_id " +
                     "where (p.first_names like ? and p.last_name like ?) or p.nhs_number = ?";
@@ -1045,7 +1045,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "join patient_address a on a.id = p.current_address_id " +
                 "join concept c on c.dbid = p.gender_concept_id " +
                 "join episode_of_care e on e.patient_id = p.id " +
-                "join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
+                "left join practitioner pr on pr.id = e.usual_gp_practitioner_id " +
                 "join organization o on o.id = p.organization_id " +
                 "join concept con on con.dbid = e.registration_type_concept_id " +
                 "left join patient_contact pc on pc.patient_id = p.id and pc.type_concept_id = 1335362 and pc.use_concept_id = 1335371 "+
