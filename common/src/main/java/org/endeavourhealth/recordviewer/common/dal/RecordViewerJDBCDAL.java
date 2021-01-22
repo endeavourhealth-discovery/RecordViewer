@@ -660,9 +660,13 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
-                        "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
-                        "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
-                        "and ccv.code_category_id not in (21) and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        // waiting for IM update to release these filters
+                        //"and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
+                        //"and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
+                        //"and ccv.code_category_id not in (21) and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        "and c.name not like '%procedure%' "+
+                        "and c.name not like '%family history%' and c.name not like '%FH:%' "+
+                        "and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
                         "and o.is_problem = 0 "+sqlTerm+
                         "order by o.clinical_effective_date DESC";
 
