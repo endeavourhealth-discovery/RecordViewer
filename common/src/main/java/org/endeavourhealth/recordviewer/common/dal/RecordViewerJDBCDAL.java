@@ -660,13 +660,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
-                        // waiting for IM update to release these filters
-                        //"and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
-                        //"and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
-                        //"and ccv.code_category_id not in (21) and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
-                        "and c.name not like '%procedure%' "+
-                        "and c.name not like '%family history%' and c.name not like '%FH:%' "+
-                        "and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        "and ccv.code_category_id not in (37) "+
+                        "and ccv.code_category_id not in (17) "+
+                        "and ccv.code_category_id not in (21) "+
                         "and o.is_problem = 0 "+sqlTerm+
                         "order by o.clinical_effective_date DESC";
 
@@ -685,9 +681,9 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
                         "and o.result_value_units is null and o.result_value is null and o.result_date is null and o.result_text is null and o.result_concept_id is null "+
-                        "and ccv.code_category_id not in (37) and c.name not like '%procedure%' "+
-                        "and ccv.code_category_id not in (17) and c.name not like '%family history%' and c.name not like '%FH:%' "+
-                        "and ccv.code_category_id not in (21) and c.name not like '%immunisation%' and c.name not like '%vaccination%' "+
+                        "and ccv.code_category_id not in (37) "+
+                        "and ccv.code_category_id not in (17) "+
+                        "and ccv.code_category_id not in (21) "+
                         "and o.is_problem = 0 "+sqlTerm;
 
                 break;
@@ -707,7 +703,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ec.id = 'FHIR_RT_R' "+
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
-                        " and (ccv.code_category_id in (37) or c.name like '%procedure%') order by o.clinical_effective_date DESC";
+                        " and ccv.code_category_id in (37) order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) " +
                         "FROM observation o " +
@@ -718,7 +714,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "left join episode_of_care ep on ep.patient_id = pat.id "+
                         "left join concept ec on ec.dbid = ep.registration_type_concept_id "+
                         "where pat.nhs_number = ? " +
-                        " and (ccv.code_category_id in (37) or c.name like '%procedure%')";
+                        " and ccv.code_category_id in (37)";
                 break;
             case 4: // family history
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -736,7 +732,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ec.id = 'FHIR_RT_R' "+
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
-                        " and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%') order by o.clinical_effective_date DESC";
+                        " and ccv.code_category_id in (17) order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -751,7 +747,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ec.id = 'FHIR_RT_R' "+
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
-                        " and (ccv.code_category_id in (17) or c.name like '%family history%' or c.name like '%FH:%')";
+                        " and ccv.code_category_id in (17)";
                 break;
             case 5: // immunisations
                 sql = "SELECT o.clinical_effective_date as date," +
@@ -769,7 +765,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ec.id = 'FHIR_RT_R' "+
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
-                        " and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%') order by o.clinical_effective_date DESC";
+                        " and ccv.code_category_id in (21) order by o.clinical_effective_date DESC";
 
                 sqlCount = "SELECT count(1) \n" +
                         "FROM observation o \n" +
@@ -784,7 +780,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         "and ec.id = 'FHIR_RT_R' "+
                         "and ep.date_registered <= now() "+
                         "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) "+
-                        " and (ccv.code_category_id in (21) or c.name like '%immunisation%' or c.name like '%vaccination%')";
+                        " and ccv.code_category_id in (21)";
                 break;
             case 6: // procedure requests
                 sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date,'' as category  " +
