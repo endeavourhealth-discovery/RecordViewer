@@ -24,7 +24,7 @@ public class ObservationSummary {
 
     public ObservationSummary setDate(Date date) {
         try {
-            String pattern = "dd-MMM-yyyy";
+            String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.date = simpleDateFormat.format(date);
@@ -41,7 +41,7 @@ public class ObservationSummary {
 
     public ObservationSummary setProblemEndDate(Date problemEndDate) {
         try {
-            String pattern = "dd-MMM-yyyy";
+            String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.problemEndDate = simpleDateFormat.format(problemEndDate);

@@ -21,7 +21,7 @@ public class EncountersSummary {
     public String getDate() { return date; }
     public EncountersSummary setDate(Date date) {
         try {
-            String pattern = "dd-MMM-yyyy";
+            String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.date = simpleDateFormat.format(date);

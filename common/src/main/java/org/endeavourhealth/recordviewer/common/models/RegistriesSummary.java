@@ -22,7 +22,7 @@ public class RegistriesSummary {
     public String getEntryDate() { return entryDate; }
     public RegistriesSummary setEntryDate(Date entryDate) {
         try {
-            String pattern = "dd-MMM-yyyy";
+            String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.entryDate = simpleDateFormat.format(entryDate);

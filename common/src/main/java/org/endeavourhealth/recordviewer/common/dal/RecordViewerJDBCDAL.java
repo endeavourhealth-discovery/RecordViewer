@@ -519,7 +519,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 "and ep.date_registered <= now() " +
                 "and (ep.date_registered_end > now() or ep.date_registered_end IS NULL) " +
                 "group by m.id " +
-                "order by status,type,m.clinical_effective_date DESC" + limit;
+                "order by status,m.clinical_effective_date DESC" + limit;
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, nhsNumber);

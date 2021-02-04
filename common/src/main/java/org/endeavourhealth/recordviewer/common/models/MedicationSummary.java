@@ -28,7 +28,7 @@ public class MedicationSummary {
 
     public MedicationSummary setDate(Date date) {
         try {
-            String pattern = "dd-MMM-yyyy";
+            String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.date = simpleDateFormat.format(date);
@@ -45,7 +45,7 @@ public class MedicationSummary {
 
     public MedicationSummary setCancellationDate(Date cancellationDate) {
         try {
-            String pattern = "dd-MMM-yyyy";
+            String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.cancellationDate = simpleDateFormat.format(cancellationDate);
@@ -120,7 +120,7 @@ public class MedicationSummary {
 
     public MedicationSummary setLast(Date last) {
         try {
-            String pattern = "dd-MMM-yyyy";
+            String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             this.last = simpleDateFormat.format(last);
