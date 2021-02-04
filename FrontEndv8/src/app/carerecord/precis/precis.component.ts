@@ -107,6 +107,12 @@ export class PrecisComponent implements OnInit {
     // get conditions for menu badge
     this.carerecordService.getObservation(this.nhsNumber, 1, 1, '', this.summaryMode)
       .subscribe(
+        (result) => this.menuProvider.setMenuBadge(3, result.length.toString()),
+        (error) => this.log.error(error)
+      );
+    // get medication for menu badge
+    this.carerecordService.getMedication(this.nhsNumber, 1 , this.summaryMode)
+      .subscribe(
         (result) => this.menuProvider.setMenuBadge(2, result.length.toString()),
         (error) => this.log.error(error)
       );
