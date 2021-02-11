@@ -21,6 +21,7 @@ public class MedicationSummary {
     private String orgName;
     private String practitioner;
     private String cancellationDate;
+    private String code;
 
     public String getDate() {
         return date;
@@ -155,6 +156,15 @@ public class MedicationSummary {
 
     public MedicationSummary setOrgName(String orgName) {
         this.orgName = orgName;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public MedicationSummary setCode(String code) {
+        this.code = code;
         return this;
     }
 }

@@ -15,6 +15,7 @@ public class AllergySummary {
     private String name;
     private String orgName;
     private String practitioner;
+    private String code;
 
     public String getDate() {
         return date;
@@ -86,6 +87,15 @@ public class AllergySummary {
 
     public AllergySummary setOrgName(String orgName) {
         this.orgName = orgName;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public AllergySummary setCode(String code) {
+        this.code = code;
         return this;
     }
 }

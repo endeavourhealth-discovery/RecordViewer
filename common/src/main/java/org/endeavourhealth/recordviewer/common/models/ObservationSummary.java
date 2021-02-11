@@ -17,6 +17,7 @@ public class ObservationSummary {
     private String practitioner;
     private String problemEndDate;
     private String category;
+    private String code;
 
     public String getDate() {
         return date;
@@ -121,6 +122,15 @@ public class ObservationSummary {
 
     public ObservationSummary setCategory(String category) {
         this.category = category;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public ObservationSummary setCode(String code) {
+        this.code = code;
         return this;
     }
 }

@@ -54,6 +54,7 @@
                     <td *ngIf="warningsFlags == true  || conditions == true"><b>Onset date:</b> {{element.date}}</td>
                     <td *ngIf="conditions == true && element.status == 'Past'"><b>Problem end date:</b> {{element.problemEndDate}}</td>
                     <td *ngIf="observations == true || diagnosticOrders == true || procedureRequests == true || procedures == true || immunisations == true  || conditions == true || familyHistory == true"><b>Practitioner:</b> {{element.practitioner}}</td>
+                    <td><b>Code: </b>{{element.code}}</td>
                   </tr>
                 </table>
               </div>

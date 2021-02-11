@@ -36,6 +36,9 @@
                     <tr>
                       <td><b>Onset date:</b> {{element.date}}</td><td *ngIf="element.status == 'Past'"><b>Problem end date:</b> {{element.problemEndDate}}</td><td><b>Practitioner:</b> {{element.practitioner}}</td>
                     </tr>
+                    <tr>
+                      <td><b>Code:</b> {{element.code}}</td>
+                    </tr>
                   </table>
                 </div>
               </div>
@@ -75,7 +78,7 @@
                       <td><b>Effective date:</b> {{element.date}}</td><td><b>Source of data: </b>{{element.orgName}}</td>
                     </tr>
                     <tr>
-                      <td><b>Practitioner:</b> {{element.practitioner}}</td>
+                      <td><b>Practitioner:</b> {{element.practitioner}}</td><td><b>Code:</b> {{element.code}}</td>
                     </tr>
                   </table>
                 </div>
@@ -143,6 +146,9 @@
                     <tr>
                       <td><b>Source of data: </b>{{element.orgName}}</td><td><b>Practitioner:</b> {{element.practitioner}}</td>
                     </tr>
+                    <tr>
+                      <td><b>Code:</b> {{element.code}}</td>
+                    </tr>
                   </table>
                 </div>
               </div>
@@ -199,6 +205,9 @@
                     <tr>
                       <td><b>Status: </b>{{element.status}}</td><td *ngIf="element.status == 'Past'"><b>Cancellation date: </b>{{element.cancellationDate}}</td><td><b>Pracitioner: </b>{{element.practitioner}}</td>
                     </tr>
+                    <tr>
+                      <td><b>Code:</b> {{element.code}}</td>
+                    </tr>
                   </table>
                 </div>
               </div>
@@ -243,7 +252,7 @@
                 <div class="expanded-element-description">
                   <table class = "expanded-table">
                     <tr>
-                      <td><b>Source of data: </b>{{element.orgName}}</td><td><b>Practitioner:</b> {{element.practitioner}}</td>
+                      <td><b>Source of data: </b>{{element.orgName}}</td><td><b>Practitioner:</b> {{element.practitioner}}</td><td><b>Code:</b> {{element.code}}</td>
                     </tr>
                   </table>
                 </div>
@@ -281,7 +290,10 @@
                 <div class="expanded-element-description">
                   <table class = "expanded-table">
                     <tr>
-                      <td><b>Status: </b>{{element.status}}</td><td><b>Source of data: </b>{{element.orgName}}</td><td><b>Onset date:</b> {{element.date}}</td>
+                      <td><b>Status: </b>{{element.status}}</td><td><b>Source of data: </b>{{element.orgName}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Onset date:</b> {{element.date}}</td><td><b>Code:</b> {{element.code}}</td>
                     </tr>
                   </table>
                 </div>

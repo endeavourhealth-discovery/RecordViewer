@@ -89,7 +89,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         String sql = "SELECT o.clinical_effective_date as date, c2.name as battery, c.name as term,org.name as orgname, " +
-                "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result, o.non_core_concept_id as codeId, pr.name as practitioner " +
+                "concat(o.result_value, ' ', coalesce(o.result_value_units,'')) as result, o.non_core_concept_id as codeId, pr.name as practitioner, c.id as code " +
                 "FROM observation o " +
                 "left join observation o2 on o2.id = o.parent_observation_id " +
                 "left join concept c on c.dbid = o.non_core_concept_id " +
@@ -179,7 +179,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setCodeId(resultSet.getString("codeId"))
                 .setPractitioner(resultSet.getString("practitioner"))
                 .setOrgName(resultSet.getString("orgname"))
-                .setBattery(resultSet.getString("battery"));
+                .setBattery(resultSet.getString("battery"))
+                .setCode(resultSet.getString("code"));
 
         return diagnosticsSummary;
     }
@@ -197,7 +198,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             limit = " LIMIT 5";
         }
 
-        String sql = "SELECT clinical_effective_date as date, coalesce(ct.encounter_type,'Administration') as encounter_type, o.name as location, p.name as practitioner,org.name as orgname " +
+        String sql = "SELECT clinical_effective_date as date, coalesce(ct.encounter_type,'Administration') as encounter_type, o.name as location, p.name as practitioner,org.name as orgname, c.id as code " +
                 "FROM encounter e " +
                 "left join concept c on c.dbid = e.non_core_concept_id " +
                 "left join consultation_types ct on ct.original_code = c.id " +
@@ -264,7 +265,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setType(resultSet.getString("encounter_type"))
                 .setLocation(resultSet.getString("location"))
                 .setPractitioner(resultSet.getString("practitioner"))
-                .setOrgName(resultSet.getString("orgname"));
+                .setOrgName(resultSet.getString("orgname"))
+                .setCode(resultSet.getString("code"));
 
         return encountersSummary;
     }
@@ -276,7 +278,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             nhsNumber = getMappedTestNHSNumber(nhsNumber);
         }
 
-        String sql = "SELECT clinical_effective_date as date, coalesce(o.name,'') as recipient, coalesce(c1.name,'') as priority, coalesce(c2.name,'') as type,mode, coalesce(c3.name,'') as speciality, org.name as orgname,pr.name as practitioner " +
+        String sql = "SELECT clinical_effective_date as date, coalesce(o.name,'') as recipient, coalesce(c1.name,'') as priority, coalesce(c2.name,'') as type,mode, coalesce(c3.name,'') as speciality, org.name as orgname,pr.name as practitioner, c3.id as code " +
                 "FROM referral_request r " +
                 "left join organization o on o.id = r.recipient_organization_id " +
                 "left join concept c1 on c1.dbid = r.referral_request_priority_concept_id " +
@@ -348,7 +350,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setMode(resultSet.getString("mode"))
                 .setSpeciality(resultSet.getString("speciality"))
                 .setPractitioner(resultSet.getString("practitioner"))
-                .setOrgName(resultSet.getString("orgname"));
+                .setOrgName(resultSet.getString("orgname"))
+                .setCode(resultSet.getString("code"));
         return referralsSummary;
     }
 
@@ -413,7 +416,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         String sql = "SELECT s.type as schedule_type, s.location, a.start_date, planned_duration, patient_delay, org.name as orgname, " +
-                "CASE WHEN c.name = 'No Show' THEN 'Did not attend' WHEN c.name = 'Fulfilled' THEN 'Attended' ELSE c.name END as appointment_status " +
+                "CASE WHEN c.name = 'No Show' THEN 'Did not attend' WHEN c.name = 'Fulfilled' THEN 'Attended' ELSE c.name END as appointment_status, c.id as code " +
                 "FROM appointment a " +
                 "left join schedule s on s.id = a.schedule_id " +
                 "left join concept c on c.dbid = a.appointment_status_concept_id " +
@@ -479,7 +482,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setDuration(resultSet.getInt("planned_duration"))
                 .setDelay(resultSet.getInt("patient_delay"))
                 .setStatus(resultSet.getString("appointment_status"))
-                .setOrgName(resultSet.getString("orgname"));
+                .setOrgName(resultSet.getString("orgname"))
+                .setCode(resultSet.getString("code"));
         return appointmentSummary;
     }
 
@@ -503,7 +507,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String sql = "SELECT m.id,m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity,org.name as orgname, " +
                 "CASE WHEN m.cancellation_date is NULL THEN 'Active' " +
 				"else 'Past' END as status,c2.name as type, " +
-                "max(mo.clinical_effective_date) as last_issue_date,cancellation_date,pr.name as practitioner " +
+                "max(mo.clinical_effective_date) as last_issue_date,cancellation_date,pr.name as practitioner, c.id as code " +
                 "FROM medication_statement m " +
                 "left join medication_order mo on m.id = mo.medication_statement_id " +
                 "left join concept c on c.dbid = m.non_core_concept_id " +
@@ -575,7 +579,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setLast(resultSet.getDate("last_issue_date"))
                 .setCancellationDate(resultSet.getDate("cancellation_date"))
                 .setPractitioner(resultSet.getString("practitioner"))
-                .setOrgName(resultSet.getString("orgname"));
+                .setOrgName(resultSet.getString("orgname"))
+                .setCode(resultSet.getString("code"));
         return medicationSummary;
     }
 
@@ -610,7 +615,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             case 1: // conditions
                 sql = "SELECT o.clinical_effective_date as date, " +
                         "CASE WHEN o.problem_end_date IS NULL THEN 'Active' " +
-                        "ELSE 'Past' END as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category " +
+                        "ELSE 'Past' END as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category, c.id as code " +
                         "FROM observation o " +
                         "left join concept c on c.dbid = o.non_core_concept_id \n"+
                         "left join organization org on org.id = o.organization_id "+
@@ -644,7 +649,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             case 2: // observations
                 sql = "SELECT o.clinical_effective_date as date, " +
                         "'' as status,concat(c.name,' ',coalesce(o.result_value,''),' ',coalesce(o.result_value_units,'')) as name," +
-                        "org.name as orgname,pr.name as practitioner,o.problem_end_date,coalesce(cc.description,'') as category " +
+                        "org.name as orgname,pr.name as practitioner,o.problem_end_date,coalesce(cc.description,'') as category, c.id as code " +
                         "FROM observation o " +
                         "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
@@ -689,7 +694,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 3: // procedures
                 sql = "SELECT o.clinical_effective_date as date," +
-                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
+                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category, c.id as code  " +
                         "FROM observation o " +
                         "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
@@ -718,7 +723,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 4: // family history
                 sql = "SELECT o.clinical_effective_date as date," +
-                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
+                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category, c.id as code  " +
                         "FROM observation o " +
                         "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
@@ -751,7 +756,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 5: // immunisations
                 sql = "SELECT o.clinical_effective_date as date," +
-                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category  " +
+                        "'' as status,c.name,org.name as orgname,pr.name as practitioner,o.problem_end_date,'' as category, c.id as code  " +
                         "FROM observation o " +
                         "left join concept c on c.dbid = o.non_core_concept_id "+
                         "left join code_category_values ccv on ccv.concept_dbid = c.dbid "+
@@ -783,7 +788,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                         " and ccv.code_category_id in (21)";
                 break;
             case 6: // procedure requests
-                sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date,'' as category  " +
+                sql = "SELECT clinical_effective_date as date, c.name as name, c2.name as status,org.name as orgname,pr.name as practitioner,null as problem_end_date,'' as category, c.id as code  " +
                         "FROM procedure_request p " +
                         "left join concept c on c.dbid = p.non_core_concept_id " +
                         "left join concept c2 on c2.dbid = p.status_concept_id " +
@@ -815,7 +820,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 break;
             case 7: // diagnostics order
                 sql = "SELECT clinical_effective_date as date, c.name as name, " +
-                        "'' as status,org.name as orgname,pr.name as practitioner,p.problem_end_date,'' as category  " +
+                        "'' as status,org.name as orgname,pr.name as practitioner,p.problem_end_date,'' as category, c.id as code  " +
                         "FROM diagnostic_order p " +
                         "left join concept c on c.dbid = p.non_core_concept_id " +
                         "left join organization org on org.id = p.organization_id "+
@@ -846,7 +851,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             case 8: // warnings & flags
                 sql = "SELECT effective_date as date, flag_text as name,org.name as orgname,  " +
                         "CASE WHEN is_active = 1 THEN 'Active' " +
-                        "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date,'' as category " +
+                        "ELSE 'Past' END as status,'' as practitioner,null as problem_end_date,'' as category, ec.id as code " +
                         "FROM flag p " +
                         "left join organization org on org.id = p.organization_id "+
                         "left join patient pat on pat.id = p.patient_id " +
@@ -934,7 +939,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setPractitioner(resultSet.getString("practitioner"))
                 .setProblemEndDate(resultSet.getDate("problem_end_date"))
                 .setOrgName(resultSet.getString("orgname"))
-                .setCategory(resultSet.getString("category"));
+                .setCategory(resultSet.getString("category"))
+                .setCode(resultSet.getString("code"));
         return observationSummary;
     }
 
@@ -1279,7 +1285,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         sql = "SELECT a.clinical_effective_date as date, " +
-                "'Active' as status,c.name,org.name as orgname,pr.name as practitioner " +
+                "'Active' as status,c.name,org.name as orgname,pr.name as practitioner, c.id as code " +
                 "FROM allergy_intolerance a " +
                 "left join concept c on c.dbid = a.non_core_concept_id \n"+
                 "left join organization org on org.id = a.organization_id "+
@@ -1342,7 +1348,8 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
                 .setStatus(resultSet.getString("status"))
                 .setName(resultSet.getString("name"))
                 .setPractitioner(resultSet.getString("practitioner"))
-                .setOrgName(resultSet.getString("orgname"));
+                .setOrgName(resultSet.getString("orgname"))
+                .setCode(resultSet.getString("code"));
         return allergySummary;
     }
 
