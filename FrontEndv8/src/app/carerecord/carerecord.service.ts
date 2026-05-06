@@ -2,6 +2,25 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface EmergencyFlags {
+  has_active_allergies: boolean;
+  has_warnings: boolean;
+  has_drug_interactions: boolean;
+  critical_findings: string[];
+}
+
+export interface AiReviewResponse {
+  summary: string;
+  emergency_flags: EmergencyFlags;
+  recommendations: string[];
+  chat_response?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -108,13 +127,31 @@ export class CareRecordService {
 
   getDashboard(nhsNumber:string, dateFrom: string, dateTo: string, term: string): Observable<any> {
     let params = new HttpParams();
-
     params = params.append('nhsNumber', nhsNumber);
     params = params.append('dateFrom', dateFrom);
     params = params.append('dateTo', dateTo);
     params = params.append('term', term);
-
     return this.http.get('api/events/dashboard', {params});
   }
+
+  generateAiReview(nhsNumber: string, symptoms?: string): Observable<AiReviewResponse> {
+    const body = { nhsNumber, symptoms };
+    return this.http.post<AiReviewResponse>('api/events/ai-review/generate-summary', body);
+  }
+
+  sendAiChat(nhsNumber: string, conversationHistory: ChatMessage[], symptoms?: string): Observable<AiReviewResponse> {
+    const body = { nhsNumber, conversationHistory, symptoms };
+    return this.http.post<AiReviewResponse>('api/events/ai-review/chat', body);
+  }
+
+  clearAiCache(nhsNumber?: string): Observable<any> {
+    let params = new HttpParams();
+    if (nhsNumber) {
+      params = params.append('nhsNumber', nhsNumber);
+    }
+    return this.http.get('api/events/ai-review/cache/clear', {params});
+  }
+
+}
 
 }

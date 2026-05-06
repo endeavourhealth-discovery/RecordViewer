@@ -10,8 +10,10 @@ class BaseJDBCDAL implements BaseDAL {
     private static final Logger LOG = LoggerFactory.getLogger(BaseJDBCDAL.class);
 
     @SuppressWarnings("resource")
-    final Connection conn = ConnectionPool.getInstance().pop();
-
+    final Connection conn;
+    protected BaseJDBCDAL (Connection connection){
+        this.conn = connection;
+    }
     public void beginTransaction() throws SQLException {
         conn.setAutoCommit(false);
     }

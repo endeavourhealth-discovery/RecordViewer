@@ -3,7 +3,7 @@
   </app-precis>
   <mat-card-header>
     <div mat-card-avatar>
-      <i class="fad fa-x-ray"></i>
+      <i class="fas fa-x-ray"></i>
     </div>
     <mat-card-title>Diagnostic reports</mat-card-title>
     <mat-card-subtitle>The findings and interpretation of diagnostic tests performed on the selected patient.</mat-card-subtitle>
@@ -33,7 +33,7 @@
         <ng-container matColumnDef="term">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Diagnostic report</th>
           <td mat-cell *matCellDef="let element">
-            <i class="fad fa-analytics" (click)="showTrend(element.term)" style="width:25px;cursor:pointer" matTooltip="click for trend chart"></i>
+            <i class="fas fa-chart-line" (click)="showTrend(element.term)" style="width:25px;cursor:pointer" matTooltip="click for trend chart"></i>
             {{element.term}}
           </td>
         </ng-container>

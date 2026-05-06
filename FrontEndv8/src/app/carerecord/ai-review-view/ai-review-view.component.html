@@ -1,0 +1,105 @@
+<div class="ai-review-view" [class.emergency-mode]="viewMode === 'emergency'">
+  <div *ngIf="viewMode === 'emergency'" class="emergency-banner">
+    <i class="fas fa-robot"></i> AI RECORD REVIEW
+  </div>
+
+  <h2 style="margin-bottom: 15px;">
+    <i class="fas fa-robot" style="color: #c0392b;"></i> AI Record Review
+    <small style="font-weight: normal; color: #666;">AI-powered analysis of the patient's complete clinical record</small>
+  </h2>
+
+  <mat-card *ngIf="precisComponentReference">
+    <mat-card-content>
+      <div class="summary-controls">
+        <button mat-raised-button color="warn" (click)="generateSummary()" [disabled]="generatingSummary">
+          <i class="fas fa-wand-magic-sparkles"></i> Generate AI Summary
+        </button>
+        <button *ngIf="aiResponse?.summary" mat-stroked-button style="margin-left: 10px;" (click)="clearAndRegenerate()">
+          <i class="fas fa-rotate-right"></i> Clear Cache & Regenerate
+        </button>
+      </div>
+
+      <div class="symptoms-input" *ngIf="viewMode === 'emergency'">
+        <label><i class="fas fa-stethoscope"></i> Report Patient Symptoms (optional):</label>
+        <textarea matInput [(ngModel)]="symptomsInput" placeholder="e.g., Chest pain, shortness of breath, fever..." rows="2" style="width: 100%; margin-top: 5px;"></textarea>
+      </div>
+
+      <div *ngIf="aiResponse?.emergency_flags && aiResponse.emergency_flags.critical_findings?.length > 0" class="critical-findings-box">
+        <h4><i class="fas fa-triangle-exclamation"></i> Critical Findings</h4>
+        <ul>
+          <li *ngFor="let finding of aiResponse.emergency_flags.critical_findings">{{finding}}</li>
+        </ul>
+      </div>
+
+      <div class="emergency-flag-badges" *ngIf="aiResponse?.emergency_flags">
+        <span *ngIf="aiResponse.emergency_flags.has_active_allergies" class="badge badge-danger">Active Allergies</span>
+        <span *ngIf="aiResponse.emergency_flags.has_warnings" class="badge badge-warning">Active Warnings</span>
+        <span *ngIf="aiResponse.emergency_flags.has_drug_interactions" class="badge badge-warn">Drug Interaction Risk</span>
+      </div>
+
+      <!-- Tab View -->
+      <mat-tab-group [(selectedIndex)]="activeTabIndex" (selectedTabChange)="onTabClick($event)">
+        <mat-tab label="Record Summary">
+          <div *ngIf="aiResponse?.summary" class="ai-summary-content">
+            <div class="ai-disclaimer">
+              <i class="fas fa-circle-info"></i> AI-generated clinical guidance. Does not replace professional judgment.
+            </div>
+            <div class="ai-text" [innerHTML]="renderMarkdown(aiResponse.summary)"></div>
+          </div>
+
+          <div *ngIf="error && !aiResponse?.summary" class="error-message">
+            <i class="fas fa-circle-exclamation"></i> {{error}}
+          </div>
+
+          <div *ngIf="!aiResponse?.summary && !error" class="empty-state">
+            <i class="fas fa-robot" style="font-size: 3em; color: #ccc;"></i>
+            <p>Click "Generate AI Summary" to analyze this patient's complete clinical record.</p>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Chat">
+          <div class="chat-container">
+            <div class="chat-messages" #chatMessagesRef>
+              <div *ngIf="conversationHistory.length === 0 && !aiResponse?.chat_response" class="empty-chat">
+                <i class="fas fa-comments" style="font-size: 2em; color: #ccc;"></i>
+                <p>Ask questions about this patient's record. The AI has access to their complete clinical history.</p>
+              </div>
+
+              <div *ngFor="let msg of conversationHistory" class="chat-message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+                <div class="message-avatar">
+                  <i *ngIf="msg.role === 'user'" class="fas fa-user"></i>
+                  <i *ngIf="msg.role === 'assistant'" class="fas fa-robot"></i>
+                </div>
+                <div class="message-content" [innerHTML]="renderMarkdown(msg.content)"></div>
+              </div>
+
+              <div *ngIf="chatLoading" class="chat-message assistant">
+                <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                <div class="message-content loading-indicator">
+                  <mat-spinner diameter="20"></mat-spinner>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-input-area">
+              <textarea matInput [(ngModel)]="chatInput" placeholder="Ask about medications, conditions, allergies, or symptoms..." rows="2" style="flex: 1;"></textarea>
+              <button mat-raised-button color="warn" (click)="sendChatMessage()" [disabled]="!chatInput.trim() || chatLoading">
+                <i class="fas fa-paper-plane"></i> Send
+              </button>
+            </div>
+
+            <div class="chat-disclaimer">
+              <i class="fas fa-circle-info"></i> AI-generated clinical guidance. Does not replace professional judgment.
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="!precisComponentReference">
+    <mat-card-content>
+      <p style="text-align:center;padding:40px;">Please select a patient to use the AI Record Review.</p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -42,6 +42,18 @@ import {DiagnosticsComponent} from "./diagnostics/diagnostics.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {RegistriesComponent} from "./registries/registries.component";
 import {MatTabsModule} from "@angular/material/tabs";
+import {EmergencyDashboardComponent} from './emergency-dashboard/emergency-dashboard.component';
+import {AiReviewViewComponent} from './ai-review-view/ai-review-view.component';
+import {EmergencyMedicationComponent} from './emergency-medication/emergency-medication.component';
+import {EmergencyAllergyComponent} from './emergency-allergy/emergency-allergy.component';
+import {EmergencyConditionsComponent} from './emergency-conditions/emergency-conditions.component';
+import {EmergencyVitalsComponent} from './emergency-vitals/emergency-vitals.component';
+import {EmergencyWarningsComponent} from './emergency-warnings/emergency-warnings.component';
+import {EmergencyEncountersComponent} from './emergency-encounters/emergency-encounters.component';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatGridListModule as MatGridListModule2} from '@angular/material/grid-list';
+import {MatProgressSpinnerModule as MatProgressSpinnerModule2} from '@angular/material/progress-spinner';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -57,7 +69,15 @@ import {MatTabsModule} from "@angular/material/tabs";
     EncountersComponent,
     DiagnosticsComponent,
     AllergyComponent,
-    RegistriesComponent
+    RegistriesComponent,
+    EmergencyDashboardComponent,
+    AiReviewViewComponent,
+    EmergencyMedicationComponent,
+    EmergencyAllergyComponent,
+    EmergencyConditionsComponent,
+    EmergencyVitalsComponent,
+    EmergencyWarningsComponent,
+    EmergencyEncountersComponent
     ],
     imports: [
         BrowserModule,
@@ -89,8 +109,10 @@ import {MatTabsModule} from "@angular/material/tabs";
         LineChartModule,
         AreaChartModule,
         ReactiveFormsModule,
-        MatTooltipModule,
-        MatTabsModule
+    MatTooltipModule,
+    MatTabsModule,
+    MatExpansionModule,
+    FormsModule
     ],
   entryComponents: [
     PatientComponent,

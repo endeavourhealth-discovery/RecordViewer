@@ -1,0 +1,79 @@
+html{
+}
+/* Default settings for all pages */
+#app {
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #04466B;
+    margin-top: 60px;
+
+}
+body{
+    padding:0;
+    margin:0;
+    overflow-x:hidden;
+}
+
+/* Style the header with a grey background and some padding */
+.header {
+    width:101%;
+    min-width:100%;
+    margin: -64px 0 0 -8px;
+
+    overflow: hidden;
+    color: #04466B;
+    outline: lightgray double 1px;
+}
+
+.logo{
+    display:inline;
+    height: 58px;
+    padding-top: 6px;
+    padding-left: 8px;
+    float: left;
+}
+
+/* Float the link section to the right */
+.header-right {
+    float: right;
+}
+.header-logo{
+    display:inline;
+    height: 58px;
+    padding-top: 6px;
+    padding-left: 8px;
+    float: left;
+}
+
+/* Emergency Clinician View Theme */
+.emergency-mode {
+    --emergency-primary: #c0392b;
+    --emergency-secondary: #e74c3c;
+    --emergency-bg-light: #fdecea;
+    --emergency-border: #e74c3c;
+}
+
+.emergency-banner {
+    background: linear-gradient(90deg, var(--emergency-primary), var(--emergency-secondary));
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.emergency-alert {
+    background-color: var(--emergency-bg-light);
+    border-left: 4px solid var(--emergency-border);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 0 4px 4px 0;
+}
+
+.emergency-highlight {
+    color: var(--emergency-primary);
+    font-weight: 600;
+}

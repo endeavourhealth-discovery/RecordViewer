@@ -3,7 +3,7 @@
   </app-precis>
   <mat-card-header>
     <div mat-card-avatar>
-      <i class="fad fa-notes-medical"></i>
+      <i class="fas fa-notes-medical"></i>
     </div>
     <mat-card-title>Care record summary</mat-card-title>
     <mat-card-subtitle>A summary of the selected patient's key care record events.</mat-card-subtitle>
@@ -119,7 +119,7 @@
           <ng-container matColumnDef="term">
             <th mat-header-cell *matHeaderCellDef><i class="fas fa-microscope" style="width:25px"></i>Health status</th>
             <td mat-cell *matCellDef="let element">
-              <i class="fad fa-analytics" (click)="showTrend(element.term)" style="width:25px;cursor:pointer" matTooltip="click for trend chart"></i>
+              <i class="fas fa-chart-line" (click)="showTrend(element.term)" style="width:25px;cursor:pointer" matTooltip="click for trend chart"></i>
               {{element.term}} </td>
           </ng-container>
           <ng-container matColumnDef="result">

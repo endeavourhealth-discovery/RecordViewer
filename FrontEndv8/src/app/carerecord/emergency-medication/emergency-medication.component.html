@@ -1,0 +1,22 @@
+<div class="emergency-view" [class.emergency-mode]="viewMode === 'emergency'">
+  <div *ngIf="viewMode === 'emergency'" class="emergency-banner"><i class="fas fa-pills"></i> CURRENT MEDICATIONS - EMERGENCY VIEW</div>
+
+  <h2 style="margin-bottom:15px;"><i class="fas fa-pills" style="color:#c0392b;"></i> Current Medications<small style="font-weight:normal;color:#666;">Active medications only for emergency decision-making</small></h2>
+
+  <mat-card *ngIf="precisComponentReference">
+    <mat-card-content>
+      <table mat-table [dataSource]="medications" class="full-width-table" *ngIf="medications.length > 0; else noMeds">
+        <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Medication</th><td mat-cell *matCellDef="let e">{{e.name}}</td></ng-container>
+        <ng-container matColumnDef="dose"><th mat-header-cell *matHeaderCellDef>Dose</th><td mat-cell *matCellDef="let e">{{e.dose}}</td></ng-container>
+        <ng-container matColumnDef="quantity"><th mat-header-cell *matHeaderCellDef>Quantity</th><td mat-cell *matCellDef="let e">{{e.quantity}}</td></ng-container>
+        <ng-container matColumnDef="type"><th mat-header-cell *matHeaderCellDef>Type</th><td mat-cell *matCellDef="let e">{{e.type}}</td></ng-container>
+        <ng-container matColumnDef="date"><th mat-header-cell *matHeaderCellDef>Last Prescribed</th><td mat-cell *matCellDef="let e">{{e.date}}</td></ng-container>
+        <tr mat-header-row *matHeaderRowDef="['name','dose','quantity','type','date']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name','dose','quantity','type','date'];"></tr>
+      </table>
+      <ng-template #noMeds><p style="text-align:center;padding:20px;color:#999;">No active medications found.</p></ng-template>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="!precisComponentReference"><mat-card-content><p style="text-align:center;padding:40px;">Please select a patient to view current medications.</p></mat-card-content></mat-card>
+</div>

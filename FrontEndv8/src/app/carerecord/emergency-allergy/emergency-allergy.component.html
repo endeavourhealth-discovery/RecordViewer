@@ -1,0 +1,17 @@
+<div class="emergency-view" [class.emergency-mode]="viewMode === 'emergency'">
+  <div *ngIf="viewMode === 'emergency'" class="emergency-banner"><i class="fas fa-triangle-exclamation"></i> ALLERGIES & INTOLERANCES - EMERGENCY VIEW</div>
+  <h2 style="margin-bottom:15px;"><i class="fas fa-triangle-exclamation" style="color:#c0392b;"></i> Allergies & Intolerances<small style="font-weight:normal;color:#666;">Complete allergy history for emergency safety checks</small></h2>
+  <mat-card *ngIf="precisComponentReference">
+    <mat-card-content>
+      <table mat-table [dataSource]="allergies" class="full-width-table" *ngIf="allergies.length > 0; else noAllergies">
+        <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Allergy/Intolerance</th><td mat-cell *matCellDef="let e" style="font-weight:600;color:#c0392b;">{{e.name}}</td></ng-container>
+        <ng-container matColumnDef="date"><th mat-header-cell *matHeaderCellDef>First Recorded</th><td mat-cell *matCellDef="let e">{{e.date}}</td></ng-container>
+        <ng-container matColumnDef="orgName"><th mat-header-cell *matHeaderCellDef>Source</th><td mat-cell *matCellDef="let e">{{e.orgName}}</td></ng-container>
+        <tr mat-header-row *matHeaderRowDef="['name','date','orgName']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name','date','orgName'];"></tr>
+      </table>
+      <ng-template #noAllergies><p style="text-align:center;padding:20px;color:#999;">No allergies recorded.</p></ng-template>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="!precisComponentReference"><mat-card-content><p style="text-align:center;padding:40px;">Please select a patient to view allergy information.</p></mat-card-content></mat-card>
+</div>

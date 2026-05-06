@@ -27,8 +27,8 @@ export class AppointmentComponent {
   events: any;
   dataSource: MatTableDataSource<any>;
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   displayedColumns: string[] = ['type', 'location', 'date', 'duration', 'delay', 'status', 'expandArrow'];
 
   constructor(

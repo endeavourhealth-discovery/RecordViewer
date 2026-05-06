@@ -10,6 +10,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ObservationSummary {
     private static final Logger LOG = LoggerFactory.getLogger(ObservationSummary.class);
+    private String id;
     private String date;
     private String status;
     private String name;
@@ -24,6 +25,10 @@ public class ObservationSummary {
     }
 
     public ObservationSummary setDate(Date date) {
+        if (date == null) {
+            this.date = null;
+            return this;
+        }
         try {
             String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -31,7 +36,7 @@ public class ObservationSummary {
             this.date = simpleDateFormat.format(date);
         }
         catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("Failed to format date", e);
         }
         return this;
     }
@@ -41,6 +46,10 @@ public class ObservationSummary {
     }
 
     public ObservationSummary setProblemEndDate(Date problemEndDate) {
+        if (problemEndDate == null) {
+            this.problemEndDate = null;
+            return this;
+        }
         try {
             String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -48,7 +57,7 @@ public class ObservationSummary {
             this.problemEndDate = simpleDateFormat.format(problemEndDate);
         }
         catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("Failed to format problem end date", e);
         }
         return this;
     }
@@ -58,6 +67,10 @@ public class ObservationSummary {
     }
 
     public ObservationSummary setName(String name) {
+        if (name == null) {
+            this.name = null;
+            return this;
+        }
         this.name = name.replaceAll("Product containing precisely ","").
         replaceAll("Product containing ","").
         replaceAll("\\(finding\\)","").
@@ -68,6 +81,14 @@ public class ObservationSummary {
         replaceAll("On examination - ","");
 
         //this.name = toTitleCase(this.name);
+        return this;
+    }
+    public String getId() {
+        return id;
+    }
+
+    public ObservationSummary setId(String id) {
+        this.id = id;
         return this;
     }
 

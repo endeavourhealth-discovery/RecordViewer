@@ -1,0 +1,17 @@
+<div class="emergency-view" [class.emergency-mode]="viewMode === 'emergency'">
+  <div *ngIf="viewMode === 'emergency'" class="emergency-banner"><i class="fas fa-diagnoses"></i> ACTIVE CONDITIONS - EMERGENCY VIEW</div>
+  <h2 style="margin-bottom:15px;"><i class="fas fa-diagnoses" style="color:#c0392b;"></i> Active Conditions<small style="font-weight:normal;color:#666;">Current active conditions affecting clinical decision-making</small></h2>
+  <mat-card *ngIf="precisComponentReference">
+    <mat-card-content>
+      <table mat-table [dataSource]="activeConditions" class="full-width-table" *ngIf="activeConditions.length > 0; else noConditions">
+        <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Condition</th><td mat-cell *matCellDef="let e">{{e.name}}</td></ng-container>
+        <ng-container matColumnDef="code"><th mat-header-cell *matHeaderCellDef>SNOMED Code</th><td mat-cell *matCellDef="let e" style="font-size:0.8em;color:#666;">{{e.code}}</td></ng-container>
+        <ng-container matColumnDef="date"><th mat-header-cell *matHeaderCellDef>Onset Date</th><td mat-cell *matCellDef="let e">{{e.date}}</td></ng-container>
+        <tr mat-header-row *matHeaderRowDef="['name','code','date']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name','code','date'];"></tr>
+      </table>
+      <ng-template #noConditions><p style="text-align:center;padding:20px;color:#999;">No active conditions recorded.</p></ng-template>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="!precisComponentReference"><mat-card-content><p style="text-align:center;padding:40px;">Please select a patient to view active conditions.</p></mat-card-content></mat-card>
+</div>

@@ -1,0 +1,207 @@
+<div class="emergency-dashboard" [class.emergency-mode]="viewMode === 'emergency'">
+  <div *ngIf="viewMode === 'emergency'" class="emergency-banner">
+    <i class="fas fa-truck-medical"></i> EMERGENCY CLINICIAN VIEW MODE
+  </div>
+
+  <h2 style="margin-bottom: 15px;">
+    <i class="fas fa-truck-medical" style="color: #c0392b;"></i> Emergency Dashboard
+    <small style="font-weight: normal; color: #666;">At-a-glance patient overview for emergency clinicians</small>
+  </h2>
+
+  <mat-card *ngIf="precisComponentReference">
+    <mat-card-content>
+      <div class="patient-header-grid">
+        <div class="patient-name">{{ precisComponentReference.name }}</div>
+        <div class="patient-details">
+          <span><i class="fas fa-cake-candles"></i> {{ precisComponentReference.age }} years</span>
+          <span *ngIf="precisComponentReference.gender"><i class="fas fa-venus-mars"></i> {{ precisComponentReference.gender }}</span>
+          <span *ngIf="precisComponentReference.nhsNumber"><i class="fas fa-id-card"></i> {{ precisComponentReference.nhsNumber }}</span>
+        </div>
+      </div>
+
+      <div class="emergency-alerts" *ngIf="criticalAlerts.length > 0">
+        <div *ngFor="let alert of criticalAlerts" class="alert-item" [class]="'alert-' + alert.type">
+          <i [class]="alert.icon"></i>
+          <span>{{ alert.text }}</span>
+        </div>
+      </div>
+
+      <mat-grid-list cols="2" rowHeight="400px" gutterSize="10">
+        <!-- Left Column -->
+        <mat-grid-cell>
+          <mat-card class="panel-card">
+            <mat-card-header><mat-card-title>Current Medications</mat-card-title></mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="currentMedications" class="full-width-table" *ngIf="currentMedications.length > 0; else noMeds">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Medication</th>
+                  <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+                <ng-container matColumnDef="dose">
+                  <th mat-header-cell *matHeaderCellDef>Dose</th>
+                  <td mat-cell *matCellDef="let element">{{element.dose}}</td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span [style.color]="element.status === 'Active' ? 'green' : '#666'" [style.font-weight]="element.status === 'Active' ? 'bold' : 'normal'">{{element.status}}</span>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['name', 'dose', 'status']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['name', 'dose', 'status'];"></tr>
+              </table>
+              <ng-template #noMeds><p style="text-align:center;color:#999;padding:20px;">No active medications</p></ng-template>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-cell>
+
+        <mat-grid-cell>
+          <mat-card class="panel-card">
+            <mat-card-header><mat-card-title>Allergies & Intolerances</mat-card-title></mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="allergies" class="full-width-table" *ngIf="allergies.length > 0; else noAllergies">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Allergy</th>
+                  <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Since</th>
+                  <td mat-cell *matCellDef="let element">{{element.date}}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['name', 'date']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['name', 'date'];"></tr>
+              </table>
+              <ng-template #noAllergies><p style="text-align:center;color:#999;padding:20px;">No active allergies</p></ng-template>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-cell>
+
+        <mat-grid-cell>
+          <mat-card class="panel-card">
+            <mat-card-header><mat-card-title>Active Conditions</mat-card-title></mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="activeConditions" class="full-width-table" *ngIf="activeConditions.length > 0; else noConditions">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Condition</th>
+                  <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+                <ng-container matColumnDef="code">
+                  <th mat-header-cell *matHeaderCellDef>Code</th>
+                  <td mat-cell *matCellDef="let element" style="font-size:0.8em;color:#666;">{{element.code}}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['name', 'code']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['name', 'code'];"></tr>
+              </table>
+              <ng-template #noConditions><p style="text-align:center;color:#999;padding:20px;">No active conditions</p></ng-template>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-cell>
+
+        <!-- Right Column -->
+        <mat-grid-cell>
+          <mat-card class="panel-card">
+            <mat-card-header><mat-card-title>Warnings & Flags</mat-card-title></mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="activeWarnings" class="full-width-table" *ngIf="activeWarnings.length > 0; else noWarnings">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Warning/Flag</th>
+                  <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+                <ng-container matColumnDef="code">
+                  <th mat-header-cell *matHeaderCellDef>Code</th>
+                  <td mat-cell *matCellDef="let element" style="font-size:0.8em;color:#666;">{{element.code}}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['name', 'code']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['name', 'code'];"></tr>
+              </table>
+              <ng-template #noWarnings><p style="text-align:center;color:#999;padding:20px;">No active warnings</p></ng-template>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-cell>
+
+        <mat-grid-cell>
+          <mat-card class="panel-card">
+            <mat-card-header><mat-card-title>Recent Encounters</mat-card-title></mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="recentEncounters" class="full-width-table" *ngIf="recentEncounters.length > 0; else noEncounters">
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef>Type</th>
+                  <td mat-cell *matCellDef="let element">{{element.type}}</td>
+                </ng-container>
+                <ng-container matColumnDef="location">
+                  <th mat-header-cell *matHeaderCellDef>Location</th>
+                  <td mat-cell *matCellDef="let element">{{element.location}}</td>
+                </ng-container>
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Date</th>
+                  <td mat-cell *matCellDef="let element">{{element.date}}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['type', 'location', 'date']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['type', 'location', 'date'];"></tr>
+              </table>
+              <ng-template #noEncounters><p style="text-align:center;color:#999;padding:20px;">No recent encounters</p></ng-template>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-cell>
+
+        <mat-grid-cell>
+          <mat-card class="panel-card">
+            <mat-card-header><mat-card-title>Vitals & Observations</mat-card-title></mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="recentVitals" class="full-width-table" *ngIf="recentVitals.length > 0; else noVitals">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Observation</th>
+                  <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Date</th>
+                  <td mat-cell *matCellDef="let element">{{element.date}}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['name', 'date']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['name', 'date'];"></tr>
+              </table>
+              <ng-template #noVitals><p style="text-align:center;color:#999;padding:20px;">No recent observations</p></ng-template>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-cell>
+      </mat-grid-list>
+
+      <div class="ai-review-section">
+        <button mat-raised-button color="warn" (click)="generateAiSummary()" [disabled]="generatingSummary">
+          <i class="fas fa-robot"></i> Generate AI Record Review
+        </button>
+        <button *ngIf="aiSummary" mat-stroked-button style="margin-left: 10px;" (click)="clearCache()">
+          <i class="fas fa-broom"></i> Clear Cache & Regenerate
+        </button>
+      </div>
+
+      <mat-accordion *ngIf="aiSummary || aiError">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title><i class="fas fa-robot"></i> AI Record Review</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div *ngIf="aiSummary" class="ai-summary-content">
+            <div *ngIf="emergencyFlags && emergencyFlags.critical_findings?.length > 0" class="critical-findings-box">
+              <h4><i class="fas fa-triangle-exclamation"></i> Critical Findings</h4>
+              <ul>
+                <li *ngFor="let finding of emergencyFlags.critical_findings">{{finding}}</li>
+              </ul>
+            </div>
+            <div class="ai-summary-text" [innerHTML]="renderMarkdown(aiSummary)"></div>
+          </div>
+
+          <div *ngIf="aiError" class="ai-error">
+            <i class="fas fa-circle-exclamation"></i> {{aiError}}
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="!precisComponentReference">
+    <mat-card-content>
+      <p style="text-align:center;padding:40px;">Please select a patient to view the emergency dashboard.</p>
+    </mat-card-content>
+  </mat-card>
+</div>

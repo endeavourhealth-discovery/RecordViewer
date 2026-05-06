@@ -114,4 +114,35 @@ div.logo-container span.title:after {
   font-size: 14px;
 }
 
+/* Emergency Clinician View Theme */
+.emergency-mode {
+  --emergency-primary: #c0392b;
+  --emergency-secondary: #e74c3c;
+  --emergency-bg-light: #fdecea;
+  --emergency-border: #e74c3c;
+}
+
+.emergency-banner {
+  background: linear-gradient(90deg, var(--emergency-primary), var(--emergency-secondary));
+  color: white;
+  padding: 8px 16px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.emergency-alert {
+  background-color: var(--emergency-bg-light);
+  border-left: 4px solid var(--emergency-border);
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 0 4px 4px 0;
+}
+
+.emergency-highlight {
+  color: var(--emergency-primary);
+  font-weight: 600;
+}
+
 

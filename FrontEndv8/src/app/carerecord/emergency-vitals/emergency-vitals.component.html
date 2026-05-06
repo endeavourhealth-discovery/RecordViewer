@@ -1,0 +1,17 @@
+<div class="emergency-view" [class.emergency-mode]="viewMode === 'emergency'">
+  <div *ngIf="viewMode === 'emergency'" class="emergency-banner"><i class="fas fa-heart-pulse"></i> VITALS & OBSERVATIONS - EMERGENCY VIEW</div>
+  <h2 style="margin-bottom:15px;"><i class="fas fa-heart-pulse" style="color:#c0392b;"></i> Vitals & Observations<small style="font-weight:normal;color:#666;">Recent clinical observations and vital signs</small></h2>
+  <mat-card *ngIf="precisComponentReference">
+    <mat-card-content>
+      <table mat-table [dataSource]="recentVitals" class="full-width-table" *ngIf="recentVitals.length > 0; else noVitals">
+        <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Observation</th><td mat-cell *matCellDef="let e">{{e.name}}</td></ng-container>
+        <ng-container matColumnDef="category"><th mat-header-cell *matHeaderCellDef>Category</th><td mat-cell *matCellDef="let e">{{e.category || '-'}}</td></ng-container>
+        <ng-container matColumnDef="date"><th mat-header-cell *matHeaderCellDef>Date</th><td mat-cell *matCellDef="let e">{{e.date}}</td></ng-container>
+        <tr mat-header-row *matHeaderRowDef="['name','category','date']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name','category','date'];"></tr>
+      </table>
+      <ng-template #noVitals><p style="text-align:center;padding:20px;color:#999;">No recent observations recorded.</p></ng-template>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="!precisComponentReference"><mat-card-content><p style="text-align:center;padding:40px;">Please select a patient to view vitals and observations.</p></mat-card-content></mat-card>
+</div>

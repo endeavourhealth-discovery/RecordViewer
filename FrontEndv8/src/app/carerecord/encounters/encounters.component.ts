@@ -28,8 +28,8 @@ export class EncountersComponent {
   dataSource: MatTableDataSource<any>;
   summaryMode: number = 0;
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   displayedColumns: string[] = ["type", "location", "practitioner","date", "expandArrow"];
 
   constructor(

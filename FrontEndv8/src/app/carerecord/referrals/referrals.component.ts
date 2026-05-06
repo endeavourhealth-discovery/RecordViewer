@@ -28,8 +28,8 @@ export class ReferralsComponent {
   events: any;
   dataSource: MatTableDataSource<any>;
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   displayedColumns: string[] = ["recipient",  "priority",  "type", "mode", "speciality", "date", "expandArrow"];
 
   constructor(

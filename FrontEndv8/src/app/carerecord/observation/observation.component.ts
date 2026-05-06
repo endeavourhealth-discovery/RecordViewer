@@ -46,8 +46,8 @@ export class ObservationComponent implements OnInit {
   diagnosticOrders: boolean = false;
   warningsFlags: boolean = false;
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   displayedColumns: string[] = ['name', 'date', 'expandArrow'];
 
   constructor(
@@ -73,7 +73,7 @@ export class ObservationComponent implements OnInit {
     else if (this.eventType==2) {
       this.eventTypeTitle = "Observations";
       this.subTitle = "Measurements and simple assertions made about the selected patient";
-      this.icon = 'fa-monitor-heart-rate';
+      this.icon = 'fa-heart-pulse';
       this.dateTitle = "Effective date";
       this.showSearch = true;
       this.displayedColumns = ['name', 'category', 'date', 'expandArrow'];
@@ -103,7 +103,7 @@ export class ObservationComponent implements OnInit {
     else if (this.eventType==6) {
       this.eventTypeTitle = "Procedure requests";
       this.subTitle = "A record of a request for a procedure to be performed";
-      this.icon = 'fa-user-md-chat';
+      this.icon = 'fa-house-medical-flag';
       this.dateTitle = "Effective date";
       this.displayedColumns = ['name','status', 'date', 'expandArrow'];
       this.procedureRequests = true;

@@ -1,0 +1,8 @@
+{
+  "realm": "endeavour",
+  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg9ySFlKX/ESyqZd3MX38siJKWzubZXA4fBi0Nye1OvovRxZgUCdtPqGNbEb1fq+MGRm3+1Zq63jkyzEsjTc0gs5MkSbs1qphr4CFAniyO+DlHZIG3BgHWU7dbLOWOtC9CABZ8voFDGCjbR8xfXxdgH5cXj7shyxKkfZNRM4yWuzNsN5Qbq80KfU1i/xScCZ3vdUtgLotFy++lBKtSasD4gXpMPUDyR5Wx6yE5R0zYbaro5EmbnEf3JVEuUPAZ90RqfbNb1c8cl1SIgcbYlP2CPIN37EKQawDG6jOvBKXTDbCV31LDH2xbhPPNZVRT3P8Hr99BducEVtaxWVx9AroBQIDAQAB",
+  "auth-server-url": "https://demo.discoverydataservice.net:8424/auth",
+  "ssl-required": "external",
+  "resource": "eds-ui",
+  "public-client": true
+}

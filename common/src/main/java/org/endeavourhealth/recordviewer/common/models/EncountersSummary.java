@@ -12,7 +12,9 @@ import java.util.Date;
 public class EncountersSummary {
     private static final Logger LOG = LoggerFactory.getLogger(EncountersSummary.class);
 
-    private String date;
+    private String id, episode_id;
+    private String date, end_date;
+    private String type_code, type_desc;
     private String type;
     private String location;
     private String practitioner;
@@ -32,7 +34,35 @@ public class EncountersSummary {
         }
         return this;
     }
+    public String getEndDate() { return end_date; }
+    public EncountersSummary setEndDate(Date date) {
+        try {
+            String pattern = "yyyy-MM-dd";;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
+            this.end_date = simpleDateFormat.format(date);
+        }
+        catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+    public EncountersSummary setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getEpisodeId() {
+        return episode_id;
+    }
+    public EncountersSummary setEpisodeId(String episode_id) {
+        this.episode_id = episode_id;
+        return this;
+    }
     public String getType() {
         return type;
     }
@@ -73,6 +103,22 @@ public class EncountersSummary {
     public EncountersSummary setCode(String code) {
         this.code = code;
         return this;
+    }
+
+    public EncountersSummary setTypeDesc(String type_desc) {
+        this.type_desc = type_desc;
+        return this;
+    }
+    public String getTypeDesc() {
+        return type_desc;
+    }
+
+    public EncountersSummary setTypeCode(String type_code) {
+        this.type_code = type_code;
+        return this;
+    }
+    public String getTypeCode() {
+        return type_code;
     }
 
 }
