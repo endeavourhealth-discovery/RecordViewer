@@ -3,3 +3,4 @@ target
 *.iml
 *.jar
 node.exe
+settings.xml
