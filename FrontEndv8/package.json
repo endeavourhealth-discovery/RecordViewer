@@ -22,7 +22,7 @@
     "@angular/platform-browser": "^8.2.14",
     "@angular/platform-browser-dynamic": "^8.2.14",
     "@angular/router": "^8.2.14",
-    "@swimlane/ngx-charts": "^13.0.2",
+    "@swimlane/ngx-charts": "^25.0.0",
     "dds-angular8": "https://github.com/endeavourhealth-discovery/Angular8/blob/master/dds-angular8-1.0.33.tgz?raw=true",
     "hammerjs": "^2.0.8",
     "keycloak-angular": "^7.1.0",
