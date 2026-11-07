@@ -7,6 +7,7 @@ import org.endeavourhealth.recordviewer.common.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,10 +16,14 @@ import java.util.*;
 public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     private static final Logger LOG = LoggerFactory.getLogger(RecordViewerJDBCDAL.class);
 
+    public RecordViewerJDBCDAL(Connection connection) {
+        super(connection);
+    }
+
     private String getRunMode() throws Exception {
         String runMode = "";
         try {
-            ConfigManager.Initialize("record-viewer");
+                ConfigManager.Initialize(ConnectionPool.configAppID);
             JsonNode jsonTestNHSIdMappings = ConfigManager.getConfigurationAsJson("run_mode");
             runMode = jsonTestNHSIdMappings.get("mode").asText();
         } catch (Exception e) {
@@ -29,7 +34,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     }
 
     private String getMappedTestNHSNumber(String nhsNumberIn) throws Exception {
-        ConfigManager.Initialize("record-viewer");
+        ConfigManager.Initialize(ConnectionPool.configAppID);
         JsonNode jsonTestNHSIdMappings = ConfigManager.getConfigurationAsJson("run_mode");
         JsonNode nhsMappingsNodes = jsonTestNHSIdMappings.get("nhs_mappings");
         String mappedNHSNumber = "0";
@@ -50,7 +55,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
     }
 
     private String getReverseMappedTestNHSNumber(String nhsNumberIn) throws Exception {
-        ConfigManager.Initialize("record-viewer");
+        ConfigManager.Initialize(ConnectionPool.configAppID);
         JsonNode jsonTestNHSIdMappings = ConfigManager.getConfigurationAsJson("run_mode");
         JsonNode nhsMappingsNodes = jsonTestNHSIdMappings.get("nhs_mappings");
         String anonymisedNHSNumber = "0";
@@ -501,7 +506,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             activeMedication = "";
 
         if (summaryMode==1) {
-            limit = " LIMIT 999";
+            limit = " LIMIT 10";
         }
 
         String sql = "SELECT m.id,m.clinical_effective_date as date,m.dose,c.name,CONCAT(m.quantity_value,' ',m.quantity_unit) as quantity,org.name as orgname, " +
@@ -958,7 +963,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         String[] names = name.split(" ", 2);
 
         if (!dob.equals("") && name.equals("")) { // dob only
-            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+            sql = "SELECT p.id, p.person_id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
@@ -999,7 +1004,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             }
 
         } else if (!dob.equals("") && names.length==1) { // dob and 1 name
-            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+            sql = "SELECT p.id, p.person_id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
@@ -1044,7 +1049,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             }
 
         } else if (!dob.equals("") && names.length>1) { // dob and more than 1 name
-            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+            sql = "SELECT p.id, p.person_id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
@@ -1091,7 +1096,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             }
 
         } else if (dob.equals("") && names.length==1) { // no dob and only 1 name specified in search
-            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+            sql = "SELECT p.id, p.person_id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
@@ -1135,7 +1140,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         }
 
         else if (dob.equals("") && names.length>1) { // no dob and more than one name specified in search
-            sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+            sql = "SELECT p.id, p.person_id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                     "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                     "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                     "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, '' as mobile " +
@@ -1200,7 +1205,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
 
         PatientSummary result = new PatientSummary();
 
-        String sql = "SELECT p.id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
+        String sql = "SELECT p.id, p.person_id,coalesce(p.date_of_birth,'') as date_of_birth,coalesce(c.name,'') as gender,FLOOR(DATEDIFF(now(), p.date_of_birth) / 365.25) as age, " +
                 "coalesce(p.nhs_number,'') as nhs_number,CONCAT(UPPER(coalesce(p.last_name,'')),', ',coalesce(p.first_names,''),' (',coalesce(p.title,''),')') as name, " +
                 "CONCAT(coalesce(a.address_line_1,''),', ',coalesce(a.address_line_2,''),', ',coalesce(a.address_line_3,''),', ',coalesce(a.city,''),', ',coalesce(a.postcode,'')) as address, " +
                 "pr.name as usual_gp,o.name as orgname, con.name as reg_type, p.date_of_death, coalesce(e.date_registered,'') as startdate, pc.value as mobile " +
@@ -1234,6 +1239,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
             nhsNumber = getReverseMappedTestNHSNumber(nhsNumber);
             patientSummary
                     .setId("0")
+                    .setPersonId("000")
                     .setName("XXXX")
                     .setDob(null)
                     .setDod(null)
@@ -1250,6 +1256,7 @@ public class RecordViewerJDBCDAL extends BaseJDBCDAL {
         else {
             patientSummary
                     .setId(resultSet.getString("id"))
+                    .setPersonId(resultSet.getString("person_id"))
                     .setName(resultSet.getString("name"))
                     .setDob(resultSet.getDate("date_of_birth"))
                     .setDod(resultSet.getDate("date_of_death"))

@@ -1,0 +1,9 @@
+{
+  "auth-server-url": "https://devauth.discoverydataservice.net/auth/",
+  "realm": "endeavour2",
+  "ssl-required": "external",
+  "resource": "alpha-recordviewer-client",
+  "onLoad": "login-required",
+  "confidential-port": 0,
+  "checkLoginIframe": false
+}

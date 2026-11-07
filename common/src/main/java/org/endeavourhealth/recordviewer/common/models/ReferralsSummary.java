@@ -12,6 +12,7 @@ import java.util.Date;
 public class ReferralsSummary {
     private static final Logger LOG = LoggerFactory.getLogger(ReferralsSummary.class);
 
+    private String id;
     private String date;
     private String recipient;
     private String priority;
@@ -41,6 +42,14 @@ public class ReferralsSummary {
     }
     public ReferralsSummary setRecipient(String recipient) {
         this.recipient = recipient;
+        return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+    public ReferralsSummary setId(String id) {
+        this.id = id;
         return this;
     }
 

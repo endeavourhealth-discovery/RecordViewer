@@ -11,6 +11,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppointmentSummary {
     private static final Logger LOG = LoggerFactory.getLogger(AppointmentSummary.class);
+    private String id, scheduleId;
     private String type;
     private String location;
     private String date;
@@ -19,6 +20,22 @@ public class AppointmentSummary {
     private String status;
     private String orgName;
     private String code;
+
+    public String getId() {
+        return id;
+    }
+    public AppointmentSummary setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getScheduleId() {
+        return scheduleId;
+    }
+    public AppointmentSummary setScheduleId(String scheduleId) {
+        this.scheduleId = scheduleId;
+        return this;
+    }
 
     public String getType() {
         return type;

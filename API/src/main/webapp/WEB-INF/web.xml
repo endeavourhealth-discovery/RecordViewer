@@ -16,7 +16,8 @@
             <param-name>jersey.config.server.provider.classnames</param-name>
             <param-value>org.glassfish.jersey.jackson.JacksonFeature,
                 org.endeavourhealth.common.security.CustomRolesAllowedFeature,
-                org.endeavourhealth.recordviewer.api.framework.exceptions.BaseExceptionMapper
+                org.endeavourhealth.recordviewer.api.framework.exceptions.BaseExceptionMapper,
+                org.glassfish.jersey.media.multipart.MultiPartFeature
             </param-value>
         </init-param>
 
@@ -117,16 +118,16 @@
         <filter-name>CorsFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter>
-        <filter-name>AppAccessFilter</filter-name>
-        <filter-class>org.endeavourhealth.coreui.framework.AppAccessFilter</filter-class>
-        <init-param>
-            <param-name>app_name</param-name>
-            <param-value>record-viewer</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>AppAccessFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    <!--    <filter>-->
+    <!--        <filter-name>AppAccessFilter</filter-name>-->
+    <!--        <filter-class>org.endeavourhealth.coreui.framework.AppAccessFilter</filter-class>-->
+    <!--        <init-param>-->
+    <!--            <param-name>app_name</param-name>-->
+    <!--            <param-value>record-viewer</param-value>-->
+    <!--        </init-param>-->
+    <!--    </filter>-->
+    <!--    <filter-mapping>-->
+    <!--        <filter-name>AppAccessFilter</filter-name>-->
+    <!--        <url-pattern>/*</url-pattern>-->
+    <!--    </filter-mapping>-->
 </web-app>

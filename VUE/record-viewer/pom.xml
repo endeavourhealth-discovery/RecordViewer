@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../../pom.xml</relativePath>
+    <groupId>org.endeavourhealth.recordviewer</groupId>
+    <artifactId>RecordViewer</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>record-viewer</artifactId>
+
+  <properties>
+    <sonar.projectKey>endeavourhealth-discovery_RecordViewer::frontend</sonar.projectKey>
+    <sonar.sources>src</sonar.sources>
+    <sonar.typescript.tsconfigPath>tsconfig.json</sonar.typescript.tsconfigPath>
+    <sonar.ts.tslint.configPath>tslint.json</sonar.ts.tslint.configPath>
+    <sonar.tests>.</sonar.tests>
+    <sonar.test.inclusions>**/*.spec.ts</sonar.test.inclusions>
+    <sonar.exclusions>**/node_modules/**, **/environments/**/*</sonar.exclusions>
+    <sonar.typescript.lcov.reportPaths>coverage/lcov.info</sonar.typescript.lcov.reportPaths>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

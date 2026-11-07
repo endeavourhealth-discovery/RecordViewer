@@ -28,6 +28,10 @@ public class MedicationSummary {
     }
 
     public MedicationSummary setDate(Date date) {
+        if (date == null) {
+            this.date = null;
+            return this;
+        }
         try {
             String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -35,7 +39,7 @@ public class MedicationSummary {
             this.date = simpleDateFormat.format(date);
         }
         catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("Failed to format date", e);
         }
         return this;
     }
@@ -45,6 +49,10 @@ public class MedicationSummary {
     }
 
     public MedicationSummary setCancellationDate(Date cancellationDate) {
+        if (cancellationDate == null) {
+            this.cancellationDate = null;
+            return this;
+        }
         try {
             String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -52,7 +60,7 @@ public class MedicationSummary {
             this.cancellationDate = simpleDateFormat.format(cancellationDate);
         }
         catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("Failed to format cancellation date", e);
         }
         return this;
     }
@@ -80,6 +88,10 @@ public class MedicationSummary {
     }
 
     public MedicationSummary setName(String name) {
+        if (name == null) {
+            this.name = null;
+            return this;
+        }
         this.name = name.replaceAll("Product containing precisely ","");
         this.name = this.name.replaceAll("Product containing ","");
         this.name = this.name.replaceAll("\\(clinical drug\\)","");
@@ -120,6 +132,10 @@ public class MedicationSummary {
     }
 
     public MedicationSummary setLast(Date last) {
+        if (last == null) {
+            this.last = null;
+            return this;
+        }
         try {
             String pattern = "yyyy-MM-dd";;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -127,7 +143,7 @@ public class MedicationSummary {
             this.last = simpleDateFormat.format(last);
         }
         catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("Failed to format last date", e);
         }
         return this;
     }

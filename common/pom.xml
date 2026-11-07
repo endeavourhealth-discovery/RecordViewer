@@ -28,6 +28,22 @@
       <groupId>org.endeavourhealth.common</groupId>
       <artifactId>utility</artifactId>
     </dependency>
+      <dependency>
+          <groupId>org.endeavourhealth.common</groupId>
+          <artifactId>core</artifactId>
+      </dependency>
+    <dependency>
+      <groupId>org.endeavourhealth.common</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
+      <dependency>
+          <groupId>org.endeavourhealth.common</groupId>
+          <artifactId>core</artifactId>
+      </dependency>
+    <dependency>
+      <groupId>org.endeavourhealth.common</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
 
   </dependencies>
 

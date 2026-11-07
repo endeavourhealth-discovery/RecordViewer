@@ -1,8 +1,11 @@
 package org.endeavourhealth.recordviewer.common.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,8 +14,10 @@ public class PatientSummary {
     private static final Logger LOG = LoggerFactory.getLogger(PatientSummary.class);
     private String id;
     private String name;
-    private String dob;
-    private String dod;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
+    private Date dob;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy")
+    private Date dod;
     private String nhsNumber;
     private String address;
     private String gender;
@@ -22,6 +27,9 @@ public class PatientSummary {
     private String registration;
     private String start_date;
     private String mobile;
+    private String personId;
+    private String patientAdditionalTextValue;
+    private String patientAdditionalConcept;
 
     public String getId() {
         return id;
@@ -29,6 +37,30 @@ public class PatientSummary {
 
     public PatientSummary setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getPersonId(){
+        return this.personId;
+    }
+    public PatientSummary setPersonId(String pid){
+        this.personId = pid;
+        return this;
+    }
+
+    public String getPatientAdditionalTextValue(){
+        return this.patientAdditionalTextValue;
+    }
+    public PatientSummary setPatientAdditionalTextValue(String value){
+        this.patientAdditionalTextValue = value;
+        return this;
+    }
+
+    public String getPatientAdditionalConcept(){
+        return this.patientAdditionalConcept;
+    }
+    public PatientSummary setPatientAdditionalConcept(String concept){
+        this.patientAdditionalConcept = concept;
         return this;
     }
 
@@ -41,37 +73,21 @@ public class PatientSummary {
         return this;
     }
 
-    public String getDob() {
+    public Date getDob() {
         return dob;
     }
 
     public PatientSummary setDob(Date dob) {
-        try {
-            String pattern = "dd-MMM-yyyy";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-            this.dob = simpleDateFormat.format(dob);
-        }
-        catch (Exception e) {
-            LOG.error(e.getMessage());
-        }
+        this.dob = dob;
         return this;
     }
 
-    public String getDod() {
+    public Date getDod() {
         return dod;
     }
 
     public PatientSummary setDod(Date dod) {
-        try {
-            String pattern = "dd-MMM-yyyy";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-            this.dod = simpleDateFormat.format(dod);
-        }
-        catch (Exception e) {
-            LOG.error(e.getMessage());
-        }
+        this.dod = dod;
         return this;
     }
 

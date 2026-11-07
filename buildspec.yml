@@ -3,11 +3,12 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: openjdk8
+      java: corretto8
   pre_build:
     commands:
       - IP=$(curl http://checkip.amazonaws.com)/32
       - echo $IP of CodeBuild Instance
+      - aws s3 cp s3://endeavour-codebuild/settings/settings.xml /root/.m2/settings.xml
   build:
     commands:
       - echo Build started on `date`
@@ -18,16 +19,10 @@ phases:
       - IP=$(curl http://checkip.amazonaws.com)/32
       - echo $IP of CodeBuild Instance
       - echo Packaging application
-      - cd FrontEndv8
-      - zip -r frontend.zip appspec.yml cleanup dist/
-      - mv frontend.zip frontend
-      - echo Packaging core
-      - cd ../API
-      - zip -r api.zip appspec.yml cleanup permissions target/api
-      - mv api.zip api
+      - cd API
+      - zip -r record-viewer.war appspec.yml cleanup permissions target/record-viewer
       - echo Build completed on `date`
 artifacts:
   files:
-    - FrontEndv8/frontend
-    - API/api
+    - API/record-viewer.war
   discard-paths: yes
